@@ -92,13 +92,10 @@ contract('Verifier', function(accounts) {
     });
 
     it('first official user deleted', async function () {
-        return instance.deleteUser(officialUser.name, {from: owner.public})
-            .then(() => {
-                instance.getUserByName(officialUser.name)
-                    .then(() => {assert.fail("", "", "application should have been rejected")})
-                    .catch(error => {assert.include(error.message, "revert", "unexpected error")});
-            }
-        );
+        await instance.deleteUser(officialUser.name, {from: owner.public});
+        instance.getUserByName(officialUser.name)
+            .then(() => {assert.fail("", "", "application should have been rejected")})
+            .catch(error => {assert.include(error.message, "revert", "unexpected error")});
     });
 
     it('first official user re-added', async function () {
