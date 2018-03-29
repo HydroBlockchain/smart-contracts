@@ -1,5 +1,6 @@
 ## Project Hydro
 <img src="https://www.hydrogenplatform.com/images/logo_hydro.png">
+
 [Project Hydro](http://www.projecthydro.com) enables developers to seamlessly deploy blockchain in their existing applications, without the need to create expensive infrastructure. We're at the cutting of of fintech, and we're excited to have you involved!
 
 ## Why You're Here
