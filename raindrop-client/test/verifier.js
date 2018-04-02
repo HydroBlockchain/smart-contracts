@@ -4,12 +4,11 @@ const Web3 = require('web3') // 1.0.0-beta.33
 const web3 = new Web3(Web3.givenProvider)
 var util = require('ethereumjs-util')
 
-var Verifier = artifacts.require('./Verifier.sol')
+var RaindropClient = artifacts.require('./RaindropClient.sol')
 
-contract('Verifier', function (accounts) {
+contract('RaindropClient', function (accounts) {
   const owner = {
-    public: accounts[0],
-    private: '2665671af93f210ddb5d5ffa16c77fcf961d52796f2b2d7afd32cc5d886350a8'
+    public: accounts[0]
   }
   const officialUser = {
     name: 'AppUser',
@@ -18,8 +17,7 @@ contract('Verifier', function (accounts) {
   }
   const unofficialUser = {
     name: 'h4ck3r',
-    public: accounts[2],
-    private: 'ccc3c84f02b038a5d60d93977ab11eb57005f368b5f62dad29486edeb4566954'
+    public: accounts[2]
   }
   const officialApplications = [
     'Totally Trustworthy Tech Titan',
@@ -32,19 +30,21 @@ contract('Verifier', function (accounts) {
     'totally trustworthy tech titan',
     'fakebook'
   ]
+  const badUnofficialApplications = [
+    'a'.repeat(100),
+    'A'
+  ]
+
+  const userFee = web3.utils.toWei('0.1', 'ether')
+  const applicationFee = web3.utils.toWei('1', 'ether')
 
   var instance
 
-  var userFee
-  var applicationFee
-
-  it('verifier deployed', async function () {
-    instance = await Verifier.new({from: owner.public})
+  it('raindrop client deployed', async function () {
+    instance = await RaindropClient.new({from: owner.public})
   })
 
   it('sign up fees are settable', async function () {
-    userFee = 10 ** 18 / 10 // .1 ether in wei
-    applicationFee = 10 ** 18 // 1 ether in wei
     await instance.setUnofficialUserSignUpFee(userFee, {from: owner.public})
     await instance.setUnofficialApplicationSignUpFee(applicationFee, {from: owner.public})
     let contractUserFee = await instance.unofficialUserSignUpFee()
@@ -56,21 +56,22 @@ contract('Verifier', function (accounts) {
   it('official applications signed up', async function () {
     for (let i = 0; i < officialApplications.length; i++) {
       await instance.officialApplicationSignUp(officialApplications[i], {from: owner.public})
-      let officialApplicationExists = await instance.applicationNameTaken(officialApplications[i], true)
-      assert.isTrue(officialApplicationExists, 'application signed up incorrectly')
+      let applicationNameTaken = await instance.applicationNameTaken(officialApplications[i])
+      assert.isTrue(applicationNameTaken[0], 'application signed up incorrectly')
     }
   })
 
-  it('insufficiently funded unofficial application requests rejected', function () {
-    return instance.unofficialApplicationSignUp.call(unofficialApplications[0])
-      .then(() => { assert.fail('', '', 'application should have been rejected') })
-      .catch(error => { assert.include(error.message, 'revert', 'unexpected error') })
+  it('insufficiently funded unofficial application requests rejected', async function () {
+    for (let i = 0; i < unofficialApplications.length; i++) {
+      await instance.unofficialApplicationSignUp.call(unofficialApplications[i])
+        .then(() => { assert.fail('', '', 'application should have been rejected') })
+        .catch(error => { assert.include(error.message, 'revert', 'unexpected error') })
+    }
   })
 
   it('funded but malformed unofficial application requests rejected', function () {
-    let badNames = ['a'.repeat(100), 'ABC']
-    for (let i = 0; i < badNames.length; i++) {
-      instance.unofficialApplicationSignUp.call(badNames[i], {value: applicationFee})
+    for (let i = 0; i < badUnofficialApplications.length; i++) {
+      instance.unofficialApplicationSignUp.call(badUnofficialApplications[i], {value: applicationFee})
         .then(() => { assert.fail('', '', 'application should have been rejected') })
         .catch(error => { assert.include(error.message, 'revert', 'unexpected error') })
     }
@@ -79,8 +80,8 @@ contract('Verifier', function (accounts) {
   it('unofficial application requests accepted', async function () {
     for (let i = 0; i < unofficialApplications.length; i++) {
       await instance.unofficialApplicationSignUp(unofficialApplications[i], {value: applicationFee})
-      let unofficialApplicationExists = await instance.applicationNameTaken(unofficialApplications[i], false)
-      assert.isTrue(unofficialApplicationExists, 'application signed up incorrectly')
+      let applicationNameTaken = await instance.applicationNameTaken(unofficialApplications[i])
+      assert.isTrue(applicationNameTaken[1], 'application signed up incorrectly')
     }
   })
 
@@ -150,8 +151,8 @@ contract('Verifier', function (accounts) {
     let v = signature.v
     let r = util.bufferToHex(signature.r)
     let s = util.bufferToHex(signature.s)
-    let recoveredAddress = await instance.recoverAddress.call(challengeStringHash, v, r, s)
-    assert.equal(recoveredAddress, officialUser.public, 'unexpected recovered address')
+    let isSigned = await instance.isSigned.call(officialUser.public, challengeStringHash, v, r, s)
+    assert.isTrue(isSigned, 'address signature unconfirmed')
   })
 
   it('official user deleted', async function () {
