@@ -87,8 +87,8 @@ contract('RaindropClient', function (accounts) {
 
   it('first official user signed up', async function () {
     await instance.officialUserSignUp(officialUser.name, officialUser.public, {from: owner.public})
-    let officialUserExists = await instance.userNameTaken(officialUser.name)
-    assert.isTrue(officialUserExists, 'user signed up incorrectly')
+    let userNameTaken = await instance.userNameTaken(officialUser.name)
+    assert.isTrue(userNameTaken, 'user signed up incorrectly')
     let userDetails = await instance.getUserByName(officialUser.name)
     assert.equal(userDetails[0], officialUser.public, 'user address stored incorrectly')
     assert.equal(userDetails[1], true, 'user offical status stored incorrectly')
@@ -116,7 +116,7 @@ contract('RaindropClient', function (accounts) {
     assert.equal(userDetails[1], false, 'user offical status stored incorrectly')
   })
 
-  it('all added applications and user names should be locked', function () {
+  it('all added applications and user names should be locked', async function () {
     let officialUserPromises = [
       instance.officialUserSignUp.call(officialUser.name, officialUser.public, {from: owner.public})
         .then(() => { assert.fail('', '', 'user should have been rejected') })
@@ -137,7 +137,7 @@ contract('RaindropClient', function (accounts) {
         .then(() => { assert.fail('', '', 'application should have been rejected') })
         .catch(error => { assert.include(error.message, 'revert', 'unexpected error') })
     })
-    return Promise.all(
+    await Promise.all(
       officialUserPromises + unofficialUserPromises + officialApplicationPromises + unofficialApplicationPromises
     )
   })
@@ -165,14 +165,27 @@ contract('RaindropClient', function (accounts) {
     let r = util.bufferToHex(signature.r)
     let s = util.bufferToHex(signature.s)
     await instance.deleteUserForUser(officialUser.name, v, r, s, {from: owner.public})
-    let officialUserExists = await instance.userNameTaken(officialUser.name)
-    assert.isFalse(officialUserExists, 'user deleted incorrectly')
+    let userNameTaken = await instance.userNameTaken(officialUser.name)
+    assert.isFalse(userNameTaken, 'user deleted incorrectly')
   })
 
   it('unofficial user deleted', async function () {
     await instance.deleteUser(unofficialUser.name, {from: unofficialUser.public})
-    let unofficialUserExists = await instance.userNameTaken(unofficialUser.name)
-    assert.isFalse(unofficialUserExists, 'user deleted incorrectly')
+    let userNameTaken = await instance.userNameTaken(unofficialUser.name)
+    assert.isFalse(userNameTaken, 'user deleted incorrectly')
+  })
+
+  it('all applications deleted', async function () {
+    for (let i = 0; i < officialApplications.length; i++) {
+      await instance.deleteApplication(officialApplications[i], true, {from: owner.public})
+      let applicationNameTaken = await instance.applicationNameTaken(officialApplications[i])
+      assert.isFalse(applicationNameTaken[0], 'application deleted incorrectly')
+    }
+    for (let i = 0; i < unofficialApplications.length; i++) {
+      await instance.deleteApplication(unofficialApplications[i], false, {from: owner.public})
+      let applicationNameTaken = await instance.applicationNameTaken(officialApplications[i])
+      assert.isFalse(applicationNameTaken[1], 'application deleted incorrectly')
+    }
   })
 
   it('should be able to withdraw ether', async function () {
