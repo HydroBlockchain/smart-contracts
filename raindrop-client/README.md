@@ -14,6 +14,7 @@ Raindrop Client is live on the Rinkeby testnet at [0xE4796EA3f49FFc11cb7e02E1e36
   - Navigate to the `raindrop-client` folder in your terminal
   - Make sure you have Truffle and [Ganache](https://github.com/trufflesuite/ganache-cli) installed: `npm install -g truffle@4.1.5 ganache-cli`
   - Install web3: `npm install web3@1.0.0-beta.33`
+  - Install ethereumjs-util: `npm install ethereumjs-util`
   - Spin up a development blockchain: `ganache-cli --seed hydro`
   - Compile the contracts: `truffle compile`
   - Run the test suite: `truffle test --network ganache`
