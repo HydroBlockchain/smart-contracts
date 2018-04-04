@@ -14,9 +14,9 @@ interface tokenRecipient {
 contract HydroToken is Ownable {
     using SafeMath for uint256;
 
-    string public name = "Hydro";           //The Token's name: e.g. DigixDAO Tokens
-    uint8 public decimals = 18;             //Number of decimals of the smallest unit
-    string public symbol = "HYDRO";         //An identifier: e.g. REP
+    string public name = "Hydro";          // The token's name
+    uint8 public decimals = 18;            // Number of decimals of the smallest unit
+    string public symbol = "HYDRO";        // An identifier
     uint public totalSupply;
     address public raindropAddress = 0x0;
 
