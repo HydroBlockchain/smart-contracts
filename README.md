@@ -3,7 +3,7 @@
 
 [Project Hydro](http://www.projecthydro.com) enables developers to seamlessly deploy blockchain in their existing applications, without the need to create expensive infrastructure. We're at the cutting edge of fintech, and we're excited to have you involved!
 
-## Why You're Here
+## Overview
 This repository contains the code that powers Hydro. We've completely open-sourced all of our smart contracts, and written comprehensive test suites to ensure that they're air-tight. We've also included some best-practice sample code for programmatic interactions with our contracts. Current projects include:
 
 - [hydro-token-and-raindrop-enterprise](./hydro-token-and-raindrop-enterprise): Hydro Token and Raindrop Enterprise
