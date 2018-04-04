@@ -4,11 +4,14 @@
 ## Introduction
 The Hydro Smart Contract is open source blockchain software developed by [Project Hydro](http://www.projecthydro.com).
 
-[Hydro Token Contract Address](https://etherscan.io/token/0xebbdf302c940c6bfd49c6b165f457fdb324649bc)
-
 ERC-20 tokens are an Ethereum standard. More information can be found [here](https://theethereum.wiki/w/index.php/ERC20_Token_Standard).
 
 Our enterprise raindrop logic is created to work alongside systems like [OAuth](https://en.wikipedia.org/wiki/OAuth) and [JWT](https://en.wikipedia.org/wiki/JSON_Web_Token). It can be used to secure APIs and Databases.
+
+## Contract Addresses
+[Hydro Token Contract](https://etherscan.io/token/0xebbdf302c940c6bfd49c6b165f457fdb324649bc)
+
+[Raindrop Enterprise](https://etherscan.io/address/0xe68225eeaeae795bbfa3cebd1dfe422e1b17ce55)
 
 ## Documentation
 Project Hydro has also created an API to interface with this smart contract:
