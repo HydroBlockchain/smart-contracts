@@ -3,6 +3,9 @@ pragma solidity ^0.4.21;
 import "./StringUtils.sol";
 import "./Withdrawable.sol";
 
+interface HydroToken {
+    function balanceOf(address _owner) external returns (uint256 balance);
+}
 
 contract RaindropClient is Withdrawable {
     // Events for when a user signs up for Raindrop Client and when their account is deleted
@@ -17,6 +20,9 @@ contract RaindropClient is Withdrawable {
     // Fees that unofficial users/applications must pay to sign up for Raindrop Client
     uint public unofficialUserSignUpFee;
     uint public unofficialApplicationSignUpFee;
+
+    address public hydroTokenAddress;
+    uint public hydroStakingMinimum = 0;
 
     // User accounts
     struct User {
@@ -90,6 +96,10 @@ contract RaindropClient is Withdrawable {
         require(msg.value >= unofficialApplicationSignUpFee);
         require(applicationName.allLower());
 
+        HydroToken hydro = HydroToken(hydroTokenAddress);
+        uint256 hydroBalance = hydro.balanceOf(msg.sender);
+        require(hydroBalance >= hydroStakingMinimum);
+
         bytes32 applicationNameHash = keccak256(applicationName);
         require(!applicationNameHashTaken(applicationNameHash, false));
         unofficialApplicationDirectory[applicationNameHash] = Application(applicationName, false, true);
@@ -118,6 +128,14 @@ contract RaindropClient is Withdrawable {
     // Allows the Hydro API to changes the unofficial application fee
     function setUnofficialApplicationSignUpFee(uint newFee) public onlyOwner {
         unofficialApplicationSignUpFee = newFee;
+    }
+
+    function setHydroContractAddress(address _hydroAddress) public onlyOwner {
+        hydroTokenAddress = _hydroAddress;
+    }
+
+    function setHydroStakingMinimum(uint _amount) public onlyOwner {
+        hydroStakingMinimum = _amount;
     }
 
     // Indicates whether a given user name has been claimed

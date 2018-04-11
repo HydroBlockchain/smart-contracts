@@ -5,6 +5,7 @@ const web3 = new Web3(Web3.givenProvider)
 var util = require('ethereumjs-util')
 
 var RaindropClient = artifacts.require('./RaindropClient.sol')
+var HydroToken = artifacts.require('./HydroToken.sol')
 
 contract('RaindropClient', function (accounts) {
   const owner = {
@@ -39,10 +40,16 @@ contract('RaindropClient', function (accounts) {
   const applicationFee = web3.utils.toWei('1', 'ether')
 
   var instance
+  var hydroInstance
 
   it('raindrop client deployed', async function () {
     instance = await RaindropClient.new({from: owner.public})
   })
+
+  it('hydro deployed', async function () {
+    hydroInstance = await HydroToken.new({from: owner.public});
+    await instance.setHydroContractAddress(hydroInstance.address, {from: owner.public})
+  });
 
   it('sign up fees are settable', async function () {
     await instance.setUnofficialUserSignUpFee(userFee, {from: owner.public})
