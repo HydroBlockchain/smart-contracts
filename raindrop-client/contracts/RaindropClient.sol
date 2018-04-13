@@ -3,9 +3,11 @@ pragma solidity ^0.4.21;
 import "./StringUtils.sol";
 import "./Withdrawable.sol";
 
+
 interface HydroToken {
     function balanceOf(address _owner) external returns (uint256 balance);
 }
+
 
 contract RaindropClient is Withdrawable {
     // Events for when a user signs up for Raindrop Client and when their account is deleted
@@ -22,7 +24,7 @@ contract RaindropClient is Withdrawable {
     uint public unofficialApplicationSignUpFee;
 
     address public hydroTokenAddress;
-    uint public hydroStakingMinimum = 0;
+    uint public hydroStakingMinimum;
 
     // User accounts
     struct User {
@@ -130,12 +132,14 @@ contract RaindropClient is Withdrawable {
         unofficialApplicationSignUpFee = newFee;
     }
 
-    function setHydroContractAddress(address _hydroAddress) public onlyOwner {
-        hydroTokenAddress = _hydroAddress;
+    // Allows the Hydro API to link to the Hydro token
+    function setHydroContractAddress(address _hydroTokenAddress) public onlyOwner {
+        hydroTokenAddress = _hydroTokenAddress;
     }
 
-    function setHydroStakingMinimum(uint _amount) public onlyOwner {
-        hydroStakingMinimum = _amount;
+    // Allows the Hydro API to set a minimum hydro balance required to register unofficially
+    function setHydroStakingMinimum(uint newMinimum) public onlyOwner {
+        hydroStakingMinimum = newMinimum;
     }
 
     // Indicates whether a given user name has been claimed
