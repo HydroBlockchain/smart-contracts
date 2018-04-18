@@ -1,200 +1,136 @@
 pragma solidity ^0.4.21;
 
-import "./StringUtils.sol";
 import "./Withdrawable.sol";
-
-
-interface HydroToken {
-    function balanceOf(address _owner) external returns (uint256 balance);
-}
-
 
 contract RaindropClient is Withdrawable {
     // Events for when a user signs up for Raindrop Client and when their account is deleted
-    event UserSignUp(string userName, address userAddress, bool official);
-    event UserDeleted(string userName, address userAddress, bool official);
-    // Events for when an application signs up for Raindrop Client and when their account is deleted
-    event ApplicationSignUp(string applicationName, bool official);
-    event ApplicationDeleted(string applicationName, bool official);
-
-    using StringUtils for string;
-
-    // Fees that unofficial users/applications must pay to sign up for Raindrop Client
-    uint public unofficialUserSignUpFee;
-    uint public unofficialApplicationSignUpFee;
+    event UserSignUp(string userName, address userAddress, bool delegated);
+    event UserDeleted(string userName);
 
     address public hydroTokenAddress;
-    uint public hydroStakingMinimum;
+    uint public minimumHydroStakeUser;
+    uint public minimumHydroStakeDelegatedUser;
 
     // User accounts
     struct User {
         string userName;
         address userAddress;
-        bool official;
+        bool delegated;
         bool _initialized;
     }
 
-    // Application accounts
-    struct Application {
-        string applicationName;
-        bool official;
-        bool _initialized;
-    }
-
-    // Internally, users and applications are identified by the hash of their names
+    // Mapping from hashed names to Users (primary User directory)
     mapping (bytes32 => User) internal userDirectory;
-    mapping (bytes32 => Application) internal officialApplicationDirectory;
-    mapping (bytes32 => Application) internal unofficialApplicationDirectory;
+    // Mapping from addresses to hashed names (secondary directory for account recovery based on address)
+    mapping (address => bytes32) internal nameDirectory;
 
-    // Allows the Hydro API to sign up official users with their app-generated address
-    function officialUserSignUp(string userName, address userAddress) public onlyOwner {
+    // Requires an address to have a certain number of Hydro
+    modifier requireStake(address _address, uint stake) {
+        ERC20Basic hydro = ERC20Basic(hydroTokenAddress);
+        require(hydro.balanceOf(_address) >= stake);
+        _;
+    }
+
+    // Allows application to sign up users on their behalf iff users signed keccak256("Create Hydro Account")
+    function signUpDelegatedUser(string userName, address userAddress, uint8 v, bytes32 r, bytes32 s)
+        public
+        requireStake(msg.sender, minimumHydroStakeDelegatedUser)
+    {
+        require(isSigned(userAddress, keccak256("Create RaindropClient Hydro Account"), v, r, s));
         _userSignUp(userName, userAddress, true);
     }
 
-    // Allows anyone to sign up as an unofficial user with their own address
-    function unofficialUserSignUp(string userName) public payable {
-        require(bytes(userName).length < 100);
-        require(msg.value >= unofficialUserSignUpFee);
-
+    // Allows users to sign up with their own address
+    function signUpUser(string userName) public requireStake(msg.sender, minimumHydroStakeUser) {
         return _userSignUp(userName, msg.sender, false);
     }
 
-    // Allows the Hydro API to delete official users iff they've signed keccak256("Delete") with their private key
-    function deleteUserForUser(string userName, uint8 v, bytes32 r, bytes32 s) public onlyOwner {
-        bytes32 userNameHash = keccak256(userName);
-        require(userNameHashTaken(userNameHash));
-        address userAddress = userDirectory[userNameHash].userAddress;
-        require(isSigned(userAddress, keccak256("Delete"), v, r, s));
+    // Allows users to delete their accounts
+    function deleteUser() public {
+        bytes32 userNameHash = nameDirectory[msg.sender];
+        require(userDirectory[userNameHash]._initialized);
 
+        string memory userName = userDirectory[userNameHash].userName;
+
+        delete nameDirectory[msg.sender];
         delete userDirectory[userNameHash];
 
-        emit UserDeleted(userName, userAddress, true);
-    }
-
-    // Allows unofficial users to delete their account
-    function deleteUser(string userName) public {
-        bytes32 userNameHash = keccak256(userName);
-        require(userNameHashTaken(userNameHash));
-        address userAddress = userDirectory[userNameHash].userAddress;
-        require(userAddress == msg.sender);
-
-        delete userDirectory[userNameHash];
-
-        emit UserDeleted(userName, userAddress, true);
-    }
-
-    // Allows the Hydro API to sign up official applications
-    function officialApplicationSignUp(string applicationName) public onlyOwner {
-        bytes32 applicationNameHash = keccak256(applicationName);
-        require(!applicationNameHashTaken(applicationNameHash, true));
-        officialApplicationDirectory[applicationNameHash] = Application(applicationName, true, true);
-
-        emit ApplicationSignUp(applicationName, true);
-    }
-
-    // Allows anyone to sign up as an unofficial application
-    function unofficialApplicationSignUp(string applicationName) public payable {
-        require(bytes(applicationName).length < 100);
-        require(msg.value >= unofficialApplicationSignUpFee);
-        require(applicationName.allLower());
-
-        HydroToken hydro = HydroToken(hydroTokenAddress);
-        uint256 hydroBalance = hydro.balanceOf(msg.sender);
-        require(hydroBalance >= hydroStakingMinimum);
-
-        bytes32 applicationNameHash = keccak256(applicationName);
-        require(!applicationNameHashTaken(applicationNameHash, false));
-        unofficialApplicationDirectory[applicationNameHash] = Application(applicationName, false, true);
-
-        emit ApplicationSignUp(applicationName, false);
-    }
-
-    // Allows the Hydro API to delete applications unilaterally
-    function deleteApplication(string applicationName, bool official) public onlyOwner {
-        bytes32 applicationNameHash = keccak256(applicationName);
-        require(applicationNameHashTaken(applicationNameHash, official));
-        if (official) {
-            delete officialApplicationDirectory[applicationNameHash];
-        } else {
-            delete unofficialApplicationDirectory[applicationNameHash];
-        }
-
-        emit ApplicationDeleted(applicationName, official);
-    }
-
-    // Allows the Hydro API to changes the unofficial user fee
-    function setUnofficialUserSignUpFee(uint newFee) public onlyOwner {
-        unofficialUserSignUpFee = newFee;
-    }
-
-    // Allows the Hydro API to changes the unofficial application fee
-    function setUnofficialApplicationSignUpFee(uint newFee) public onlyOwner {
-        unofficialApplicationSignUpFee = newFee;
+        emit UserDeleted(userName);
     }
 
     // Allows the Hydro API to link to the Hydro token
-    function setHydroContractAddress(address _hydroTokenAddress) public onlyOwner {
+    function setHydroTokenAddress(address _hydroTokenAddress) public onlyOwner {
         hydroTokenAddress = _hydroTokenAddress;
     }
 
-    // Allows the Hydro API to set a minimum hydro balance required to register unofficially
-    function setHydroStakingMinimum(uint newMinimum) public onlyOwner {
-        hydroStakingMinimum = newMinimum;
+    // Allows the Hydro API to set minimum hydro balances required for sign ups
+    function setMinimumHydroStakes(uint newMinimumHydroStakeUser, uint newMinimumHydroStakeDelegatedUser) public {
+        ERC20Basic hydro = ERC20Basic(hydroTokenAddress);
+        require(newMinimumHydroStakeUser <= (hydro.totalSupply() / 100 / 10)); // <= .1% of total supply
+        require(newMinimumHydroStakeDelegatedUser <= (hydro.totalSupply() / 100)); // <= 1% of total supply
+        minimumHydroStakeUser = newMinimumHydroStakeUser;
+        minimumHydroStakeDelegatedUser = newMinimumHydroStakeDelegatedUser;
     }
 
-    // Indicates whether a given user name has been claimed
+    // Returns a bool indicated whether a given userName has been claimed
     function userNameTaken(string userName) public view returns (bool taken) {
         bytes32 userNameHash = keccak256(userName);
         return userDirectory[userNameHash]._initialized;
     }
 
-    // Indicates whether a given application name has been claimed for official and unofficial applications
-    function applicationNameTaken(string applicationName)
-        public
-        view
-        returns (bool officialTaken, bool unofficialTaken)
-    {
-        bytes32 applicationNameHash = keccak256(applicationName);
-        return (
-            officialApplicationDirectory[applicationNameHash]._initialized,
-            unofficialApplicationDirectory[applicationNameHash]._initialized
-        );
+    // Returns user details by user name
+    function getUserByName(string userName) public view returns (address userAddress, bool delegated) {
+        bytes32 userNameHash = keccak256(userName);
+        User storage _user = userDirectory[userNameHash];
+        require(_user._initialized);
+
+        return (_user.userAddress, _user.delegated);
     }
 
-    // Returns user details by user name
-    function getUserByName(string userName) public view returns (address userAddress, bool official) {
-        bytes32 userNameHash = keccak256(userName);
-        require(userNameHashTaken(userNameHash));
+    // Returns user details by user address
+    function getUserByAddress(address _address) public view returns (string userName, bool delegated) {
+        bytes32 userNameHash = nameDirectory[_address];
         User storage _user = userDirectory[userNameHash];
+        require(_user._initialized);
 
-        return (_user.userAddress, _user.official);
+        return (_user.userName, _user.delegated);
     }
 
     // Checks whether the provided (v, r, s) signature was created by the private key associated with _address
     function isSigned(address _address, bytes32 messageHash, uint8 v, bytes32 r, bytes32 s) public pure returns (bool) {
+        return (_isSigned(_address, messageHash, v, r, s) || _isSignedPrefixed(_address, messageHash, v, r, s));
+    }
+
+    // Checks unprefixed signatures
+    function _isSigned(address _address, bytes32 messageHash, uint8 v, bytes32 r, bytes32 s)
+        internal
+        pure
+        returns (bool)
+    {
         return ecrecover(messageHash, v, r, s) == _address;
     }
 
+    // Checks prefixed signatures (e.g. those created with web3.eth.sign)
+    function _isSignedPrefixed(address _address, bytes32 messageHash, uint8 v, bytes32 r, bytes32 s)
+        internal
+        pure
+        returns (bool)
+    {
+        bytes memory prefix = "\x19Ethereum Signed Message:\n32";
+        bytes32 prefixedMessageHash = keccak256(prefix, messageHash);
+
+        return ecrecover(prefixedMessageHash, v, r, s) == _address;
+    }
+
     // Common internal logic for all user signups
-    function _userSignUp(string userName, address userAddress, bool official) internal {
+    function _userSignUp(string userName, address userAddress, bool delegated) internal {
+        require(bytes(userName).length < 100);
         bytes32 userNameHash = keccak256(userName);
-        require(!userNameHashTaken(userNameHash));
-        userDirectory[userNameHash] = User(userName, userAddress, official, true);
+        require(!userDirectory[userNameHash]._initialized);
 
-        emit UserSignUp(userName, userAddress, official);
-    }
+        userDirectory[userNameHash] = User(userName, userAddress, delegated, true);
+        nameDirectory[userAddress] = userNameHash;
 
-    // Internal check for whether a user name has been taken
-    function userNameHashTaken(bytes32 userNameHash) internal view returns (bool) {
-        return userDirectory[userNameHash]._initialized;
-    }
-
-    // Internal check for whether an application name has been taken
-    function applicationNameHashTaken(bytes32 applicationNameHash, bool official) internal view returns (bool) {
-        if (official) {
-            return officialApplicationDirectory[applicationNameHash]._initialized;
-        } else {
-            return unofficialApplicationDirectory[applicationNameHash]._initialized;
-        }
+        emit UserSignUp(userName, userAddress, delegated);
     }
 }
