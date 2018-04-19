@@ -7,11 +7,12 @@ contract RaindropClient is Withdrawable {
     event UserSignUp(string userName, address userAddress, bool delegated);
     event UserDeleted(string userName);
 
+    // Variables allowing this contract to interact with the Hydro token
     address public hydroTokenAddress;
     uint public minimumHydroStakeUser;
     uint public minimumHydroStakeDelegatedUser;
 
-    // User accounts
+    // User account template
     struct User {
         string userName;
         address userAddress;
@@ -19,19 +20,19 @@ contract RaindropClient is Withdrawable {
         bool _initialized;
     }
 
-    // Mapping from hashed names to Users (primary User directory)
+    // Mapping from hashed names to users (primary User directory)
     mapping (bytes32 => User) internal userDirectory;
     // Mapping from addresses to hashed names (secondary directory for account recovery based on address)
     mapping (address => bytes32) internal nameDirectory;
 
-    // Requires an address to have a certain number of Hydro
+    // Requires an address to have a minimum number of Hydro
     modifier requireStake(address _address, uint stake) {
         ERC20Basic hydro = ERC20Basic(hydroTokenAddress);
         require(hydro.balanceOf(_address) >= stake);
         _;
     }
 
-    // Allows application to sign up users on their behalf iff users signed keccak256("Create Hydro Account")
+    // Allows applications to sign up users on their behalf iff users signed their permission
     function signUpDelegatedUser(string userName, address userAddress, uint8 v, bytes32 r, bytes32 s)
         public
         requireStake(msg.sender, minimumHydroStakeDelegatedUser)
