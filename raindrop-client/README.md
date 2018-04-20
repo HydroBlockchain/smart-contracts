@@ -16,7 +16,7 @@ Unfortunately, message signing in Ethereum is implemented inconsistently across 
 | :white_check_mark: 	| `"123456"` 	| `keccak256("\x19Ethereum Signed Message:\n32", keccak256("123456"))`  |
 | :x:                	| `"123456"` 	| `keccak256("\x19Ethereum Signed Message:\n6123456")`	                |
 
-Notes: Arguments to the outer `keccak256` in the Encoding column are [tightly packed](https://solidity.readthedocs.io/en/latest/search.html?q=tightly+packed). The output of the above encodings are:
+Notes: Arguments to `keccak256` are [tightly packed](https://solidity.readthedocs.io/en/latest/search.html?q=tightly+packed). The output of the above encodings are:
 
 | Output                                                                |
 |---------------------------------------------------------------------- |
