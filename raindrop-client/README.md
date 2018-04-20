@@ -17,11 +17,11 @@ Unfortunately, message signing in Ethereum is implemented inconsistently across 
 | :x:                	| `"123456"` 	| `keccak256("\x19Ethereum Signed Message:\n6123456")`	                |
 
 Note: The output of the above encodings are:
-| Output                                                                 |
-|----------------------------------------------------------------------  |
-| `0xc888c9ce9e098d5864d3ded6ebcc140a12142263bace3a23a36f9905f12bd64a`   |
-| `0x5f7d8a4ff77887137c0e2f0b7f157f4b41bbc2950dbe9453b1342f6d28b820cd`   |
-| `0x2912723b3ed60c075b271f075d881d82fa5de112b6c25f7dfa4cab85de25045a`   |
+| Output                                                                |
+|---------------------------------------------------------------------- |
+| `0xc888c9ce9e098d5864d3ded6ebcc140a12142263bace3a23a36f9905f12bd64a`  |
+| `0x5f7d8a4ff77887137c0e2f0b7f157f4b41bbc2950dbe9453b1342f6d28b820cd`  |
+| `0x2912723b3ed60c075b271f075d881d82fa5de112b6c25f7dfa4cab85de25045a`  |
 
 ## Testing With Truffle
 - This folder has a suite of tests created through [Truffle](https://github.com/trufflesuite/truffle)
