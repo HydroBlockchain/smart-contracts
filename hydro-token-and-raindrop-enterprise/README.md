@@ -24,7 +24,7 @@ Project Hydro has also created an API to interface with this smart contract:
   - Clone this repo: `git clone https://github.com/hydrogen-dev/smart-contracts.git`
   - Navigate to the `hydro-token-and-raindrop-enterprise` folder in your terminal
   - Make sure you have the appropriate Truffle version installed: `npm install -g truffle@4.1.3`
-  - Install web3: `npm install web3@1.0.0-beta.33`
+  - Install web3: `npm install web3@1.0.0-beta.34`
   - `truffle test`
 
 
