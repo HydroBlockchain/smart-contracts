@@ -2,7 +2,32 @@ pragma solidity ^0.4.23;
 
 import "./Withdrawable.sol";
 
-contract Snowflake is Withdrawable {
+
+contract SnowflakeRegistry is Withdrawable {
+    // Encryption key template
+    struct EncryptionKey {
+        bytes key;
+        string keyType;
+    }
+
+    // Application account template
+    struct Application {
+        string applicationName;
+        address applicationAddress;
+        address delegatedAddress;
+        EncryptionKey applicationKey;
+        bool _initialized;
+    }
+
+    // User account template
+    struct User {
+        string userName;
+        address userAddress;
+        bool _initialized;
+    }
+
+    mapping (bytes32 => User) internal userAccounts;
+
     // Events for when a user signs up for Raindrop Client and when their account is deleted
     event UserSignUp(string userName, address userAddress, bool delegated);
     event UserDeleted(string userName);
@@ -12,13 +37,7 @@ contract Snowflake is Withdrawable {
     uint public minimumHydroStakeUser;
     uint public minimumHydroStakeDelegatedUser;
 
-    // User account template
-    struct User {
-        string userName;
-        address userAddress;
-        bool delegated;
-        bool _initialized;
-    }
+
 
     // Mapping from hashed names to users (primary User directory)
     mapping (bytes32 => User) internal userDirectory;
