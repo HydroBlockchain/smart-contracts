@@ -1,6 +1,6 @@
 // start ganache with: ganache-cli --seed hydro --port 8555
 // run tests with: truffle test --network ganache
-const Web3 = require('web3') // 1.0.0-beta.33
+const Web3 = require('web3') // 1.0.0-beta.34
 const web3 = new Web3(Web3.givenProvider || 'http://localhost:8555')
 const util = require('ethereumjs-util')
 
