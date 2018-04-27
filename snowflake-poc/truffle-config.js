@@ -19,4 +19,5 @@ module.exports = {
       gas: gas,
       gasPrice: gasPrice
     }
+  }
 }

@@ -1,156 +1,140 @@
 pragma solidity ^0.4.23;
 
+import "./libraries/BytesLibrary.sol";
+import "./libraries/bytes32Set.sol";
 import "./Withdrawable.sol";
 
 
+// contract raindropClient {}
+
 contract SnowflakeRegistry is Withdrawable {
+    using BytesLib for bytes;
+    using bytes32Set for bytes32Set._bytes32Set;
+
+    // Events for when an application is signed up for Snowflake and when their account is deleted
+    event ApplicationSignUp(string applicationName);
+    event VerifierChanged(string applicationName, address verifierAddress);
+    event ApplicationDeleted(string applicationName);
+    event DataRequested(string applicationName, string userName);
+
+    address public raindropClientAddress;
+    address public hydroRelayerAddress;
+    address public escrowAddress;
+
+    _bytes32Set public supportedFields;
+
     // Encryption key template
     struct EncryptionKey {
-        bytes key;
+        string key;
         string keyType;
+    }
+
+    // Address book template
+    struct AddressBook {
+        address ownerAddress;
+        address relayerAddress;
+        address verifierAddress;
     }
 
     // Application account template
     struct Application {
         string applicationName;
-        address applicationAddress;
-        address delegatedAddress;
-        EncryptionKey applicationKey;
+        AddressBook applicationAddressBook;
+        EncryptionKey applicationEncryptionKey;
         bool _initialized;
     }
-
-    // User account template
-    struct User {
-        string userName;
-        address userAddress;
-        bool _initialized;
-    }
-
-    mapping (bytes32 => User) internal userAccounts;
-
-    // Events for when a user signs up for Raindrop Client and when their account is deleted
-    event UserSignUp(string userName, address userAddress, bool delegated);
-    event UserDeleted(string userName);
-
-    // Variables allowing this contract to interact with the Hydro token
-    address public hydroTokenAddress;
-    uint public minimumHydroStakeUser;
-    uint public minimumHydroStakeDelegatedUser;
-
-
 
     // Mapping from hashed names to users (primary User directory)
-    mapping (bytes32 => User) internal userDirectory;
-    // Mapping from addresses to hashed names (secondary directory for account recovery based on address)
+    mapping (bytes32 => Application) internal applicationDirectory;
+    // Mapping from verifier addresses to applications (secondary application directory)
     mapping (address => bytes32) internal nameDirectory;
 
-    // Requires an address to have a minimum number of Hydro
-    modifier requireStake(address _address, uint stake) {
-        ERC20Basic hydro = ERC20Basic(hydroTokenAddress);
-        require(hydro.balanceOf(_address) >= stake);
-        _;
-    }
+    // users => hashedFields => saltedHashedValues
+    mapping (bytes32 => mapping (bytes32 => bytes32)) internal saltedHashes;
 
-    // Allows applications to sign up users on their behalf iff users signed their permission
-    function signUpDelegatedUser(string userName, address userAddress, uint8 v, bytes32 r, bytes32 s)
-        public
-        requireStake(msg.sender, minimumHydroStakeDelegatedUser)
+    function signUpApplication(
+        string applicationName,
+        address ownedAddress,
+        string key,
+        string keyType
+    )
+    public onlyOwner
     {
-        require(isSigned(userAddress, keccak256("Create RaindropClient Hydro Account"), v, r, s));
-        _userSignUp(userName, userAddress, true);
-    }
-
-    // Allows users to sign up with their own address
-    function signUpUser(string userName) public requireStake(msg.sender, minimumHydroStakeUser) {
-        return _userSignUp(userName, msg.sender, false);
-    }
-
-    // Allows users to delete their accounts
-    function deleteUser() public {
-        bytes32 userNameHash = nameDirectory[msg.sender];
-        require(userDirectory[userNameHash]._initialized);
-
-        string memory userName = userDirectory[userNameHash].userName;
-
-        delete nameDirectory[msg.sender];
-        delete userDirectory[userNameHash];
-
-        emit UserDeleted(userName);
-    }
-
-    // Allows the Hydro API to link to the Hydro token
-    function setHydroTokenAddress(address _hydroTokenAddress) public onlyOwner {
-        hydroTokenAddress = _hydroTokenAddress;
-    }
-
-    // Allows the Hydro API to set minimum hydro balances required for sign ups
-    function setMinimumHydroStakes(uint newMinimumHydroStakeUser, uint newMinimumHydroStakeDelegatedUser) public {
-        ERC20Basic hydro = ERC20Basic(hydroTokenAddress);
-        require(newMinimumHydroStakeUser <= (hydro.totalSupply() / 100 / 10)); // <= .1% of total supply
-        require(newMinimumHydroStakeDelegatedUser <= (hydro.totalSupply() / 100)); // <= 1% of total supply
-        minimumHydroStakeUser = newMinimumHydroStakeUser;
-        minimumHydroStakeDelegatedUser = newMinimumHydroStakeDelegatedUser;
-    }
-
-    // Returns a bool indicated whether a given userName has been claimed
-    function userNameTaken(string userName) public view returns (bool taken) {
-        bytes32 userNameHash = keccak256(userName);
-        return userDirectory[userNameHash]._initialized;
-    }
-
-    // Returns user details by user name
-    function getUserByName(string userName) public view returns (address userAddress, bool delegated) {
-        bytes32 userNameHash = keccak256(userName);
-        User storage _user = userDirectory[userNameHash];
-        require(_user._initialized);
-
-        return (_user.userAddress, _user.delegated);
-    }
-
-    // Returns user details by user address
-    function getUserByAddress(address _address) public view returns (string userName, bool delegated) {
-        bytes32 userNameHash = nameDirectory[_address];
-        User storage _user = userDirectory[userNameHash];
-        require(_user._initialized);
-
-        return (_user.userName, _user.delegated);
-    }
-
-    // Checks whether the provided (v, r, s) signature was created by the private key associated with _address
-    function isSigned(address _address, bytes32 messageHash, uint8 v, bytes32 r, bytes32 s) public pure returns (bool) {
-        return (_isSigned(_address, messageHash, v, r, s) || _isSignedPrefixed(_address, messageHash, v, r, s));
-    }
-
-    // Checks unprefixed signatures
-    function _isSigned(address _address, bytes32 messageHash, uint8 v, bytes32 r, bytes32 s)
-        internal
-        pure
-        returns (bool)
-    {
-        return ecrecover(messageHash, v, r, s) == _address;
-    }
-
-    // Checks prefixed signatures (e.g. those created with web3.eth.sign)
-    function _isSignedPrefixed(address _address, bytes32 messageHash, uint8 v, bytes32 r, bytes32 s)
-        internal
-        pure
-        returns (bool)
-    {
-        bytes memory prefix = "\x19Ethereum Signed Message:\n32";
-        bytes32 prefixedMessageHash = keccak256(prefix, messageHash);
-
-        return ecrecover(prefixedMessageHash, v, r, s) == _address;
-    }
-
-    // Common internal logic for all user signups
-    function _userSignUp(string userName, address userAddress, bool delegated) internal {
-        require(bytes(userName).length < 100);
-        bytes32 userNameHash = keccak256(userName);
-        require(!userDirectory[userNameHash]._initialized);
+        require(bytes(applicationName).length < 100);
+        bytes32 applicationNameHash = keccak256(applicationName);
+        require(!applicationDirectory[applicationNameHash]._initialized);
 
         userDirectory[userNameHash] = User(userName, userAddress, delegated, true);
         nameDirectory[userAddress] = userNameHash;
 
-        emit UserSignUp(userName, userAddress, delegated);
+        applicationAccounts[keccak256(applicationName)] = Application(
+            applicationName,
+            AddressBook(
+                ownedAddress,
+                ownedAddress
+            ),
+            EncryptionKey(
+                key,
+                keyType
+            ),
+            true
+        );
+
+        emit ApplicationSignUp(applicationName);
     }
+
+    function designateVerifier(bytes32 applicationNameHash, address verifierAddress) public onlyOwner {
+        Application application = applicationDirectory[applicationNameHash];
+        require(application._initialized);
+        application.addressEntry.verifierAddress = verifierAddress;
+    }
+
+    function getApplication(string applicationName) public returns (
+        address ownedAddress,
+        address verifierAddress,
+        string key,
+        string keyType
+    )
+    {
+        bytes32 applicationNameHash = keccak256(applicationName);
+        Application application = applicationDirectory[applicationNameHash];
+        require(application._initialized);
+
+        return (
+            application.applicationAddressEntry.ownedAddress,
+            application.applicationAddressEntry.verifierAddress,
+            application.applicationEncryptionKey.key,
+            application.applicationEncryptionKey.keyType,
+        );
+    }
+
+    function deleteApplication(bytes32 applicationNameHash) public onlyOwner {
+        require(applicationDirectory[applicationNameHash]._initialized);
+        delete applicationDirectory[applicationNameHash];
+    }
+
+    function updateAddresses(address _raindropClientAddress, address _hydroRelayerAddress, address _escrowAddress)
+    public onlyOwner
+    {
+        raindropClientAddress = _raindropClientAddress;
+        hydroRelayerAddress = _hydroRelayerAddress;
+        escrowAddress = _escrowAddress;
+    }
+
+    function addSupportedField(bytes32 fieldName) public {
+        supportedFields.push(fieldName);
+    }
+
+    /* function requestData(bytes32[] fieldNames, string userName) public {
+        emit DataRequested(string applicationName, string userName);
+    } */
+
+    /* function receiveApproval(address _from, uint256 _value, address _token, bytes _extraData) {
+        _extraData
+    } */
+
+    /* function parseFields() internal {
+        bytes memory slice1 = memBytes.slice(0, 2);
+        bytes memory slice2 = memBytes.slice(2, 2);
+    } */
 }
