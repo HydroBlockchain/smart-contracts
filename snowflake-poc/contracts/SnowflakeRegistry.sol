@@ -5,28 +5,52 @@ import "./libraries/bytes32Set.sol";
 import "./Withdrawable.sol";
 
 
-// contract raindropClient {}
+contract RaindropClient {
+    // Returns a bool indicated whether a given userName has been claimed
+    function userNameTaken(string userName) public view returns (bool taken);
+    // Returns user details by user name
+    function getUserByName(string userName) public view returns (address userAddress, bool delegated);
+    // Returns user details by user address
+    function getUserByAddress(address _address) public view returns (string userName, bool delegated);
+}
+
+
+contract SnowflakeEscrow {
+    function initiateEscrow(address _application, address _user, address _relayer, address _validator, uint _amount_)
+        public returns(uint escrowId);
+
+    function closeEscrow(uint _escrowId) public;
+
+    function cancelEscrow(uint _escrowId) public;
+}
+
 
 contract SnowflakeRegistry is Withdrawable {
-    using BytesLib for bytes;
+    using BytesLibrary for bytes;
     using bytes32Set for bytes32Set._bytes32Set;
 
     // Events for when an application is signed up for Snowflake and when their account is deleted
     event ApplicationSignUp(string applicationName);
-    event VerifierChanged(string applicationName, address verifierAddress);
-    event ApplicationDeleted(string applicationName);
-    event DataRequested(string applicationName, string userName);
+    event DataRequested(string applicationName, string userName, bytes32[] dataFields);
 
-    address public raindropClientAddress;
-    address public hydroRelayerAddress;
     address public escrowAddress;
+    address public hydroTokenAddress;
+    address public raindropClientAddress;
 
-    _bytes32Set public supportedFields;
+    uint public dataRequestFee;
+
+    bytes32Set._bytes32Set internal supportedKeyTypes;
+    mapping (bytes32 => string) internal keyNames;
+
+    bytes32Set._bytes32Set internal supportedDataFields;
+    mapping (bytes32 => string) internal dataFieldNames;
+    // hydro userNames => dataFields => saltedHashedValues
+    mapping (bytes32 => mapping (bytes32 => bytes32)) internal userSaltedHashes;
 
     // Encryption key template
     struct EncryptionKey {
         string key;
-        string keyType;
+        bytes32 keyType;
     }
 
     // Address book template
@@ -44,97 +68,212 @@ contract SnowflakeRegistry is Withdrawable {
         bool _initialized;
     }
 
-    // Mapping from hashed names to users (primary User directory)
+    // Mapping from hashed names to applications (primary application directory)
     mapping (bytes32 => Application) internal applicationDirectory;
-    // Mapping from verifier addresses to applications (secondary application directory)
-    mapping (address => bytes32) internal nameDirectory;
+    // Mapping from owner addresses to applications (secondary application directory)
+    mapping (address => bytes32) internal ownerAddressLookup;
 
-    // users => hashedFields => saltedHashedValues
-    mapping (bytes32 => mapping (bytes32 => bytes32)) internal saltedHashes;
+    // users to applications to escrow IDs
+    mapping (bytes32 => mapping (bytes32 => uint)) internal escrowIds;
 
     function signUpApplication(
         string applicationName,
-        address ownedAddress,
+        address ownerAddress,
+        address relayerAddress,
+        address verifierAddress,
         string key,
         string keyType
     )
-    public onlyOwner
+        public onlyOwner
     {
         require(bytes(applicationName).length < 100);
         bytes32 applicationNameHash = keccak256(applicationName);
-        require(!applicationDirectory[applicationNameHash]._initialized);
+        require(!applicationDirectory[applicationNameHash]._initialized, "Application already exists.");
 
-        userDirectory[userNameHash] = User(userName, userAddress, delegated, true);
-        nameDirectory[userAddress] = userNameHash;
+        require(supportedKeyTypes.contains(keccak256(keyType)), "Passed keyType is not supported.");
 
-        applicationAccounts[keccak256(applicationName)] = Application(
+        applicationDirectory[applicationNameHash] = Application(
             applicationName,
             AddressBook(
-                ownedAddress,
-                ownedAddress
+                ownerAddress,
+                relayerAddress,
+                verifierAddress
             ),
             EncryptionKey(
                 key,
-                keyType
+                keccak256(keyType)
             ),
             true
         );
+        ownerAddressLookup[ownerAddress] = applicationNameHash;
 
         emit ApplicationSignUp(applicationName);
     }
 
-    function designateVerifier(bytes32 applicationNameHash, address verifierAddress) public onlyOwner {
-        Application application = applicationDirectory[applicationNameHash];
-        require(application._initialized);
-        application.addressEntry.verifierAddress = verifierAddress;
+    function modifyApplicationAddresses(
+        bytes32 applicationNameHash,
+        address ownerAddress,
+        address relayerAddress,
+        address verifierAddress
+    )
+        public onlyOwner
+    {
+        Application storage application = applicationDirectory[applicationNameHash];
+        require(application._initialized, "Application does not exist.");
+        application.applicationAddressBook.ownerAddress = ownerAddress;
+        ownerAddressLookup[ownerAddress] = applicationNameHash;
+        application.applicationAddressBook.relayerAddress = relayerAddress;
+        application.applicationAddressBook.verifierAddress = verifierAddress;
     }
 
-    function getApplication(string applicationName) public returns (
-        address ownedAddress,
+    function getApplication(string applicationName) public view returns (
+        address ownerAddress,
+        address relayerAddress,
         address verifierAddress,
         string key,
         string keyType
     )
     {
         bytes32 applicationNameHash = keccak256(applicationName);
-        Application application = applicationDirectory[applicationNameHash];
-        require(application._initialized);
+        Application storage application = applicationDirectory[applicationNameHash];
+        require(application._initialized, "Application does not exist.");
 
         return (
-            application.applicationAddressEntry.ownedAddress,
-            application.applicationAddressEntry.verifierAddress,
+            application.applicationAddressBook.ownerAddress,
+            application.applicationAddressBook.relayerAddress,
+            application.applicationAddressBook.verifierAddress,
             application.applicationEncryptionKey.key,
-            application.applicationEncryptionKey.keyType,
+            keyNames[application.applicationEncryptionKey.keyType]
         );
     }
 
     function deleteApplication(bytes32 applicationNameHash) public onlyOwner {
-        require(applicationDirectory[applicationNameHash]._initialized);
+        require(applicationDirectory[applicationNameHash]._initialized, "Application does not exist.");
         delete applicationDirectory[applicationNameHash];
     }
 
-    function updateAddresses(address _raindropClientAddress, address _hydroRelayerAddress, address _escrowAddress)
-    public onlyOwner
+    function addKeyType(string keyType) public onlyOwner {
+        bytes32 keyTypeHash = keccak256(keyType);
+        supportedKeyTypes.insert(keyTypeHash);
+        keyNames[keyTypeHash] = keyType;
+    }
+
+    function addDataField(string dataFieldName) public onlyOwner {
+        bytes32 dataFieldNameHash = keccak256(dataFieldName);
+        supportedDataFields.insert(dataFieldNameHash);
+        dataFieldNames[dataFieldNameHash] = dataFieldName;
+    }
+
+    function setDataRequestFee(uint fee) public onlyOwner {
+        dataRequestFee = fee;
+    }
+
+    function modifyContractAddresses(
+        address _escrowAddress,
+        address _hydroTokenAddress,
+        address _raindropClientAddress
+    )
+        public onlyOwner
     {
-        raindropClientAddress = _raindropClientAddress;
-        hydroRelayerAddress = _hydroRelayerAddress;
         escrowAddress = _escrowAddress;
+        hydroTokenAddress = _hydroTokenAddress;
+        raindropClientAddress = _raindropClientAddress;
     }
 
-    function addSupportedField(bytes32 fieldName) public {
-        supportedFields.push(fieldName);
+    function addDataDelegated(address userAddress, string userName, bytes32[] dataFields, bytes32[] saltedHashes)
+        public onlyOwner
+    {
+        _addData(userAddress, userName, dataFields, saltedHashes);
     }
 
-    /* function requestData(bytes32[] fieldNames, string userName) public {
-        emit DataRequested(string applicationName, string userName);
-    } */
+    function addData(string userName, bytes32[] dataFields, bytes32[] saltedHashes) public {
+        _addData(msg.sender, userName, dataFields, saltedHashes);
+    }
 
-    /* function receiveApproval(address _from, uint256 _value, address _token, bytes _extraData) {
-        _extraData
-    } */
+    function _addData(address userAddress, string userName, bytes32[] dataFields, bytes32[] saltedHashes)
+        internal
+    {
+        require(dataFields.length == saltedHashes.length, "Malformed inputs.");
+        RaindropClient raindropClient = RaindropClient(raindropClientAddress);
+        address raindropClientUserAddress;
+        (raindropClientUserAddress, ) = raindropClient.getUserByName(userName);
+        require(raindropClientUserAddress == userAddress, "Incorrect user information");
+        for (uint i = 0; i < dataFields.length; i++) {
+            require(supportedDataFields.contains(dataFields[i]), "Unsupported data field.");
+            userSaltedHashes[keccak256(userName)][dataFields[i]] = saltedHashes[i];
+        }
+    }
 
-    /* function parseFields() internal {
-        bytes memory slice1 = memBytes.slice(0, 2);
-        bytes memory slice2 = memBytes.slice(2, 2);
-    } */
+    // the application's verifier is the one that must call this
+    function receiveApproval(address _from, uint _value, address _token, bytes _extraData) public {
+        require(_token == hydroTokenAddress, "Function call not generated from the HYDRO token");
+        require(_value >= dataRequestFee, "Insufficient data request fee.");
+        address ownerAddress;
+        address userAddress;
+        bytes32[] memory dataFields;
+        (ownerAddress, userAddress, dataFields) = parseFields(_extraData);
+
+        requestData(_from, ownerAddress, userAddress, _value, dataFields);
+    }
+
+    function requestData(
+        address tokenSender,
+        address ownerAddress,
+        address userAddress,
+        uint amount,
+        bytes32[] dataFields
+    )
+        internal
+    {
+        // make sure the token sender is the passed application's verifier
+        bytes32 applicationNameHash = ownerAddressLookup[ownerAddress];
+        Application storage application = applicationDirectory[applicationNameHash];
+        require(
+            application.applicationAddressBook.verifierAddress == tokenSender,
+            "The token sender is not the verifier of the application."
+        );
+
+        // get the user name from the passed address
+        RaindropClient raindropClient = RaindropClient(raindropClientAddress);
+        string memory userName;
+        (userName, ) = raindropClient.getUserByAddress(userAddress);
+
+        // initiate the escrow
+        SnowflakeEscrow escrow = SnowflakeEscrow(escrowAddress);
+        uint escrowId = escrow.initiateEscrow(
+            ownerAddress, userAddress, application.applicationAddressBook.relayerAddress, tokenSender, amount
+        );
+        escrowIds[keccak256(userName)][applicationNameHash] = escrowId;
+
+        emit DataRequested(application.applicationName, userName, dataFields);
+    }
+
+    function closeEscrow(uint escrowId) public onlyOwner {
+        SnowflakeEscrow escrow = SnowflakeEscrow(escrowAddress);
+        escrow.closeEscrow(escrowId);
+    }
+
+    function cancelEscrow(uint escrowId) public onlyOwner {
+        SnowflakeEscrow escrow = SnowflakeEscrow(escrowAddress);
+        escrow.cancelEscrow(escrowId);
+    }
+
+
+    function parseFields(bytes memory _bytes) internal pure returns (
+        address ownerAddress,
+        address userAddress,
+        bytes32[] memory dataFields
+    )
+    {
+        require((_bytes.length - 40) % 32 == 0, "Malformed bytes.");
+        address _ownerAddress = _bytes.toAddress(0);
+        address _userAddress = _bytes.toAddress(20);
+        uint numberOfFields = (_bytes.length - 40) / 32;
+        bytes32[] memory _dataFields;
+        for (uint i = 0; i < numberOfFields; i++) {
+            dataFields[i] = _bytes.slice(40 + (i * 32), 40 + ((i + 1) * 32)).toBytes32();
+        }
+
+        return (_ownerAddress, _userAddress, _dataFields);
+    }
 }

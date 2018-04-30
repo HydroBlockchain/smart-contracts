@@ -2,8 +2,33 @@
 pragma solidity ^0.4.23;
 
 
-library BytesLib {
-    function slice(bytes _bytes, uint _start, uint _length) internal  pure returns (bytes) {
+library BytesLibrary {
+    function toBytes32(bytes _bytes) internal pure returns (bytes32) {
+        if (_bytes.length == 0) {
+            return 0x0;
+        }
+
+        bytes32 tempBytes;
+
+        assembly {
+            tempBytes := mload(add(_bytes, 32))
+        }
+
+        return tempBytes;
+    }
+
+    function toAddress(bytes _bytes, uint _start) internal pure returns (address) {
+        require(_bytes.length >= (_start + 20));
+        address tempAddress;
+
+        assembly {
+            tempAddress := div(mload(add(add(_bytes, 0x20), _start)), 0x1000000000000000000000000)
+        }
+
+        return tempAddress;
+    }
+
+    function slice(bytes _bytes, uint _start, uint _length) internal pure returns (bytes) {
         require(_bytes.length >= (_start + _length));
 
         bytes memory tempBytes;
