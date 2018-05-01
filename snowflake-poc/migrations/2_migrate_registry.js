@@ -1,7 +1,7 @@
-const registry = artifacts.require('./SnowflakeRegistry')
+const registry = artifacts.require('./SnowflakeRegistry.sol')
 
-const bytes32Set = artifacts.require('./libraries/bytes32Set')
-const BytesLibrary = artifacts.require('./libraries/BytesLibrary')
+const bytes32Set = artifacts.require('./libraries/bytes32Set.sol')
+const BytesLibrary = artifacts.require('./libraries/BytesLibrary.sol')
 
 module.exports = function (deployer) {
   deployer.deploy(bytes32Set)

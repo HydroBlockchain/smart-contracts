@@ -1,9 +1,9 @@
 pragma solidity ^0.4.23;
 
-import "./zeppelin/ownership/Ownable.sol";
-import "./zeppelin/token/ERC20/ERC20Basic.sol";
+import "./Withdrawable.sol";
 
-contract SnowflakeEscrow is Ownable {
+
+contract SnowflakeEscrow is Withdrawable {
     event EscrowCreated(uint id, address application, address user, uint amount);
     event EscrowClosed(uint id, address application, address user, uint amount);
     event EscrowCanceled(uint id, address application, address user, uint amount);
@@ -25,7 +25,7 @@ contract SnowflakeEscrow is Ownable {
     uint public relayerPercent;
     uint public validatorPercent;
 
-    Escrow[] public escrowList;
+    Escrow[] internal escrowList;
 
     function setUserPercent(uint _percent) public onlyOwner {
         userPercent = _percent;
