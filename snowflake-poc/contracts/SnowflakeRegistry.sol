@@ -6,13 +6,13 @@ import "./libraries/bytesLibrary.sol";
 import "./libraries/bytes32Set.sol";
 
 
-interface RaindropClient {
+contract RaindropClient {
     function userNameTaken(string userName) external view returns (bool taken);
     function getUserByName(string userName) external view returns (address userAddress, bool delegated);
     function getUserByAddress(address _address) external view returns (string userName, bool delegated);
 }
 
-interface SnowflakeEscrow {
+contract SnowflakeEscrow {
     function initiateEscrow(
         address _application,
         address _user,
@@ -109,7 +109,7 @@ contract SnowflakeRegistry is Withdrawable {
         emit ApplicationSignUp(applicationName);
     }
 
-    function modifyApplicationAddresses(
+    function setApplicationAddresses(
         bytes32 applicationNameHash,
         address ownerAddress,
         address relayerAddress,
@@ -165,7 +165,7 @@ contract SnowflakeRegistry is Withdrawable {
         dataFieldNames[dataFieldNameHash] = dataFieldName;
     }
 
-    function modifyContractAddresses(
+    function setContractAddresses(
         address _escrowAddress,
         address _hydroTokenAddress,
         address _raindropClientAddress

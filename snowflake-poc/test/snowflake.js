@@ -2,11 +2,12 @@ const keyUtils = require('./keyUtils')
 const Web3 = require('web3') // 1.0.0-beta.34
 const web3 = new Web3(Web3.givenProvider || 'http://localhost:8555')
 
-const SnowflakeRegistry = artifacts.require('./SnowflakeRegistry.sol')
 const HydroToken = artifacts.require('./_testing/HydroToken.sol')
+const SnowflakeEscrow = artifacts.require('./SnowflakeEscrow.sol')
+const SnowflakeRegistry = artifacts.require('./SnowflakeRegistry.sol')
 const RaindropClient = artifacts.require('./_testing/RaindropClient.sol')
 
-contract('RaindropClient', function (accounts) {
+contract('Clean Room', function (accounts) {
   const owner = {
     public: accounts[0]
   }
@@ -30,18 +31,24 @@ contract('RaindropClient', function (accounts) {
     name: 'test',
     public: accounts[4],
     Email: 'test@test.test',
-    salt: '1782035713204973210947' // a random # between 0 and 2**256 - 1 inclusive
+    salt: '1782035713204973210947' // a random number between 0 and 2**256 - 1 inclusive
   }
 
   const dataField = 'Email'
+  const keyType = 'RSA-4096'
 
   var keyData
 
   var hydroInstance
+  var escrowInstance
   var raindropInstance
   var snowflakeInstance
 
-  describe('Deployment and Linking', async function () {
+  it('key data loaded', async function () {
+    keyData = await keyUtils.getKeyData()
+  })
+
+  describe('Deploy and prepare testing-only contracts', async function () {
     it('hydro token deployed', async function () {
       hydroInstance = await HydroToken.new({from: owner.public})
     })
@@ -70,25 +77,31 @@ contract('RaindropClient', function (accounts) {
         {from: owner.public}
       )
     })
+  })
 
+  describe('Deploy and prepare snowflake contracts', async function () {
     it('snowflake deployed', async function () {
       snowflakeInstance = await SnowflakeRegistry.new({from: owner.public})
     })
 
-    it('snowflake addresses set', async function () {
-      await snowflakeInstance.modifyContractAddresses(
-        0x0, // add the escrow address once migration stops throwing errors
+    it('escrow deployed', async function () {
+      escrowInstance = await SnowflakeEscrow.new({ from: owner.public })
+    })
+
+    it('snowflake linked', async function () {
+      await snowflakeInstance.setContractAddresses(
+        escrowInstance.address,
         hydroInstance.address,
         raindropInstance.address
       )
     })
 
-    it('key data loaded', async function () {
-      keyData = await keyUtils.getKeyData()
+    it('escrow linked', async function () {
+      await escrowInstance.setContractAddresses(hydroInstance.address, snowflakeInstance.address)
     })
 
     it('key type added', async function () {
-      await snowflakeInstance.addKeyType('RSA-4096')
+      await snowflakeInstance.addKeyType(keyType)
     })
 
     it('data field added', async function () {
@@ -96,7 +109,7 @@ contract('RaindropClient', function (accounts) {
     })
   })
 
-  describe('Functionality', async function () {
+  describe('Test snowflake functionality', async function () {
     it('add application', async function () {
       await snowflakeInstance.signUpApplication(
         application.name,

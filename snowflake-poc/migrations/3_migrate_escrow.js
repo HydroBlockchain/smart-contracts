@@ -1,5 +1,5 @@
-const SnowflakeEscrow = artifacts.require('./SnowflakeEscrow.sol')
+const escrow = artifacts.require('./SnowflakeEscrow')
 
 module.exports = function (deployer) {
-  deployer.deploy(SnowflakeEscrow)
+  deployer.deploy(escrow)
 }

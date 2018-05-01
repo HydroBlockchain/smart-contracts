@@ -3,7 +3,6 @@ pragma solidity ^0.4.23;
 import "./zeppelin/ownership/Ownable.sol";
 import "./zeppelin/token/ERC20/ERC20Basic.sol";
 
-
 contract SnowflakeEscrow is Ownable {
     event EscrowCreated(uint id, address application, address user, uint amount);
     event EscrowClosed(uint id, address application, address user, uint amount);
@@ -18,7 +17,7 @@ contract SnowflakeEscrow is Ownable {
         bool completed;
     }
 
-    address public hydroAddress;
+    address public hydroTokenAddress;
     address public snowflakeAddress;
     uint public balance;
 
@@ -45,12 +44,9 @@ contract SnowflakeEscrow is Ownable {
         _;
     }
 
-    function setSnowflakeAddress(address _address) public onlyOwner {
-        snowflakeAddress = _address;
-    }
-
-    function setHydroAddress(address _address) public onlyOwner {
-        hydroAddress = _address;
+    function setContractAddresses(address _hydroTokenAddress, address _snowflakeAddress) public onlyOwner {
+        hydroTokenAddress = _hydroTokenAddress;
+        snowflakeAddress = _snowflakeAddress;
     }
 
     function initiateEscrow(
@@ -69,7 +65,7 @@ contract SnowflakeEscrow is Ownable {
 
     function closeEscrow(uint _escrowId) public onlySnowflake {
         require(balance >= escrowList[_escrowId].deposit);
-        ERC20Basic hydro = ERC20Basic(hydroAddress);
+        ERC20Basic hydro = ERC20Basic(hydroTokenAddress);
 
         uint userAmount = (escrowList[_escrowId].deposit * userPercent)/100;
         uint relayerAmount = (escrowList[_escrowId].deposit * relayerPercent)/100;
@@ -89,7 +85,7 @@ contract SnowflakeEscrow is Ownable {
     function cancelEscrow(uint _escrowId) public onlySnowflake {
         require(balance >= escrowList[_escrowId].deposit);
 
-        ERC20Basic hydro = ERC20Basic(hydroAddress);
+        ERC20Basic hydro = ERC20Basic(hydroTokenAddress);
         hydro.transfer(escrowList[_escrowId].application, escrowList[_escrowId].deposit);
 
         emit EscrowCanceled(
