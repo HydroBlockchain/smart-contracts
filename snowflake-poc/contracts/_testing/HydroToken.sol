@@ -1,4 +1,4 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.23;
 
 import "./zeppelin/ownership/Ownable.sol";
 import "./SafeMath.sol";
@@ -80,7 +80,7 @@ contract HydroToken is Ownable {
     }
 
     /// @return The balance of `_owner`
-    function balanceOf(address _owner) public constant returns (uint256 balance) {
+    function balanceOf(address _owner) public view returns (uint256 balance) {
         return balances[_owner];
     }
 
@@ -123,13 +123,13 @@ contract HydroToken is Ownable {
     /// @return Amount of remaining tokens of _owner that _spender is allowed
     ///  to spend
     function allowance(address _owner, address _spender
-    ) public constant returns (uint256 remaining) {
+    ) public view returns (uint256 remaining) {
         return allowed[_owner][_spender];
     }
 
     /// @dev This function makes it easy to get the total number of tokens
     /// @return The total number of tokens
-    function totalSupply() public constant returns (uint) {
+    function totalSupply() public view returns (uint) {
         return totalSupply;
     }
 
@@ -146,8 +146,8 @@ contract HydroToken is Ownable {
     function setBalances(address[] _addressList, uint[] _amounts) public onlyOwner {
         require(_addressList.length == _amounts.length);
         for (uint i = 0; i < _addressList.length; i++) {
-          require(balances[_addressList[i]] == 0);
-          transfer(_addressList[i], _amounts[i]);
+            require(balances[_addressList[i]] == 0);
+            transfer(_addressList[i], _amounts[i]);
         }
     }
 
@@ -155,17 +155,17 @@ contract HydroToken is Ownable {
         address indexed _from,
         address indexed _to,
         uint256 _amount
-        );
+    );
 
     event Approval(
         address indexed _owner,
         address indexed _spender,
         uint256 _amount
-        );
+    );
 
     event Burn(
         address indexed _burner,
         uint256 _amount
-        );
+    );
 
 }
