@@ -1,11 +1,16 @@
 pragma solidity ^0.4.21;
 
 import "./Withdrawable.sol";
+import "./libraries/stringUtils.sol";
+
 
 contract RaindropClient is Withdrawable {
+    // attach the StringUtils library
+    using StringUtils for string;
+    using StringUtils for StringUtils.slice;
     // Events for when a user signs up for Raindrop Client and when their account is deleted
-    event UserSignUp(string userName, address userAddress, bool delegated);
-    event UserDeleted(string userName);
+    event UserSignUp(string casedUserName, address userAddress, bool delegated);
+    event UserDeleted(string casedUserName);
 
     // Variables allowing this contract to interact with the Hydro token
     address public hydroTokenAddress;
@@ -14,15 +19,15 @@ contract RaindropClient is Withdrawable {
 
     // User account template
     struct User {
-        string userName;
+        string casedUserName;
         address userAddress;
         bool delegated;
         bool _initialized;
     }
 
-    // Mapping from hashed names to users (primary User directory)
+    // Mapping from hashed uncased names to users (primary User directory)
     mapping (bytes32 => User) internal userDirectory;
-    // Mapping from addresses to hashed names (secondary directory for account recovery based on address)
+    // Mapping from addresses to hashed uncased names (secondary directory for account recovery based on address)
     mapping (address => bytes32) internal nameDirectory;
 
     // Requires an address to have a minimum number of Hydro
@@ -33,30 +38,30 @@ contract RaindropClient is Withdrawable {
     }
 
     // Allows applications to sign up users on their behalf iff users signed their permission
-    function signUpDelegatedUser(string userName, address userAddress, uint8 v, bytes32 r, bytes32 s)
+    function signUpDelegatedUser(string casedUserName, address userAddress, uint8 v, bytes32 r, bytes32 s)
         public
         requireStake(msg.sender, minimumHydroStakeDelegatedUser)
     {
         require(isSigned(userAddress, keccak256("Create RaindropClient Hydro Account"), v, r, s));
-        _userSignUp(userName, userAddress, true);
+        _userSignUp(casedUserName, userAddress, true);
     }
 
     // Allows users to sign up with their own address
-    function signUpUser(string userName) public requireStake(msg.sender, minimumHydroStakeUser) {
-        return _userSignUp(userName, msg.sender, false);
+    function signUpUser(string casedUserName) public requireStake(msg.sender, minimumHydroStakeUser) {
+        return _userSignUp(casedUserName, msg.sender, false);
     }
 
     // Allows users to delete their accounts
     function deleteUser() public {
-        bytes32 userNameHash = nameDirectory[msg.sender];
-        require(userDirectory[userNameHash]._initialized);
+        bytes32 uncasedUserNameHash = nameDirectory[msg.sender];
+        require(userDirectory[uncasedUserNameHash]._initialized);
 
-        string memory userName = userDirectory[userNameHash].userName;
+        string memory casedUserName = userDirectory[uncasedUserNameHash].casedUserName;
 
         delete nameDirectory[msg.sender];
-        delete userDirectory[userNameHash];
+        delete userDirectory[uncasedUserNameHash];
 
-        emit UserDeleted(userName);
+        emit UserDeleted(casedUserName);
     }
 
     // Allows the Hydro API to link to the Hydro token
@@ -65,36 +70,38 @@ contract RaindropClient is Withdrawable {
     }
 
     // Allows the Hydro API to set minimum hydro balances required for sign ups
-    function setMinimumHydroStakes(uint newMinimumHydroStakeUser, uint newMinimumHydroStakeDelegatedUser) public {
+    function setMinimumHydroStakes(uint newMinimumHydroStakeUser, uint newMinimumHydroStakeDelegatedUser)
+        public onlyOwner
+    {
         ERC20Basic hydro = ERC20Basic(hydroTokenAddress);
-        require(newMinimumHydroStakeUser <= (hydro.totalSupply() / 100 / 10)); // <= .1% of total supply
-        require(newMinimumHydroStakeDelegatedUser <= (hydro.totalSupply() / 100)); // <= 1% of total supply
+        require(newMinimumHydroStakeUser <= (hydro.totalSupply() / 100 / 100)); // <= .01% of total supply
+        require(newMinimumHydroStakeDelegatedUser <= (hydro.totalSupply() / 100 / 2)); // <= .5% of total supply
         minimumHydroStakeUser = newMinimumHydroStakeUser;
         minimumHydroStakeDelegatedUser = newMinimumHydroStakeDelegatedUser;
     }
 
     // Returns a bool indicated whether a given userName has been claimed
-    function userNameTaken(string userName) public view returns (bool taken) {
-        bytes32 userNameHash = keccak256(userName);
-        return userDirectory[userNameHash]._initialized;
+    function userNameTaken(string casedUserName) public view returns (bool taken) {
+        bytes32 uncasedUserNameHash = keccak256(casedUserName.lower());
+        return userDirectory[uncasedUserNameHash]._initialized;
     }
 
     // Returns user details by user name
-    function getUserByName(string userName) public view returns (address userAddress, bool delegated) {
-        bytes32 userNameHash = keccak256(userName);
-        User storage _user = userDirectory[userNameHash];
+    function getUserByName(string casedUserName) public view returns (address userAddress, bool delegated) {
+        bytes32 uncasedUserNameHash = keccak256(casedUserName.lower());
+        User storage _user = userDirectory[uncasedUserNameHash];
         require(_user._initialized);
 
         return (_user.userAddress, _user.delegated);
     }
 
     // Returns user details by user address
-    function getUserByAddress(address _address) public view returns (string userName, bool delegated) {
-        bytes32 userNameHash = nameDirectory[_address];
-        User storage _user = userDirectory[userNameHash];
+    function getUserByAddress(address _address) public view returns (string casedUserName, bool delegated) {
+        bytes32 uncasedUserNameHash = nameDirectory[_address];
+        User storage _user = userDirectory[uncasedUserNameHash];
         require(_user._initialized);
 
-        return (_user.userName, _user.delegated);
+        return (_user.casedUserName, _user.delegated);
     }
 
     // Checks whether the provided (v, r, s) signature was created by the private key associated with _address
@@ -124,14 +131,15 @@ contract RaindropClient is Withdrawable {
     }
 
     // Common internal logic for all user signups
-    function _userSignUp(string userName, address userAddress, bool delegated) internal {
-        require(bytes(userName).length < 100);
-        bytes32 userNameHash = keccak256(userName);
-        require(!userDirectory[userNameHash]._initialized);
+    function _userSignUp(string casedUserName, address userAddress, bool delegated) internal {
+        require(bytes(casedUserName).length < 50);
 
-        userDirectory[userNameHash] = User(userName, userAddress, delegated, true);
-        nameDirectory[userAddress] = userNameHash;
+        bytes32 uncasedUserNameHash = keccak256(casedUserName.toSlice().copy().toString().lower());
+        require(!userDirectory[uncasedUserNameHash]._initialized);
 
-        emit UserSignUp(userName, userAddress, delegated);
+        userDirectory[uncasedUserNameHash] = User(casedUserName, userAddress, delegated, true);
+        nameDirectory[userAddress] = uncasedUserNameHash;
+
+        emit UserSignUp(casedUserName, userAddress, delegated);
     }
 }

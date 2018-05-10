@@ -15,7 +15,7 @@ contract('RaindropClient', function (accounts) {
     public: accounts[1]
   }
   const user = {
-    name: 'h4ck3r',
+    name: 'h4ck3R',
     public: accounts[2],
     private: 'ccc3c84f02b038a5d60d93977ab11eb57005f368b5f62dad29486edeb4566954'
   }
@@ -98,9 +98,11 @@ contract('RaindropClient', function (accounts) {
     let userNameTaken = await raindropInstance.userNameTaken(user.name)
     assert.isTrue(userNameTaken, 'user signed up incorrectly')
     let userDetailsByName = await raindropInstance.getUserByName(user.name)
+    console.log(userDetailsByName)
     assert.equal(userDetailsByName[0], user.public, 'user address stored incorrectly')
     assert.equal(userDetailsByName[1], false, 'user delegated status stored incorrectly')
     let userDetailsByAddress = await raindropInstance.getUserByAddress(user.public)
+    console.log(userDetailsByAddress)
     assert.equal(userDetailsByAddress[0], user.name, 'user name stored incorrectly')
     assert.equal(userDetailsByAddress[1], false, 'user delegated status stored incorrectly')
   })

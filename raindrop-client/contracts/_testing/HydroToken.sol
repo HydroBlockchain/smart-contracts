@@ -29,7 +29,7 @@ contract HydroToken is Ownable {
 ////////////////
 
     /// @notice Constructor to create a HydroToken
-    function HydroToken() public {
+    constructor() public {
         totalSupply = 11111111111 * 10**18;
         // Give the creator all initial tokens
         balances[msg.sender] = totalSupply;
