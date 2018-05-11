@@ -1,0 +1,3840 @@
+{
+  "contractName": "bytes32Set",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "self",
+          "type": "bytes32Set._bytes32Set storage"
+        },
+        {
+          "name": "other",
+          "type": "bytes32"
+        }
+      ],
+      "name": "insert",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "self",
+          "type": "bytes32Set._bytes32Set storage"
+        },
+        {
+          "name": "other",
+          "type": "bytes32"
+        }
+      ],
+      "name": "remove",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "self",
+          "type": "bytes32Set._bytes32Set storage"
+        },
+        {
+          "name": "other",
+          "type": "bytes32"
+        }
+      ],
+      "name": "contains",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "self",
+          "type": "bytes32Set._bytes32Set storage"
+        }
+      ],
+      "name": "length",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x6103b0610030600b82828239805160001a6073146000811461002057610022565bfe5b5030600052607381538281f3007300000000000000000000000000000000000000003014608060405260043610610079576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806336c26aef1461007e5780638a620f51146100b95780638ac6ba9a146100ff578063c17764bb1461013a575b600080fd5b81801561008a57600080fd5b506100b760048036038101908080359060200190929190803560001916906020019092919050505061016e565b005b6100e5600480360381019080803590602001909291908035600019169060200190929190505050610252565b604051808215151515815260200191505060405180910390f35b81801561010b57600080fd5b5061013860048036038101908080359060200190929190803560001916906020019092919050505061027c565b005b61015860048036038101908080359060200190929190505050610322565b6040518082815260200191505060405180910390f35b60008061017b8484610252565b1561024c5783600101600084600019166000191681526020019081526020016000205491508360000160016101af86610322565b038154811015156101bc57fe5b906000526020600020015490508084600001600184038154811015156101de57fe5b906000526020600020018160001916905550836000018054809190600190036102079190610333565b50818460010160008360001916600019168152602001908152602001600020819055508360010160008460001916600019168152602001908152602001600020600090555b50505050565b60008083600101600084600019166000191681526020019081526020016000205411905092915050565b6102868282610252565b151561031e577fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff6102b683610322565b1015156102bf57fe5b816000018190806001815401808255809150509060018203906000526020600020016000909192909190915090600019169055506102fc82610322565b8260010160008360001916600019168152602001908152602001600020819055505b5050565b600081600001805490509050919050565b81548183558181111561035a57818360005260206000209182019101610359919061035f565b5b505050565b61038191905b8082111561037d576000816000905550600101610365565b5090565b905600a165627a7a72305820794d94f7a15c47ac268caf0c93f6aff837930be5683f8dc51826ff62d58f79870029",
+  "deployedBytecode": "0x7300000000000000000000000000000000000000003014608060405260043610610079576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806336c26aef1461007e5780638a620f51146100b95780638ac6ba9a146100ff578063c17764bb1461013a575b600080fd5b81801561008a57600080fd5b506100b760048036038101908080359060200190929190803560001916906020019092919050505061016e565b005b6100e5600480360381019080803590602001909291908035600019169060200190929190505050610252565b604051808215151515815260200191505060405180910390f35b81801561010b57600080fd5b5061013860048036038101908080359060200190929190803560001916906020019092919050505061027c565b005b61015860048036038101908080359060200190929190505050610322565b6040518082815260200191505060405180910390f35b60008061017b8484610252565b1561024c5783600101600084600019166000191681526020019081526020016000205491508360000160016101af86610322565b038154811015156101bc57fe5b906000526020600020015490508084600001600184038154811015156101de57fe5b906000526020600020018160001916905550836000018054809190600190036102079190610333565b50818460010160008360001916600019168152602001908152602001600020819055508360010160008460001916600019168152602001908152602001600020600090555b50505050565b60008083600101600084600019166000191681526020019081526020016000205411905092915050565b6102868282610252565b151561031e577fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff6102b683610322565b1015156102bf57fe5b816000018190806001815401808255809150509060018203906000526020600020016000909192909190915090600019169055506102fc82610322565b8260010160008360001916600019168152602001908152602001600020819055505b5050565b600081600001805490509050919050565b81548183558181111561035a57818360005260206000209182019101610359919061035f565b5b505050565b61038191905b8082111561037d576000816000905550600101610365565b5090565b905600a165627a7a72305820794d94f7a15c47ac268caf0c93f6aff837930be5683f8dc51826ff62d58f79870029",
+  "sourceMap": "27:1219:11:-;;132:2:-1;166:7;155:9;146:7;137:37;252:7;246:14;243:1;238:23;232:4;229:33;270:1;265:20;;;;222:63;;265:20;274:9;222:63;;298:9;295:1;288:20;328:4;319:7;311:22;352:7;343;336:24",
+  "deployedSourceMap": "27:1219:11:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;421:560;;8:9:-1;5:2;;;30:1;27;20:12;5:2;421:560:11;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;987:139;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;159:256;;8:9:-1;5:2;;;30:1;27;20:12;5:2;159:256:11;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1132:112;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;421:560;536:17;595:18;499:21;508:4;514:5;499:8;:21::i;:::-;495:480;;;556:4;:18;;:25;575:5;556:25;;;;;;;;;;;;;;;;;;536:45;;616:4;:12;;642:1;629:12;636:4;629:6;:12::i;:::-;:14;616:28;;;;;;;;;;;;;;;;;;595:49;;764:10;733:4;:12;;759:1;746:12;:14;733:28;;;;;;;;;;;;;;;;;:41;;;;;;;788:4;:12;;:21;;;;;;;;;;;;:::i;:::-;;906:12;873:4;:18;;:30;892:10;873:30;;;;;;;;;;;;;;;;;:45;;;;939:4;:18;;:25;958:5;939:25;;;;;;;;;;;;;;;;;932:32;;;495:480;421:560;;;;:::o;987:139::-;1067:4;1118:1;1090:4;:18;;:25;1109:5;1090:25;;;;;;;;;;;;;;;;;;:29;1083:36;;987:139;;;;:::o;159:256::-;238:21;247:4;253:5;238:8;:21::i;:::-;237:22;233:176;;;297:8;282:12;289:4;282:6;:12::i;:::-;:23;275:31;;;;;;320:4;:12;;338:5;320:24;;39:1:-1;33:3;27:10;23:18;57:10;52:3;45:23;79:10;72:17;;0:93;320:24:11;;;;;;;;;;;;;;;;;;;;;;;;;;;386:12;393:4;386:6;:12::i;:::-;358:4;:18;;:25;377:5;358:25;;;;;;;;;;;;;;;;;:40;;;;233:176;159:256;;:::o;1132:112::-;1195:4;1218;:12;;:19;;;;1211:26;;1132:112;;;:::o;27:1219::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o",
+  "source": "pragma solidity ^0.4.23;\n\n\nlibrary bytes32Set {\n    struct _bytes32Set {\n        bytes32[] members;\n        mapping(bytes32 => uint) memberIndices;\n    }\n\n    function insert(_bytes32Set storage self, bytes32 other) public {\n        if (!contains(self, other)) {\n            assert(length(self) < 2**256-1);\n            self.members.push(other);\n            self.memberIndices[other] = length(self);\n        }\n    }\n\n    function remove(_bytes32Set storage self, bytes32 other) public {\n        if (contains(self, other)) {\n            uint replaceIndex = self.memberIndices[other];\n            bytes32 lastMember = self.members[length(self)-1];\n            // overwrite other with the last member and remove last member\n            self.members[replaceIndex-1] = lastMember;\n            self.members.length--;\n            // reflect this change in the indices\n            self.memberIndices[lastMember] = replaceIndex;\n            delete self.memberIndices[other];\n        }\n    }\n\n    function contains(_bytes32Set storage self, bytes32 other) public view returns (bool) {\n        return self.memberIndices[other] > 0;\n    }\n\n    function length(_bytes32Set storage self) public view returns (uint) {\n        return self.members.length;\n    }\n}",
+  "sourcePath": "/Users/noahzinsmeister/Documents/github/smart-contracts/snowflake-poc/contracts/libraries/bytes32Set.sol",
+  "ast": {
+    "absolutePath": "/Users/noahzinsmeister/Documents/github/smart-contracts/snowflake-poc/contracts/libraries/bytes32Set.sol",
+    "exportedSymbols": {
+      "bytes32Set": [
+        2853
+      ]
+    },
+    "id": 2854,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 2707,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".23"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:11"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "library",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 2853,
+        "linearizedBaseContracts": [
+          2853
+        ],
+        "name": "bytes32Set",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "bytes32Set._bytes32Set",
+            "id": 2715,
+            "members": [
+              {
+                "constant": false,
+                "id": 2710,
+                "name": "members",
+                "nodeType": "VariableDeclaration",
+                "scope": 2715,
+                "src": "81:17:11",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_bytes32_$dyn_storage_ptr",
+                  "typeString": "bytes32[]"
+                },
+                "typeName": {
+                  "baseType": {
+                    "id": 2708,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "81:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "id": 2709,
+                  "length": null,
+                  "nodeType": "ArrayTypeName",
+                  "src": "81:9:11",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_bytes32_$dyn_storage_ptr",
+                    "typeString": "bytes32[]"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 2714,
+                "name": "memberIndices",
+                "nodeType": "VariableDeclaration",
+                "scope": 2715,
+                "src": "108:38:11",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_mapping$_t_bytes32_$_t_uint256_$",
+                  "typeString": "mapping(bytes32 => uint256)"
+                },
+                "typeName": {
+                  "id": 2713,
+                  "keyType": {
+                    "id": 2711,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "116:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "nodeType": "Mapping",
+                  "src": "108:24:11",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_mapping$_t_bytes32_$_t_uint256_$",
+                    "typeString": "mapping(bytes32 => uint256)"
+                  },
+                  "valueType": {
+                    "id": 2712,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "127:4:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "_bytes32Set",
+            "nodeType": "StructDefinition",
+            "scope": 2853,
+            "src": "52:101:11",
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 2759,
+              "nodeType": "Block",
+              "src": "223:192:11",
+              "statements": [
+                {
+                  "condition": {
+                    "argumentTypes": null,
+                    "id": 2726,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "UnaryOperation",
+                    "operator": "!",
+                    "prefix": true,
+                    "src": "237:22:11",
+                    "subExpression": {
+                      "argumentTypes": null,
+                      "arguments": [
+                        {
+                          "argumentTypes": null,
+                          "id": 2723,
+                          "name": "self",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 2717,
+                          "src": "247:4:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                            "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                          }
+                        },
+                        {
+                          "argumentTypes": null,
+                          "id": 2724,
+                          "name": "other",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 2719,
+                          "src": "253:5:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": [
+                          {
+                            "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                            "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                          },
+                          {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        ],
+                        "id": 2722,
+                        "name": "contains",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 2840,
+                        "src": "238:8:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_function_internal_view$_t_struct$__bytes32Set_$2715_storage_ptr_$_t_bytes32_$returns$_t_bool_$",
+                          "typeString": "function (struct bytes32Set._bytes32Set storage pointer,bytes32) view returns (bool)"
+                        }
+                      },
+                      "id": 2725,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "kind": "functionCall",
+                      "lValueRequested": false,
+                      "names": [],
+                      "nodeType": "FunctionCall",
+                      "src": "238:21:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bool",
+                        "typeString": "bool"
+                      }
+                    },
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "falseBody": null,
+                  "id": 2758,
+                  "nodeType": "IfStatement",
+                  "src": "233:176:11",
+                  "trueBody": {
+                    "id": 2757,
+                    "nodeType": "Block",
+                    "src": "261:148:11",
+                    "statements": [
+                      {
+                        "expression": {
+                          "argumentTypes": null,
+                          "arguments": [
+                            {
+                              "argumentTypes": null,
+                              "commonType": {
+                                "typeIdentifier": "t_uint256",
+                                "typeString": "uint256"
+                              },
+                              "id": 2736,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "leftExpression": {
+                                "argumentTypes": null,
+                                "arguments": [
+                                  {
+                                    "argumentTypes": null,
+                                    "id": 2729,
+                                    "name": "self",
+                                    "nodeType": "Identifier",
+                                    "overloadedDeclarations": [],
+                                    "referencedDeclaration": 2717,
+                                    "src": "289:4:11",
+                                    "typeDescriptions": {
+                                      "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                      "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                    }
+                                  }
+                                ],
+                                "expression": {
+                                  "argumentTypes": [
+                                    {
+                                      "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                      "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                    }
+                                  ],
+                                  "id": 2728,
+                                  "name": "length",
+                                  "nodeType": "Identifier",
+                                  "overloadedDeclarations": [],
+                                  "referencedDeclaration": 2852,
+                                  "src": "282:6:11",
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_function_internal_view$_t_struct$__bytes32Set_$2715_storage_ptr_$returns$_t_uint256_$",
+                                    "typeString": "function (struct bytes32Set._bytes32Set storage pointer) view returns (uint256)"
+                                  }
+                                },
+                                "id": 2730,
+                                "isConstant": false,
+                                "isLValue": false,
+                                "isPure": false,
+                                "kind": "functionCall",
+                                "lValueRequested": false,
+                                "names": [],
+                                "nodeType": "FunctionCall",
+                                "src": "282:12:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_uint256",
+                                  "typeString": "uint256"
+                                }
+                              },
+                              "nodeType": "BinaryOperation",
+                              "operator": "<",
+                              "rightExpression": {
+                                "argumentTypes": null,
+                                "commonType": {
+                                  "typeIdentifier": "t_rational_115792089237316195423570985008687907853269984665640564039457584007913129639935_by_1",
+                                  "typeString": "int_const 1157...(70 digits omitted)...9935"
+                                },
+                                "id": 2735,
+                                "isConstant": false,
+                                "isLValue": false,
+                                "isPure": true,
+                                "lValueRequested": false,
+                                "leftExpression": {
+                                  "argumentTypes": null,
+                                  "commonType": {
+                                    "typeIdentifier": "t_rational_115792089237316195423570985008687907853269984665640564039457584007913129639936_by_1",
+                                    "typeString": "int_const 1157...(70 digits omitted)...9936"
+                                  },
+                                  "id": 2733,
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": true,
+                                  "lValueRequested": false,
+                                  "leftExpression": {
+                                    "argumentTypes": null,
+                                    "hexValue": "32",
+                                    "id": 2731,
+                                    "isConstant": false,
+                                    "isLValue": false,
+                                    "isPure": true,
+                                    "kind": "number",
+                                    "lValueRequested": false,
+                                    "nodeType": "Literal",
+                                    "src": "297:1:11",
+                                    "subdenomination": null,
+                                    "typeDescriptions": {
+                                      "typeIdentifier": "t_rational_2_by_1",
+                                      "typeString": "int_const 2"
+                                    },
+                                    "value": "2"
+                                  },
+                                  "nodeType": "BinaryOperation",
+                                  "operator": "**",
+                                  "rightExpression": {
+                                    "argumentTypes": null,
+                                    "hexValue": "323536",
+                                    "id": 2732,
+                                    "isConstant": false,
+                                    "isLValue": false,
+                                    "isPure": true,
+                                    "kind": "number",
+                                    "lValueRequested": false,
+                                    "nodeType": "Literal",
+                                    "src": "300:3:11",
+                                    "subdenomination": null,
+                                    "typeDescriptions": {
+                                      "typeIdentifier": "t_rational_256_by_1",
+                                      "typeString": "int_const 256"
+                                    },
+                                    "value": "256"
+                                  },
+                                  "src": "297:6:11",
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_rational_115792089237316195423570985008687907853269984665640564039457584007913129639936_by_1",
+                                    "typeString": "int_const 1157...(70 digits omitted)...9936"
+                                  }
+                                },
+                                "nodeType": "BinaryOperation",
+                                "operator": "-",
+                                "rightExpression": {
+                                  "argumentTypes": null,
+                                  "hexValue": "31",
+                                  "id": 2734,
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": true,
+                                  "kind": "number",
+                                  "lValueRequested": false,
+                                  "nodeType": "Literal",
+                                  "src": "304:1:11",
+                                  "subdenomination": null,
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_rational_1_by_1",
+                                    "typeString": "int_const 1"
+                                  },
+                                  "value": "1"
+                                },
+                                "src": "297:8:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_rational_115792089237316195423570985008687907853269984665640564039457584007913129639935_by_1",
+                                  "typeString": "int_const 1157...(70 digits omitted)...9935"
+                                }
+                              },
+                              "src": "282:23:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_bool",
+                                "typeString": "bool"
+                              }
+                            }
+                          ],
+                          "expression": {
+                            "argumentTypes": [
+                              {
+                                "typeIdentifier": "t_bool",
+                                "typeString": "bool"
+                              }
+                            ],
+                            "id": 2727,
+                            "name": "assert",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 3024,
+                            "src": "275:6:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_function_assert_pure$_t_bool_$returns$__$",
+                              "typeString": "function (bool) pure"
+                            }
+                          },
+                          "id": 2737,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "kind": "functionCall",
+                          "lValueRequested": false,
+                          "names": [],
+                          "nodeType": "FunctionCall",
+                          "src": "275:31:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_tuple$__$",
+                            "typeString": "tuple()"
+                          }
+                        },
+                        "id": 2738,
+                        "nodeType": "ExpressionStatement",
+                        "src": "275:31:11"
+                      },
+                      {
+                        "expression": {
+                          "argumentTypes": null,
+                          "arguments": [
+                            {
+                              "argumentTypes": null,
+                              "id": 2744,
+                              "name": "other",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 2719,
+                              "src": "338:5:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_bytes32",
+                                "typeString": "bytes32"
+                              }
+                            }
+                          ],
+                          "expression": {
+                            "argumentTypes": [
+                              {
+                                "typeIdentifier": "t_bytes32",
+                                "typeString": "bytes32"
+                              }
+                            ],
+                            "expression": {
+                              "argumentTypes": null,
+                              "expression": {
+                                "argumentTypes": null,
+                                "id": 2739,
+                                "name": "self",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 2717,
+                                "src": "320:4:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                  "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                }
+                              },
+                              "id": 2742,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "members",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 2710,
+                              "src": "320:12:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_array$_t_bytes32_$dyn_storage",
+                                "typeString": "bytes32[] storage ref"
+                              }
+                            },
+                            "id": 2743,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "memberName": "push",
+                            "nodeType": "MemberAccess",
+                            "referencedDeclaration": null,
+                            "src": "320:17:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_function_arraypush_nonpayable$_t_bytes32_$returns$_t_uint256_$",
+                              "typeString": "function (bytes32) returns (uint256)"
+                            }
+                          },
+                          "id": 2745,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "kind": "functionCall",
+                          "lValueRequested": false,
+                          "names": [],
+                          "nodeType": "FunctionCall",
+                          "src": "320:24:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "id": 2746,
+                        "nodeType": "ExpressionStatement",
+                        "src": "320:24:11"
+                      },
+                      {
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 2755,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "leftHandSide": {
+                            "argumentTypes": null,
+                            "baseExpression": {
+                              "argumentTypes": null,
+                              "expression": {
+                                "argumentTypes": null,
+                                "id": 2747,
+                                "name": "self",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 2717,
+                                "src": "358:4:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                  "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                }
+                              },
+                              "id": 2750,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "memberIndices",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 2714,
+                              "src": "358:18:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_mapping$_t_bytes32_$_t_uint256_$",
+                                "typeString": "mapping(bytes32 => uint256)"
+                              }
+                            },
+                            "id": 2751,
+                            "indexExpression": {
+                              "argumentTypes": null,
+                              "id": 2749,
+                              "name": "other",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 2719,
+                              "src": "377:5:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_bytes32",
+                                "typeString": "bytes32"
+                              }
+                            },
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": true,
+                            "nodeType": "IndexAccess",
+                            "src": "358:25:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          },
+                          "nodeType": "Assignment",
+                          "operator": "=",
+                          "rightHandSide": {
+                            "argumentTypes": null,
+                            "arguments": [
+                              {
+                                "argumentTypes": null,
+                                "id": 2753,
+                                "name": "self",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 2717,
+                                "src": "393:4:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                  "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                }
+                              }
+                            ],
+                            "expression": {
+                              "argumentTypes": [
+                                {
+                                  "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                  "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                }
+                              ],
+                              "id": 2752,
+                              "name": "length",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 2852,
+                              "src": "386:6:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_function_internal_view$_t_struct$__bytes32Set_$2715_storage_ptr_$returns$_t_uint256_$",
+                                "typeString": "function (struct bytes32Set._bytes32Set storage pointer) view returns (uint256)"
+                              }
+                            },
+                            "id": 2754,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "kind": "functionCall",
+                            "lValueRequested": false,
+                            "names": [],
+                            "nodeType": "FunctionCall",
+                            "src": "386:12:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          },
+                          "src": "358:40:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "id": 2756,
+                        "nodeType": "ExpressionStatement",
+                        "src": "358:40:11"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 2760,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "insert",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2720,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2717,
+                  "name": "self",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2760,
+                  "src": "175:24:11",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                    "typeString": "struct bytes32Set._bytes32Set"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 2716,
+                    "name": "_bytes32Set",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 2715,
+                    "src": "175:11:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                      "typeString": "struct bytes32Set._bytes32Set"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2719,
+                  "name": "other",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2760,
+                  "src": "201:13:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 2718,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "201:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "174:41:11"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 2721,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "223:0:11"
+            },
+            "scope": 2853,
+            "src": "159:256:11",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 2822,
+              "nodeType": "Block",
+              "src": "485:496:11",
+              "statements": [
+                {
+                  "condition": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 2768,
+                        "name": "self",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 2762,
+                        "src": "508:4:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                          "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 2769,
+                        "name": "other",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 2764,
+                        "src": "514:5:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                          "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                        },
+                        {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      ],
+                      "id": 2767,
+                      "name": "contains",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 2840,
+                      "src": "499:8:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_view$_t_struct$__bytes32Set_$2715_storage_ptr_$_t_bytes32_$returns$_t_bool_$",
+                        "typeString": "function (struct bytes32Set._bytes32Set storage pointer,bytes32) view returns (bool)"
+                      }
+                    },
+                    "id": 2770,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "499:21:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "falseBody": null,
+                  "id": 2821,
+                  "nodeType": "IfStatement",
+                  "src": "495:480:11",
+                  "trueBody": {
+                    "id": 2820,
+                    "nodeType": "Block",
+                    "src": "522:453:11",
+                    "statements": [
+                      {
+                        "assignments": [
+                          2772
+                        ],
+                        "declarations": [
+                          {
+                            "constant": false,
+                            "id": 2772,
+                            "name": "replaceIndex",
+                            "nodeType": "VariableDeclaration",
+                            "scope": 2823,
+                            "src": "536:17:11",
+                            "stateVariable": false,
+                            "storageLocation": "default",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            },
+                            "typeName": {
+                              "id": 2771,
+                              "name": "uint",
+                              "nodeType": "ElementaryTypeName",
+                              "src": "536:4:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_uint256",
+                                "typeString": "uint256"
+                              }
+                            },
+                            "value": null,
+                            "visibility": "internal"
+                          }
+                        ],
+                        "id": 2777,
+                        "initialValue": {
+                          "argumentTypes": null,
+                          "baseExpression": {
+                            "argumentTypes": null,
+                            "expression": {
+                              "argumentTypes": null,
+                              "id": 2773,
+                              "name": "self",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 2762,
+                              "src": "556:4:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                              }
+                            },
+                            "id": 2774,
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "memberName": "memberIndices",
+                            "nodeType": "MemberAccess",
+                            "referencedDeclaration": 2714,
+                            "src": "556:18:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_mapping$_t_bytes32_$_t_uint256_$",
+                              "typeString": "mapping(bytes32 => uint256)"
+                            }
+                          },
+                          "id": 2776,
+                          "indexExpression": {
+                            "argumentTypes": null,
+                            "id": 2775,
+                            "name": "other",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 2764,
+                            "src": "575:5:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_bytes32",
+                              "typeString": "bytes32"
+                            }
+                          },
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "nodeType": "IndexAccess",
+                          "src": "556:25:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "nodeType": "VariableDeclarationStatement",
+                        "src": "536:45:11"
+                      },
+                      {
+                        "assignments": [
+                          2779
+                        ],
+                        "declarations": [
+                          {
+                            "constant": false,
+                            "id": 2779,
+                            "name": "lastMember",
+                            "nodeType": "VariableDeclaration",
+                            "scope": 2823,
+                            "src": "595:18:11",
+                            "stateVariable": false,
+                            "storageLocation": "default",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_bytes32",
+                              "typeString": "bytes32"
+                            },
+                            "typeName": {
+                              "id": 2778,
+                              "name": "bytes32",
+                              "nodeType": "ElementaryTypeName",
+                              "src": "595:7:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_bytes32",
+                                "typeString": "bytes32"
+                              }
+                            },
+                            "value": null,
+                            "visibility": "internal"
+                          }
+                        ],
+                        "id": 2788,
+                        "initialValue": {
+                          "argumentTypes": null,
+                          "baseExpression": {
+                            "argumentTypes": null,
+                            "expression": {
+                              "argumentTypes": null,
+                              "id": 2780,
+                              "name": "self",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 2762,
+                              "src": "616:4:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                              }
+                            },
+                            "id": 2781,
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "memberName": "members",
+                            "nodeType": "MemberAccess",
+                            "referencedDeclaration": 2710,
+                            "src": "616:12:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_array$_t_bytes32_$dyn_storage",
+                              "typeString": "bytes32[] storage ref"
+                            }
+                          },
+                          "id": 2787,
+                          "indexExpression": {
+                            "argumentTypes": null,
+                            "commonType": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            },
+                            "id": 2786,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "leftExpression": {
+                              "argumentTypes": null,
+                              "arguments": [
+                                {
+                                  "argumentTypes": null,
+                                  "id": 2783,
+                                  "name": "self",
+                                  "nodeType": "Identifier",
+                                  "overloadedDeclarations": [],
+                                  "referencedDeclaration": 2762,
+                                  "src": "636:4:11",
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                    "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                  }
+                                }
+                              ],
+                              "expression": {
+                                "argumentTypes": [
+                                  {
+                                    "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                    "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                  }
+                                ],
+                                "id": 2782,
+                                "name": "length",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 2852,
+                                "src": "629:6:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_function_internal_view$_t_struct$__bytes32Set_$2715_storage_ptr_$returns$_t_uint256_$",
+                                  "typeString": "function (struct bytes32Set._bytes32Set storage pointer) view returns (uint256)"
+                                }
+                              },
+                              "id": 2784,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "kind": "functionCall",
+                              "lValueRequested": false,
+                              "names": [],
+                              "nodeType": "FunctionCall",
+                              "src": "629:12:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_uint256",
+                                "typeString": "uint256"
+                              }
+                            },
+                            "nodeType": "BinaryOperation",
+                            "operator": "-",
+                            "rightExpression": {
+                              "argumentTypes": null,
+                              "hexValue": "31",
+                              "id": 2785,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "kind": "number",
+                              "lValueRequested": false,
+                              "nodeType": "Literal",
+                              "src": "642:1:11",
+                              "subdenomination": null,
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_rational_1_by_1",
+                                "typeString": "int_const 1"
+                              },
+                              "value": "1"
+                            },
+                            "src": "629:14:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          },
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "nodeType": "IndexAccess",
+                          "src": "616:28:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "nodeType": "VariableDeclarationStatement",
+                        "src": "595:49:11"
+                      },
+                      {
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 2797,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "leftHandSide": {
+                            "argumentTypes": null,
+                            "baseExpression": {
+                              "argumentTypes": null,
+                              "expression": {
+                                "argumentTypes": null,
+                                "id": 2789,
+                                "name": "self",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 2762,
+                                "src": "733:4:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                  "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                }
+                              },
+                              "id": 2794,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "members",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 2710,
+                              "src": "733:12:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_array$_t_bytes32_$dyn_storage",
+                                "typeString": "bytes32[] storage ref"
+                              }
+                            },
+                            "id": 2795,
+                            "indexExpression": {
+                              "argumentTypes": null,
+                              "commonType": {
+                                "typeIdentifier": "t_uint256",
+                                "typeString": "uint256"
+                              },
+                              "id": 2793,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "leftExpression": {
+                                "argumentTypes": null,
+                                "id": 2791,
+                                "name": "replaceIndex",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 2772,
+                                "src": "746:12:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_uint256",
+                                  "typeString": "uint256"
+                                }
+                              },
+                              "nodeType": "BinaryOperation",
+                              "operator": "-",
+                              "rightExpression": {
+                                "argumentTypes": null,
+                                "hexValue": "31",
+                                "id": 2792,
+                                "isConstant": false,
+                                "isLValue": false,
+                                "isPure": true,
+                                "kind": "number",
+                                "lValueRequested": false,
+                                "nodeType": "Literal",
+                                "src": "759:1:11",
+                                "subdenomination": null,
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_rational_1_by_1",
+                                  "typeString": "int_const 1"
+                                },
+                                "value": "1"
+                              },
+                              "src": "746:14:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_uint256",
+                                "typeString": "uint256"
+                              }
+                            },
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": true,
+                            "nodeType": "IndexAccess",
+                            "src": "733:28:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_bytes32",
+                              "typeString": "bytes32"
+                            }
+                          },
+                          "nodeType": "Assignment",
+                          "operator": "=",
+                          "rightHandSide": {
+                            "argumentTypes": null,
+                            "id": 2796,
+                            "name": "lastMember",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 2779,
+                            "src": "764:10:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_bytes32",
+                              "typeString": "bytes32"
+                            }
+                          },
+                          "src": "733:41:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "id": 2798,
+                        "nodeType": "ExpressionStatement",
+                        "src": "733:41:11"
+                      },
+                      {
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 2804,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "nodeType": "UnaryOperation",
+                          "operator": "--",
+                          "prefix": false,
+                          "src": "788:21:11",
+                          "subExpression": {
+                            "argumentTypes": null,
+                            "expression": {
+                              "argumentTypes": null,
+                              "expression": {
+                                "argumentTypes": null,
+                                "id": 2799,
+                                "name": "self",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 2762,
+                                "src": "788:4:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                  "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                }
+                              },
+                              "id": 2802,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "members",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 2710,
+                              "src": "788:12:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_array$_t_bytes32_$dyn_storage",
+                                "typeString": "bytes32[] storage ref"
+                              }
+                            },
+                            "id": 2803,
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": true,
+                            "memberName": "length",
+                            "nodeType": "MemberAccess",
+                            "referencedDeclaration": null,
+                            "src": "788:19:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          },
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "id": 2805,
+                        "nodeType": "ExpressionStatement",
+                        "src": "788:21:11"
+                      },
+                      {
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 2812,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "leftHandSide": {
+                            "argumentTypes": null,
+                            "baseExpression": {
+                              "argumentTypes": null,
+                              "expression": {
+                                "argumentTypes": null,
+                                "id": 2806,
+                                "name": "self",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 2762,
+                                "src": "873:4:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                  "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                }
+                              },
+                              "id": 2809,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "memberIndices",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 2714,
+                              "src": "873:18:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_mapping$_t_bytes32_$_t_uint256_$",
+                                "typeString": "mapping(bytes32 => uint256)"
+                              }
+                            },
+                            "id": 2810,
+                            "indexExpression": {
+                              "argumentTypes": null,
+                              "id": 2808,
+                              "name": "lastMember",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 2779,
+                              "src": "892:10:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_bytes32",
+                                "typeString": "bytes32"
+                              }
+                            },
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": true,
+                            "nodeType": "IndexAccess",
+                            "src": "873:30:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          },
+                          "nodeType": "Assignment",
+                          "operator": "=",
+                          "rightHandSide": {
+                            "argumentTypes": null,
+                            "id": 2811,
+                            "name": "replaceIndex",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 2772,
+                            "src": "906:12:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          },
+                          "src": "873:45:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "id": 2813,
+                        "nodeType": "ExpressionStatement",
+                        "src": "873:45:11"
+                      },
+                      {
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 2818,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "nodeType": "UnaryOperation",
+                          "operator": "delete",
+                          "prefix": true,
+                          "src": "932:32:11",
+                          "subExpression": {
+                            "argumentTypes": null,
+                            "baseExpression": {
+                              "argumentTypes": null,
+                              "expression": {
+                                "argumentTypes": null,
+                                "id": 2814,
+                                "name": "self",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 2762,
+                                "src": "939:4:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                  "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                }
+                              },
+                              "id": 2815,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "memberIndices",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 2714,
+                              "src": "939:18:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_mapping$_t_bytes32_$_t_uint256_$",
+                                "typeString": "mapping(bytes32 => uint256)"
+                              }
+                            },
+                            "id": 2817,
+                            "indexExpression": {
+                              "argumentTypes": null,
+                              "id": 2816,
+                              "name": "other",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 2764,
+                              "src": "958:5:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_bytes32",
+                                "typeString": "bytes32"
+                              }
+                            },
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": true,
+                            "nodeType": "IndexAccess",
+                            "src": "939:25:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          },
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_tuple$__$",
+                            "typeString": "tuple()"
+                          }
+                        },
+                        "id": 2819,
+                        "nodeType": "ExpressionStatement",
+                        "src": "932:32:11"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 2823,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "remove",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2765,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2762,
+                  "name": "self",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2823,
+                  "src": "437:24:11",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                    "typeString": "struct bytes32Set._bytes32Set"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 2761,
+                    "name": "_bytes32Set",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 2715,
+                    "src": "437:11:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                      "typeString": "struct bytes32Set._bytes32Set"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2764,
+                  "name": "other",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2823,
+                  "src": "463:13:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 2763,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "463:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "436:41:11"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 2766,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "485:0:11"
+            },
+            "scope": 2853,
+            "src": "421:560:11",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 2839,
+              "nodeType": "Block",
+              "src": "1073:53:11",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "commonType": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    },
+                    "id": 2837,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "argumentTypes": null,
+                      "baseExpression": {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 2832,
+                          "name": "self",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 2825,
+                          "src": "1090:4:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                            "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                          }
+                        },
+                        "id": 2833,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "memberIndices",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 2714,
+                        "src": "1090:18:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_mapping$_t_bytes32_$_t_uint256_$",
+                          "typeString": "mapping(bytes32 => uint256)"
+                        }
+                      },
+                      "id": 2835,
+                      "indexExpression": {
+                        "argumentTypes": null,
+                        "id": 2834,
+                        "name": "other",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 2827,
+                        "src": "1109:5:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      },
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "nodeType": "IndexAccess",
+                      "src": "1090:25:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": ">",
+                    "rightExpression": {
+                      "argumentTypes": null,
+                      "hexValue": "30",
+                      "id": 2836,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "number",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "1118:1:11",
+                      "subdenomination": null,
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_rational_0_by_1",
+                        "typeString": "int_const 0"
+                      },
+                      "value": "0"
+                    },
+                    "src": "1090:29:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "functionReturnParameters": 2831,
+                  "id": 2838,
+                  "nodeType": "Return",
+                  "src": "1083:36:11"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 2840,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "contains",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2828,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2825,
+                  "name": "self",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2840,
+                  "src": "1005:24:11",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                    "typeString": "struct bytes32Set._bytes32Set"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 2824,
+                    "name": "_bytes32Set",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 2715,
+                    "src": "1005:11:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                      "typeString": "struct bytes32Set._bytes32Set"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2827,
+                  "name": "other",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2840,
+                  "src": "1031:13:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 2826,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1031:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1004:41:11"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 2831,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2830,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2840,
+                  "src": "1067:4:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 2829,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1067:4:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1066:6:11"
+            },
+            "scope": 2853,
+            "src": "987:139:11",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 2851,
+              "nodeType": "Block",
+              "src": "1201:43:11",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "expression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 2847,
+                        "name": "self",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 2842,
+                        "src": "1218:4:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                          "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                        }
+                      },
+                      "id": 2848,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "members",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 2710,
+                      "src": "1218:12:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_array$_t_bytes32_$dyn_storage",
+                        "typeString": "bytes32[] storage ref"
+                      }
+                    },
+                    "id": 2849,
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "memberName": "length",
+                    "nodeType": "MemberAccess",
+                    "referencedDeclaration": null,
+                    "src": "1218:19:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "functionReturnParameters": 2846,
+                  "id": 2850,
+                  "nodeType": "Return",
+                  "src": "1211:26:11"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 2852,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "length",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2843,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2842,
+                  "name": "self",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2852,
+                  "src": "1148:24:11",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                    "typeString": "struct bytes32Set._bytes32Set"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 2841,
+                    "name": "_bytes32Set",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 2715,
+                    "src": "1148:11:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                      "typeString": "struct bytes32Set._bytes32Set"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1147:26:11"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 2846,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2845,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2852,
+                  "src": "1195:4:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 2844,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1195:4:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1194:6:11"
+            },
+            "scope": 2853,
+            "src": "1132:112:11",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 2854,
+        "src": "27:1219:11"
+      }
+    ],
+    "src": "0:1246:11"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/noahzinsmeister/Documents/github/smart-contracts/snowflake-poc/contracts/libraries/bytes32Set.sol",
+    "exportedSymbols": {
+      "bytes32Set": [
+        2853
+      ]
+    },
+    "id": 2854,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 2707,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".23"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:11"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "library",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 2853,
+        "linearizedBaseContracts": [
+          2853
+        ],
+        "name": "bytes32Set",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "bytes32Set._bytes32Set",
+            "id": 2715,
+            "members": [
+              {
+                "constant": false,
+                "id": 2710,
+                "name": "members",
+                "nodeType": "VariableDeclaration",
+                "scope": 2715,
+                "src": "81:17:11",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_bytes32_$dyn_storage_ptr",
+                  "typeString": "bytes32[]"
+                },
+                "typeName": {
+                  "baseType": {
+                    "id": 2708,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "81:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "id": 2709,
+                  "length": null,
+                  "nodeType": "ArrayTypeName",
+                  "src": "81:9:11",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_bytes32_$dyn_storage_ptr",
+                    "typeString": "bytes32[]"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 2714,
+                "name": "memberIndices",
+                "nodeType": "VariableDeclaration",
+                "scope": 2715,
+                "src": "108:38:11",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_mapping$_t_bytes32_$_t_uint256_$",
+                  "typeString": "mapping(bytes32 => uint256)"
+                },
+                "typeName": {
+                  "id": 2713,
+                  "keyType": {
+                    "id": 2711,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "116:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "nodeType": "Mapping",
+                  "src": "108:24:11",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_mapping$_t_bytes32_$_t_uint256_$",
+                    "typeString": "mapping(bytes32 => uint256)"
+                  },
+                  "valueType": {
+                    "id": 2712,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "127:4:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "_bytes32Set",
+            "nodeType": "StructDefinition",
+            "scope": 2853,
+            "src": "52:101:11",
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 2759,
+              "nodeType": "Block",
+              "src": "223:192:11",
+              "statements": [
+                {
+                  "condition": {
+                    "argumentTypes": null,
+                    "id": 2726,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "UnaryOperation",
+                    "operator": "!",
+                    "prefix": true,
+                    "src": "237:22:11",
+                    "subExpression": {
+                      "argumentTypes": null,
+                      "arguments": [
+                        {
+                          "argumentTypes": null,
+                          "id": 2723,
+                          "name": "self",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 2717,
+                          "src": "247:4:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                            "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                          }
+                        },
+                        {
+                          "argumentTypes": null,
+                          "id": 2724,
+                          "name": "other",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 2719,
+                          "src": "253:5:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": [
+                          {
+                            "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                            "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                          },
+                          {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        ],
+                        "id": 2722,
+                        "name": "contains",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 2840,
+                        "src": "238:8:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_function_internal_view$_t_struct$__bytes32Set_$2715_storage_ptr_$_t_bytes32_$returns$_t_bool_$",
+                          "typeString": "function (struct bytes32Set._bytes32Set storage pointer,bytes32) view returns (bool)"
+                        }
+                      },
+                      "id": 2725,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "kind": "functionCall",
+                      "lValueRequested": false,
+                      "names": [],
+                      "nodeType": "FunctionCall",
+                      "src": "238:21:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bool",
+                        "typeString": "bool"
+                      }
+                    },
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "falseBody": null,
+                  "id": 2758,
+                  "nodeType": "IfStatement",
+                  "src": "233:176:11",
+                  "trueBody": {
+                    "id": 2757,
+                    "nodeType": "Block",
+                    "src": "261:148:11",
+                    "statements": [
+                      {
+                        "expression": {
+                          "argumentTypes": null,
+                          "arguments": [
+                            {
+                              "argumentTypes": null,
+                              "commonType": {
+                                "typeIdentifier": "t_uint256",
+                                "typeString": "uint256"
+                              },
+                              "id": 2736,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "leftExpression": {
+                                "argumentTypes": null,
+                                "arguments": [
+                                  {
+                                    "argumentTypes": null,
+                                    "id": 2729,
+                                    "name": "self",
+                                    "nodeType": "Identifier",
+                                    "overloadedDeclarations": [],
+                                    "referencedDeclaration": 2717,
+                                    "src": "289:4:11",
+                                    "typeDescriptions": {
+                                      "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                      "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                    }
+                                  }
+                                ],
+                                "expression": {
+                                  "argumentTypes": [
+                                    {
+                                      "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                      "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                    }
+                                  ],
+                                  "id": 2728,
+                                  "name": "length",
+                                  "nodeType": "Identifier",
+                                  "overloadedDeclarations": [],
+                                  "referencedDeclaration": 2852,
+                                  "src": "282:6:11",
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_function_internal_view$_t_struct$__bytes32Set_$2715_storage_ptr_$returns$_t_uint256_$",
+                                    "typeString": "function (struct bytes32Set._bytes32Set storage pointer) view returns (uint256)"
+                                  }
+                                },
+                                "id": 2730,
+                                "isConstant": false,
+                                "isLValue": false,
+                                "isPure": false,
+                                "kind": "functionCall",
+                                "lValueRequested": false,
+                                "names": [],
+                                "nodeType": "FunctionCall",
+                                "src": "282:12:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_uint256",
+                                  "typeString": "uint256"
+                                }
+                              },
+                              "nodeType": "BinaryOperation",
+                              "operator": "<",
+                              "rightExpression": {
+                                "argumentTypes": null,
+                                "commonType": {
+                                  "typeIdentifier": "t_rational_115792089237316195423570985008687907853269984665640564039457584007913129639935_by_1",
+                                  "typeString": "int_const 1157...(70 digits omitted)...9935"
+                                },
+                                "id": 2735,
+                                "isConstant": false,
+                                "isLValue": false,
+                                "isPure": true,
+                                "lValueRequested": false,
+                                "leftExpression": {
+                                  "argumentTypes": null,
+                                  "commonType": {
+                                    "typeIdentifier": "t_rational_115792089237316195423570985008687907853269984665640564039457584007913129639936_by_1",
+                                    "typeString": "int_const 1157...(70 digits omitted)...9936"
+                                  },
+                                  "id": 2733,
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": true,
+                                  "lValueRequested": false,
+                                  "leftExpression": {
+                                    "argumentTypes": null,
+                                    "hexValue": "32",
+                                    "id": 2731,
+                                    "isConstant": false,
+                                    "isLValue": false,
+                                    "isPure": true,
+                                    "kind": "number",
+                                    "lValueRequested": false,
+                                    "nodeType": "Literal",
+                                    "src": "297:1:11",
+                                    "subdenomination": null,
+                                    "typeDescriptions": {
+                                      "typeIdentifier": "t_rational_2_by_1",
+                                      "typeString": "int_const 2"
+                                    },
+                                    "value": "2"
+                                  },
+                                  "nodeType": "BinaryOperation",
+                                  "operator": "**",
+                                  "rightExpression": {
+                                    "argumentTypes": null,
+                                    "hexValue": "323536",
+                                    "id": 2732,
+                                    "isConstant": false,
+                                    "isLValue": false,
+                                    "isPure": true,
+                                    "kind": "number",
+                                    "lValueRequested": false,
+                                    "nodeType": "Literal",
+                                    "src": "300:3:11",
+                                    "subdenomination": null,
+                                    "typeDescriptions": {
+                                      "typeIdentifier": "t_rational_256_by_1",
+                                      "typeString": "int_const 256"
+                                    },
+                                    "value": "256"
+                                  },
+                                  "src": "297:6:11",
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_rational_115792089237316195423570985008687907853269984665640564039457584007913129639936_by_1",
+                                    "typeString": "int_const 1157...(70 digits omitted)...9936"
+                                  }
+                                },
+                                "nodeType": "BinaryOperation",
+                                "operator": "-",
+                                "rightExpression": {
+                                  "argumentTypes": null,
+                                  "hexValue": "31",
+                                  "id": 2734,
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": true,
+                                  "kind": "number",
+                                  "lValueRequested": false,
+                                  "nodeType": "Literal",
+                                  "src": "304:1:11",
+                                  "subdenomination": null,
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_rational_1_by_1",
+                                    "typeString": "int_const 1"
+                                  },
+                                  "value": "1"
+                                },
+                                "src": "297:8:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_rational_115792089237316195423570985008687907853269984665640564039457584007913129639935_by_1",
+                                  "typeString": "int_const 1157...(70 digits omitted)...9935"
+                                }
+                              },
+                              "src": "282:23:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_bool",
+                                "typeString": "bool"
+                              }
+                            }
+                          ],
+                          "expression": {
+                            "argumentTypes": [
+                              {
+                                "typeIdentifier": "t_bool",
+                                "typeString": "bool"
+                              }
+                            ],
+                            "id": 2727,
+                            "name": "assert",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 3024,
+                            "src": "275:6:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_function_assert_pure$_t_bool_$returns$__$",
+                              "typeString": "function (bool) pure"
+                            }
+                          },
+                          "id": 2737,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "kind": "functionCall",
+                          "lValueRequested": false,
+                          "names": [],
+                          "nodeType": "FunctionCall",
+                          "src": "275:31:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_tuple$__$",
+                            "typeString": "tuple()"
+                          }
+                        },
+                        "id": 2738,
+                        "nodeType": "ExpressionStatement",
+                        "src": "275:31:11"
+                      },
+                      {
+                        "expression": {
+                          "argumentTypes": null,
+                          "arguments": [
+                            {
+                              "argumentTypes": null,
+                              "id": 2744,
+                              "name": "other",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 2719,
+                              "src": "338:5:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_bytes32",
+                                "typeString": "bytes32"
+                              }
+                            }
+                          ],
+                          "expression": {
+                            "argumentTypes": [
+                              {
+                                "typeIdentifier": "t_bytes32",
+                                "typeString": "bytes32"
+                              }
+                            ],
+                            "expression": {
+                              "argumentTypes": null,
+                              "expression": {
+                                "argumentTypes": null,
+                                "id": 2739,
+                                "name": "self",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 2717,
+                                "src": "320:4:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                  "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                }
+                              },
+                              "id": 2742,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "members",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 2710,
+                              "src": "320:12:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_array$_t_bytes32_$dyn_storage",
+                                "typeString": "bytes32[] storage ref"
+                              }
+                            },
+                            "id": 2743,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "memberName": "push",
+                            "nodeType": "MemberAccess",
+                            "referencedDeclaration": null,
+                            "src": "320:17:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_function_arraypush_nonpayable$_t_bytes32_$returns$_t_uint256_$",
+                              "typeString": "function (bytes32) returns (uint256)"
+                            }
+                          },
+                          "id": 2745,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "kind": "functionCall",
+                          "lValueRequested": false,
+                          "names": [],
+                          "nodeType": "FunctionCall",
+                          "src": "320:24:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "id": 2746,
+                        "nodeType": "ExpressionStatement",
+                        "src": "320:24:11"
+                      },
+                      {
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 2755,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "leftHandSide": {
+                            "argumentTypes": null,
+                            "baseExpression": {
+                              "argumentTypes": null,
+                              "expression": {
+                                "argumentTypes": null,
+                                "id": 2747,
+                                "name": "self",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 2717,
+                                "src": "358:4:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                  "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                }
+                              },
+                              "id": 2750,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "memberIndices",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 2714,
+                              "src": "358:18:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_mapping$_t_bytes32_$_t_uint256_$",
+                                "typeString": "mapping(bytes32 => uint256)"
+                              }
+                            },
+                            "id": 2751,
+                            "indexExpression": {
+                              "argumentTypes": null,
+                              "id": 2749,
+                              "name": "other",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 2719,
+                              "src": "377:5:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_bytes32",
+                                "typeString": "bytes32"
+                              }
+                            },
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": true,
+                            "nodeType": "IndexAccess",
+                            "src": "358:25:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          },
+                          "nodeType": "Assignment",
+                          "operator": "=",
+                          "rightHandSide": {
+                            "argumentTypes": null,
+                            "arguments": [
+                              {
+                                "argumentTypes": null,
+                                "id": 2753,
+                                "name": "self",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 2717,
+                                "src": "393:4:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                  "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                }
+                              }
+                            ],
+                            "expression": {
+                              "argumentTypes": [
+                                {
+                                  "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                  "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                }
+                              ],
+                              "id": 2752,
+                              "name": "length",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 2852,
+                              "src": "386:6:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_function_internal_view$_t_struct$__bytes32Set_$2715_storage_ptr_$returns$_t_uint256_$",
+                                "typeString": "function (struct bytes32Set._bytes32Set storage pointer) view returns (uint256)"
+                              }
+                            },
+                            "id": 2754,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "kind": "functionCall",
+                            "lValueRequested": false,
+                            "names": [],
+                            "nodeType": "FunctionCall",
+                            "src": "386:12:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          },
+                          "src": "358:40:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "id": 2756,
+                        "nodeType": "ExpressionStatement",
+                        "src": "358:40:11"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 2760,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "insert",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2720,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2717,
+                  "name": "self",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2760,
+                  "src": "175:24:11",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                    "typeString": "struct bytes32Set._bytes32Set"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 2716,
+                    "name": "_bytes32Set",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 2715,
+                    "src": "175:11:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                      "typeString": "struct bytes32Set._bytes32Set"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2719,
+                  "name": "other",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2760,
+                  "src": "201:13:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 2718,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "201:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "174:41:11"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 2721,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "223:0:11"
+            },
+            "scope": 2853,
+            "src": "159:256:11",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 2822,
+              "nodeType": "Block",
+              "src": "485:496:11",
+              "statements": [
+                {
+                  "condition": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 2768,
+                        "name": "self",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 2762,
+                        "src": "508:4:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                          "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 2769,
+                        "name": "other",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 2764,
+                        "src": "514:5:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                          "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                        },
+                        {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      ],
+                      "id": 2767,
+                      "name": "contains",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 2840,
+                      "src": "499:8:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_view$_t_struct$__bytes32Set_$2715_storage_ptr_$_t_bytes32_$returns$_t_bool_$",
+                        "typeString": "function (struct bytes32Set._bytes32Set storage pointer,bytes32) view returns (bool)"
+                      }
+                    },
+                    "id": 2770,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "499:21:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "falseBody": null,
+                  "id": 2821,
+                  "nodeType": "IfStatement",
+                  "src": "495:480:11",
+                  "trueBody": {
+                    "id": 2820,
+                    "nodeType": "Block",
+                    "src": "522:453:11",
+                    "statements": [
+                      {
+                        "assignments": [
+                          2772
+                        ],
+                        "declarations": [
+                          {
+                            "constant": false,
+                            "id": 2772,
+                            "name": "replaceIndex",
+                            "nodeType": "VariableDeclaration",
+                            "scope": 2823,
+                            "src": "536:17:11",
+                            "stateVariable": false,
+                            "storageLocation": "default",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            },
+                            "typeName": {
+                              "id": 2771,
+                              "name": "uint",
+                              "nodeType": "ElementaryTypeName",
+                              "src": "536:4:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_uint256",
+                                "typeString": "uint256"
+                              }
+                            },
+                            "value": null,
+                            "visibility": "internal"
+                          }
+                        ],
+                        "id": 2777,
+                        "initialValue": {
+                          "argumentTypes": null,
+                          "baseExpression": {
+                            "argumentTypes": null,
+                            "expression": {
+                              "argumentTypes": null,
+                              "id": 2773,
+                              "name": "self",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 2762,
+                              "src": "556:4:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                              }
+                            },
+                            "id": 2774,
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "memberName": "memberIndices",
+                            "nodeType": "MemberAccess",
+                            "referencedDeclaration": 2714,
+                            "src": "556:18:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_mapping$_t_bytes32_$_t_uint256_$",
+                              "typeString": "mapping(bytes32 => uint256)"
+                            }
+                          },
+                          "id": 2776,
+                          "indexExpression": {
+                            "argumentTypes": null,
+                            "id": 2775,
+                            "name": "other",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 2764,
+                            "src": "575:5:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_bytes32",
+                              "typeString": "bytes32"
+                            }
+                          },
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "nodeType": "IndexAccess",
+                          "src": "556:25:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "nodeType": "VariableDeclarationStatement",
+                        "src": "536:45:11"
+                      },
+                      {
+                        "assignments": [
+                          2779
+                        ],
+                        "declarations": [
+                          {
+                            "constant": false,
+                            "id": 2779,
+                            "name": "lastMember",
+                            "nodeType": "VariableDeclaration",
+                            "scope": 2823,
+                            "src": "595:18:11",
+                            "stateVariable": false,
+                            "storageLocation": "default",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_bytes32",
+                              "typeString": "bytes32"
+                            },
+                            "typeName": {
+                              "id": 2778,
+                              "name": "bytes32",
+                              "nodeType": "ElementaryTypeName",
+                              "src": "595:7:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_bytes32",
+                                "typeString": "bytes32"
+                              }
+                            },
+                            "value": null,
+                            "visibility": "internal"
+                          }
+                        ],
+                        "id": 2788,
+                        "initialValue": {
+                          "argumentTypes": null,
+                          "baseExpression": {
+                            "argumentTypes": null,
+                            "expression": {
+                              "argumentTypes": null,
+                              "id": 2780,
+                              "name": "self",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 2762,
+                              "src": "616:4:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                              }
+                            },
+                            "id": 2781,
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "memberName": "members",
+                            "nodeType": "MemberAccess",
+                            "referencedDeclaration": 2710,
+                            "src": "616:12:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_array$_t_bytes32_$dyn_storage",
+                              "typeString": "bytes32[] storage ref"
+                            }
+                          },
+                          "id": 2787,
+                          "indexExpression": {
+                            "argumentTypes": null,
+                            "commonType": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            },
+                            "id": 2786,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "leftExpression": {
+                              "argumentTypes": null,
+                              "arguments": [
+                                {
+                                  "argumentTypes": null,
+                                  "id": 2783,
+                                  "name": "self",
+                                  "nodeType": "Identifier",
+                                  "overloadedDeclarations": [],
+                                  "referencedDeclaration": 2762,
+                                  "src": "636:4:11",
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                    "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                  }
+                                }
+                              ],
+                              "expression": {
+                                "argumentTypes": [
+                                  {
+                                    "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                    "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                  }
+                                ],
+                                "id": 2782,
+                                "name": "length",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 2852,
+                                "src": "629:6:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_function_internal_view$_t_struct$__bytes32Set_$2715_storage_ptr_$returns$_t_uint256_$",
+                                  "typeString": "function (struct bytes32Set._bytes32Set storage pointer) view returns (uint256)"
+                                }
+                              },
+                              "id": 2784,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "kind": "functionCall",
+                              "lValueRequested": false,
+                              "names": [],
+                              "nodeType": "FunctionCall",
+                              "src": "629:12:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_uint256",
+                                "typeString": "uint256"
+                              }
+                            },
+                            "nodeType": "BinaryOperation",
+                            "operator": "-",
+                            "rightExpression": {
+                              "argumentTypes": null,
+                              "hexValue": "31",
+                              "id": 2785,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "kind": "number",
+                              "lValueRequested": false,
+                              "nodeType": "Literal",
+                              "src": "642:1:11",
+                              "subdenomination": null,
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_rational_1_by_1",
+                                "typeString": "int_const 1"
+                              },
+                              "value": "1"
+                            },
+                            "src": "629:14:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          },
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "nodeType": "IndexAccess",
+                          "src": "616:28:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "nodeType": "VariableDeclarationStatement",
+                        "src": "595:49:11"
+                      },
+                      {
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 2797,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "leftHandSide": {
+                            "argumentTypes": null,
+                            "baseExpression": {
+                              "argumentTypes": null,
+                              "expression": {
+                                "argumentTypes": null,
+                                "id": 2789,
+                                "name": "self",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 2762,
+                                "src": "733:4:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                  "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                }
+                              },
+                              "id": 2794,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "members",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 2710,
+                              "src": "733:12:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_array$_t_bytes32_$dyn_storage",
+                                "typeString": "bytes32[] storage ref"
+                              }
+                            },
+                            "id": 2795,
+                            "indexExpression": {
+                              "argumentTypes": null,
+                              "commonType": {
+                                "typeIdentifier": "t_uint256",
+                                "typeString": "uint256"
+                              },
+                              "id": 2793,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "leftExpression": {
+                                "argumentTypes": null,
+                                "id": 2791,
+                                "name": "replaceIndex",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 2772,
+                                "src": "746:12:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_uint256",
+                                  "typeString": "uint256"
+                                }
+                              },
+                              "nodeType": "BinaryOperation",
+                              "operator": "-",
+                              "rightExpression": {
+                                "argumentTypes": null,
+                                "hexValue": "31",
+                                "id": 2792,
+                                "isConstant": false,
+                                "isLValue": false,
+                                "isPure": true,
+                                "kind": "number",
+                                "lValueRequested": false,
+                                "nodeType": "Literal",
+                                "src": "759:1:11",
+                                "subdenomination": null,
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_rational_1_by_1",
+                                  "typeString": "int_const 1"
+                                },
+                                "value": "1"
+                              },
+                              "src": "746:14:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_uint256",
+                                "typeString": "uint256"
+                              }
+                            },
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": true,
+                            "nodeType": "IndexAccess",
+                            "src": "733:28:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_bytes32",
+                              "typeString": "bytes32"
+                            }
+                          },
+                          "nodeType": "Assignment",
+                          "operator": "=",
+                          "rightHandSide": {
+                            "argumentTypes": null,
+                            "id": 2796,
+                            "name": "lastMember",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 2779,
+                            "src": "764:10:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_bytes32",
+                              "typeString": "bytes32"
+                            }
+                          },
+                          "src": "733:41:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "id": 2798,
+                        "nodeType": "ExpressionStatement",
+                        "src": "733:41:11"
+                      },
+                      {
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 2804,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "nodeType": "UnaryOperation",
+                          "operator": "--",
+                          "prefix": false,
+                          "src": "788:21:11",
+                          "subExpression": {
+                            "argumentTypes": null,
+                            "expression": {
+                              "argumentTypes": null,
+                              "expression": {
+                                "argumentTypes": null,
+                                "id": 2799,
+                                "name": "self",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 2762,
+                                "src": "788:4:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                  "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                }
+                              },
+                              "id": 2802,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "members",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 2710,
+                              "src": "788:12:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_array$_t_bytes32_$dyn_storage",
+                                "typeString": "bytes32[] storage ref"
+                              }
+                            },
+                            "id": 2803,
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": true,
+                            "memberName": "length",
+                            "nodeType": "MemberAccess",
+                            "referencedDeclaration": null,
+                            "src": "788:19:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          },
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "id": 2805,
+                        "nodeType": "ExpressionStatement",
+                        "src": "788:21:11"
+                      },
+                      {
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 2812,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "leftHandSide": {
+                            "argumentTypes": null,
+                            "baseExpression": {
+                              "argumentTypes": null,
+                              "expression": {
+                                "argumentTypes": null,
+                                "id": 2806,
+                                "name": "self",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 2762,
+                                "src": "873:4:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                  "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                }
+                              },
+                              "id": 2809,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "memberIndices",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 2714,
+                              "src": "873:18:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_mapping$_t_bytes32_$_t_uint256_$",
+                                "typeString": "mapping(bytes32 => uint256)"
+                              }
+                            },
+                            "id": 2810,
+                            "indexExpression": {
+                              "argumentTypes": null,
+                              "id": 2808,
+                              "name": "lastMember",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 2779,
+                              "src": "892:10:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_bytes32",
+                                "typeString": "bytes32"
+                              }
+                            },
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": true,
+                            "nodeType": "IndexAccess",
+                            "src": "873:30:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          },
+                          "nodeType": "Assignment",
+                          "operator": "=",
+                          "rightHandSide": {
+                            "argumentTypes": null,
+                            "id": 2811,
+                            "name": "replaceIndex",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 2772,
+                            "src": "906:12:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          },
+                          "src": "873:45:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "id": 2813,
+                        "nodeType": "ExpressionStatement",
+                        "src": "873:45:11"
+                      },
+                      {
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 2818,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "nodeType": "UnaryOperation",
+                          "operator": "delete",
+                          "prefix": true,
+                          "src": "932:32:11",
+                          "subExpression": {
+                            "argumentTypes": null,
+                            "baseExpression": {
+                              "argumentTypes": null,
+                              "expression": {
+                                "argumentTypes": null,
+                                "id": 2814,
+                                "name": "self",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 2762,
+                                "src": "939:4:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                                  "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                                }
+                              },
+                              "id": 2815,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "memberIndices",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 2714,
+                              "src": "939:18:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_mapping$_t_bytes32_$_t_uint256_$",
+                                "typeString": "mapping(bytes32 => uint256)"
+                              }
+                            },
+                            "id": 2817,
+                            "indexExpression": {
+                              "argumentTypes": null,
+                              "id": 2816,
+                              "name": "other",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 2764,
+                              "src": "958:5:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_bytes32",
+                                "typeString": "bytes32"
+                              }
+                            },
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": true,
+                            "nodeType": "IndexAccess",
+                            "src": "939:25:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          },
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_tuple$__$",
+                            "typeString": "tuple()"
+                          }
+                        },
+                        "id": 2819,
+                        "nodeType": "ExpressionStatement",
+                        "src": "932:32:11"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 2823,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "remove",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2765,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2762,
+                  "name": "self",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2823,
+                  "src": "437:24:11",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                    "typeString": "struct bytes32Set._bytes32Set"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 2761,
+                    "name": "_bytes32Set",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 2715,
+                    "src": "437:11:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                      "typeString": "struct bytes32Set._bytes32Set"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2764,
+                  "name": "other",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2823,
+                  "src": "463:13:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 2763,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "463:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "436:41:11"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 2766,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "485:0:11"
+            },
+            "scope": 2853,
+            "src": "421:560:11",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 2839,
+              "nodeType": "Block",
+              "src": "1073:53:11",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "commonType": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    },
+                    "id": 2837,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "argumentTypes": null,
+                      "baseExpression": {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 2832,
+                          "name": "self",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 2825,
+                          "src": "1090:4:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                            "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                          }
+                        },
+                        "id": 2833,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "memberIndices",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 2714,
+                        "src": "1090:18:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_mapping$_t_bytes32_$_t_uint256_$",
+                          "typeString": "mapping(bytes32 => uint256)"
+                        }
+                      },
+                      "id": 2835,
+                      "indexExpression": {
+                        "argumentTypes": null,
+                        "id": 2834,
+                        "name": "other",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 2827,
+                        "src": "1109:5:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      },
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "nodeType": "IndexAccess",
+                      "src": "1090:25:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": ">",
+                    "rightExpression": {
+                      "argumentTypes": null,
+                      "hexValue": "30",
+                      "id": 2836,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "number",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "1118:1:11",
+                      "subdenomination": null,
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_rational_0_by_1",
+                        "typeString": "int_const 0"
+                      },
+                      "value": "0"
+                    },
+                    "src": "1090:29:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "functionReturnParameters": 2831,
+                  "id": 2838,
+                  "nodeType": "Return",
+                  "src": "1083:36:11"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 2840,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "contains",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2828,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2825,
+                  "name": "self",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2840,
+                  "src": "1005:24:11",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                    "typeString": "struct bytes32Set._bytes32Set"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 2824,
+                    "name": "_bytes32Set",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 2715,
+                    "src": "1005:11:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                      "typeString": "struct bytes32Set._bytes32Set"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2827,
+                  "name": "other",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2840,
+                  "src": "1031:13:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 2826,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1031:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1004:41:11"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 2831,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2830,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2840,
+                  "src": "1067:4:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 2829,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1067:4:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1066:6:11"
+            },
+            "scope": 2853,
+            "src": "987:139:11",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 2851,
+              "nodeType": "Block",
+              "src": "1201:43:11",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "expression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 2847,
+                        "name": "self",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 2842,
+                        "src": "1218:4:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                          "typeString": "struct bytes32Set._bytes32Set storage pointer"
+                        }
+                      },
+                      "id": 2848,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "members",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 2710,
+                      "src": "1218:12:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_array$_t_bytes32_$dyn_storage",
+                        "typeString": "bytes32[] storage ref"
+                      }
+                    },
+                    "id": 2849,
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "memberName": "length",
+                    "nodeType": "MemberAccess",
+                    "referencedDeclaration": null,
+                    "src": "1218:19:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "functionReturnParameters": 2846,
+                  "id": 2850,
+                  "nodeType": "Return",
+                  "src": "1211:26:11"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 2852,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "length",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2843,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2842,
+                  "name": "self",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2852,
+                  "src": "1148:24:11",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                    "typeString": "struct bytes32Set._bytes32Set"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 2841,
+                    "name": "_bytes32Set",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 2715,
+                    "src": "1148:11:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$__bytes32Set_$2715_storage_ptr",
+                      "typeString": "struct bytes32Set._bytes32Set"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1147:26:11"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 2846,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2845,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2852,
+                  "src": "1195:4:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 2844,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1195:4:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1194:6:11"
+            },
+            "scope": 2853,
+            "src": "1132:112:11",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 2854,
+        "src": "27:1219:11"
+      }
+    ],
+    "src": "0:1246:11"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.23+commit.124ca40d.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "2.0.0",
+  "updatedAt": "2018-05-01T20:17:01.287Z"
+}
