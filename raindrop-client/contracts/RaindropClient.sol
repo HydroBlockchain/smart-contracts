@@ -1,4 +1,4 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.23;
 
 import "./Withdrawable.sol";
 import "./libraries/stringUtils.sol";
@@ -80,19 +80,21 @@ contract RaindropClient is Withdrawable {
         minimumHydroStakeDelegatedUser = newMinimumHydroStakeDelegatedUser;
     }
 
-    // Returns a bool indicated whether a given userName has been claimed
-    function userNameTaken(string casedUserName) public view returns (bool taken) {
-        bytes32 uncasedUserNameHash = keccak256(casedUserName.lower());
+    // Returns a bool indicated whether a given userName has been claimed (either exactly or as any case-variant)
+    function userNameTaken(string userName) public view returns (bool taken) {
+        bytes32 uncasedUserNameHash = keccak256(userName.lower());
         return userDirectory[uncasedUserNameHash]._initialized;
     }
 
-    // Returns user details by user name
-    function getUserByName(string casedUserName) public view returns (address userAddress, bool delegated) {
-        bytes32 uncasedUserNameHash = keccak256(casedUserName.lower());
+    // Returns user details (including cased username) by any cased/uncased user name that maps to a particular user
+    function getUserByName(string userName) public view
+        returns (string casedUserName, address userAddress, bool delegated)
+    {
+        bytes32 uncasedUserNameHash = keccak256(userName.lower());
         User storage _user = userDirectory[uncasedUserNameHash];
         require(_user._initialized);
 
-        return (_user.userAddress, _user.delegated);
+        return (_user.casedUserName, _user.userAddress, _user.delegated);
     }
 
     // Returns user details by user address
