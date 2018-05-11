@@ -1,4 +1,4 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.23;
 
 import "./zeppelin/ownership/Ownable.sol";
 import "./zeppelin/token/ERC20/ERC20Basic.sol";
