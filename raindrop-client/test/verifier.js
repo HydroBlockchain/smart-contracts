@@ -15,7 +15,7 @@ contract('RaindropClient', function (accounts) {
     public: accounts[1]
   }
   const user = {
-    name: 'h4ck3R',
+    name: 'H4ck3R_العّة_汉_ελικά',
     public: accounts[2],
     private: 'ccc3c84f02b038a5d60d93977ab11eb57005f368b5f62dad29486edeb4566954'
   }
@@ -25,9 +25,10 @@ contract('RaindropClient', function (accounts) {
     private: 'fdf12368f9e0735dc01da9db58b1387236120359024024a31e611e82c8853d7f'
   }
   const badUser = {
-    name: 'A'.repeat(100),
+    name: 'A'.repeat(50),
     public: accounts[4]
   }
+  const rejectedUsers = ['noah', 'Noah', 'nOah', 'noAh', 'noaH', 'NOAH', 'h4ck3r_العَرَبِيَّة_汉语_ελληνικά']
   const maliciousAdder = {
     public: accounts[5]
   }
@@ -50,9 +51,6 @@ contract('RaindropClient', function (accounts) {
         )
         signature.r = util.bufferToHex(signature.r)
         signature.s = util.bufferToHex(signature.s)
-        // console.log('Message:', message)
-        // console.log('Address:', user.public)
-        // console.log(signature)
         resolve(signature)
       } else {
         web3.eth.sign(messageHash, user.public)
@@ -98,11 +96,10 @@ contract('RaindropClient', function (accounts) {
     let userNameTaken = await raindropInstance.userNameTaken(user.name)
     assert.isTrue(userNameTaken, 'user signed up incorrectly')
     let userDetailsByName = await raindropInstance.getUserByName(user.name)
-    console.log(userDetailsByName)
-    assert.equal(userDetailsByName[0], user.public, 'user address stored incorrectly')
-    assert.equal(userDetailsByName[1], false, 'user delegated status stored incorrectly')
+    assert.equal(userDetailsByName[0], user.name, 'user name stored incorrectly')
+    assert.equal(userDetailsByName[1], user.public, 'user address stored incorrectly')
+    assert.equal(userDetailsByName[2], false, 'user delegated status stored incorrectly')
     let userDetailsByAddress = await raindropInstance.getUserByAddress(user.public)
-    console.log(userDetailsByAddress)
     assert.equal(userDetailsByAddress[0], user.name, 'user name stored incorrectly')
     assert.equal(userDetailsByAddress[1], false, 'user delegated status stored incorrectly')
   })
@@ -171,15 +168,16 @@ contract('RaindropClient', function (accounts) {
     let userNameTaken = await raindropInstance.userNameTaken(delegatedUser.name)
     assert.isTrue(userNameTaken, 'delegated user signed up incorrectly')
     let userDetailsByName = await raindropInstance.getUserByName(delegatedUser.name)
-    assert.equal(userDetailsByName[0], delegatedUser.public, 'delegated user address stored incorrectly')
-    assert.equal(userDetailsByName[1], true, 'delegated status stored incorrectly')
+    assert.equal(userDetailsByName[0], delegatedUser.name, 'delegated user name stored incorrectly')
+    assert.equal(userDetailsByName[1], delegatedUser.public, 'delegated user address stored incorrectly')
+    assert.equal(userDetailsByName[2], true, 'delegated status stored incorrectly')
     let userDetailsByAddress = await raindropInstance.getUserByAddress(delegatedUser.public)
     assert.equal(userDetailsByAddress[0], delegatedUser.name, 'delegated user name stored incorrectly')
     assert.equal(userDetailsByAddress[1], true, 'delegated status stored incorrectly')
   })
 
-  it('all added user names should be locked', async function () {
-    let lockedNames = [user.name, delegatedUser.name]
+  it('all added and case-colliding user names should be locked', async function () {
+    let lockedNames = [user.name, delegatedUser.name].concat(rejectedUsers)
 
     let userSignUpPromises = lockedNames.map(lockedName => {
       return raindropInstance.signUpUser.call(lockedName, {from: maliciousAdder.public})
@@ -192,7 +190,7 @@ contract('RaindropClient', function (accounts) {
       return sign(permissionString, delegatedUser, method)
         .then(signature => {
           raindropInstance.signUpDelegatedUser.call(
-            delegatedUser.name, delegatedUser.public, signature.v, signature.r, signature.s, {from: maliciousAdder.public}
+            'shouldBeRejected', delegatedUser.public, signature.v, signature.r, signature.s, {from: maliciousAdder.public}
           )
             .then(() => { assert.fail('', '', 'user should not have been signed up') })
             .catch(() => {})
