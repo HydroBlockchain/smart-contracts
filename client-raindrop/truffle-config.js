@@ -1,7 +1,7 @@
 const Web3 = require('web3') // web3@1.0.0-beta.34
 
 var gas = 4 * 1e6
-var gasPrice = Web3.utils.toWei('2', 'gwei')
+var gasPrice = Web3.utils.toWei('10', 'gwei')
 
 module.exports = {
   networks: {

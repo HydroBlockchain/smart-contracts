@@ -1,7 +1,7 @@
 pragma solidity ^0.4.23;
 
 import "./Withdrawable.sol";
-import "./libraries/stringUtils.sol";
+import "./libraries/StringUtils.sol";
 
 
 contract RaindropClient is Withdrawable {
