@@ -7,7 +7,7 @@ const util = require('ethereumjs-util')
 var RaindropClient = artifacts.require('./RaindropClient.sol')
 var HydroToken = artifacts.require('./_testing/HydroToken.sol')
 
-contract('RaindropClient', function (accounts) {
+contract('ClientRaindrop', function (accounts) {
   const owner = {
     public: accounts[0]
   }
@@ -15,7 +15,7 @@ contract('RaindropClient', function (accounts) {
     public: accounts[1]
   }
   const user = {
-    name: 'H4ck3R_العّة_汉_ελικά',
+    name: 'Aالعّة汉ελικάZ',
     public: accounts[2],
     private: 'ccc3c84f02b038a5d60d93977ab11eb57005f368b5f62dad29486edeb4566954'
   }
@@ -28,7 +28,7 @@ contract('RaindropClient', function (accounts) {
     name: 'A'.repeat(50),
     public: accounts[4]
   }
-  const rejectedUsers = ['noah', 'Noah', 'nOah', 'noAh', 'noaH', 'NOAH', 'h4ck3r_العَرَبِيَّة_汉语_ελληνικά']
+  const rejectedUsers = ['noah', 'Noah', 'nOah', 'noAh', 'noaH', 'NOAH', 'Aالعّة汉ελικάZ']
   const maliciousAdder = {
     public: accounts[5]
   }
