@@ -40,9 +40,11 @@ contract ClientRaindrop is Withdrawable {
         public
         requireStake(msg.sender, minimumHydroStakeDelegatedUser)
     {
-        require(isSigned(
-            userAddress,
-            keccak256(abi.encodePacked("Create RaindropClient Hydro Account")), v, r, s), "Permission denied."
+        require(
+            isSigned(
+                userAddress, keccak256(abi.encodePacked("Create RaindropClient Hydro Account")), v, r, s
+            ),
+            "Permission denied."
         );
         _userSignUp(casedUserName, userAddress);
     }
@@ -146,6 +148,6 @@ contract ClientRaindrop is Withdrawable {
     }
 
     function initialized(bytes32 uncasedUserNameHash) internal view returns (bool) {
-        return userDirectory[uncasedUserNameHash].userAddress == 0x0; // a sufficient initialization check
+        return userDirectory[uncasedUserNameHash].userAddress != 0x0; // a sufficient initialization check
     }
 }

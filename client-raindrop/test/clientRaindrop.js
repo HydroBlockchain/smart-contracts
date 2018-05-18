@@ -4,7 +4,7 @@ const Web3 = require('web3') // 1.0.0-beta.34
 const web3 = new Web3(Web3.givenProvider || 'http://localhost:8555')
 const util = require('ethereumjs-util')
 
-var RaindropClient = artifacts.require('./RaindropClient.sol')
+var ClientRaindrop = artifacts.require('./ClientRaindrop.sol')
 var HydroToken = artifacts.require('./_testing/HydroToken.sol')
 
 contract('ClientRaindrop', function (accounts) {
@@ -72,7 +72,7 @@ contract('ClientRaindrop', function (accounts) {
   })
 
   it('raindrop client deployed and linked to the Hydro token', async function () {
-    raindropInstance = await RaindropClient.new({from: owner.public})
+    raindropInstance = await ClientRaindrop.new({from: owner.public})
   })
 
   it('raindrop linked to token', async function () {
@@ -98,10 +98,8 @@ contract('ClientRaindrop', function (accounts) {
     let userDetailsByName = await raindropInstance.getUserByName(user.name)
     assert.equal(userDetailsByName[0], user.name, 'user name stored incorrectly')
     assert.equal(userDetailsByName[1], user.public, 'user address stored incorrectly')
-    assert.equal(userDetailsByName[2], false, 'user delegated status stored incorrectly')
     let userDetailsByAddress = await raindropInstance.getUserByAddress(user.public)
-    assert.equal(userDetailsByAddress[0], user.name, 'user name stored incorrectly')
-    assert.equal(userDetailsByAddress[1], false, 'user delegated status stored incorrectly')
+    assert.equal(userDetailsByAddress, user.name, 'user name stored incorrectly')
   })
 
   it('staking minimums are settable', async function () {
@@ -170,10 +168,8 @@ contract('ClientRaindrop', function (accounts) {
     let userDetailsByName = await raindropInstance.getUserByName(delegatedUser.name)
     assert.equal(userDetailsByName[0], delegatedUser.name, 'delegated user name stored incorrectly')
     assert.equal(userDetailsByName[1], delegatedUser.public, 'delegated user address stored incorrectly')
-    assert.equal(userDetailsByName[2], true, 'delegated status stored incorrectly')
     let userDetailsByAddress = await raindropInstance.getUserByAddress(delegatedUser.public)
-    assert.equal(userDetailsByAddress[0], delegatedUser.name, 'delegated user name stored incorrectly')
-    assert.equal(userDetailsByAddress[1], true, 'delegated status stored incorrectly')
+    assert.equal(userDetailsByAddress, delegatedUser.name, 'delegated user name stored incorrectly')
   })
 
   it('all added and case-colliding user names should be locked', async function () {
