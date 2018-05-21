@@ -26,7 +26,7 @@ contract ClientRaindrop is Withdrawable {
     // Mapping from hashed uncased names to users (primary User directory)
     mapping (bytes32 => User) internal userDirectory;
     // Mapping from addresses to hashed uncased names (secondary directory for account recovery based on address)
-    mapping (address => bytes32) internal nameDirectory;
+    mapping (address => bytes32) internal addressDirectory;
 
     // Requires an address to have a minimum number of Hydro
     modifier requireStake(address _address, uint stake) {
@@ -41,9 +41,7 @@ contract ClientRaindrop is Withdrawable {
         requireStake(msg.sender, minimumHydroStakeDelegatedUser)
     {
         require(
-            isSigned(
-                userAddress, keccak256(abi.encodePacked("Create RaindropClient Hydro Account")), v, r, s
-            ),
+            isSigned(userAddress, keccak256(abi.encodePacked("Create RaindropClient Hydro Account")), v, r, s),
             "Permission denied."
         );
         _userSignUp(casedUserName, userAddress);
@@ -56,12 +54,12 @@ contract ClientRaindrop is Withdrawable {
 
     // Allows users to delete their accounts
     function deleteUser() public {
-        bytes32 uncasedUserNameHash = nameDirectory[msg.sender];
+        bytes32 uncasedUserNameHash = addressDirectory[msg.sender];
         require(initialized(uncasedUserNameHash), "No user associated with the sender address.");
 
         string memory casedUserName = userDirectory[uncasedUserNameHash].casedUserName;
 
-        delete nameDirectory[msg.sender];
+        delete addressDirectory[msg.sender];
         delete userDirectory[uncasedUserNameHash];
 
         emit UserDeleted(casedUserName);
@@ -79,8 +77,8 @@ contract ClientRaindrop is Withdrawable {
         ERC20Basic hydro = ERC20Basic(hydroTokenAddress);
         // <= the airdrop amount
         require(newMinimumHydroStakeUser <= (222222 * 10**18), "Stake is too high.");
-        // <= .01% of total supply
-        require(newMinimumHydroStakeDelegatedUser <= (hydro.totalSupply() / 100 / 100), "Stake is too high.");
+        // <= 1% of total supply
+        require(newMinimumHydroStakeDelegatedUser <= (hydro.totalSupply() / 100), "Stake is too high.");
         minimumHydroStakeUser = newMinimumHydroStakeUser;
         minimumHydroStakeDelegatedUser = newMinimumHydroStakeDelegatedUser;
     }
@@ -101,7 +99,7 @@ contract ClientRaindrop is Withdrawable {
 
     // Returns user details by user address
     function getUserByAddress(address _address) public view returns (string casedUserName) {
-        bytes32 uncasedUserNameHash = nameDirectory[_address];
+        bytes32 uncasedUserNameHash = addressDirectory[_address];
         require(initialized(uncasedUserNameHash), "User does not exist.");
 
         return userDirectory[uncasedUserNameHash].casedUserName;
@@ -135,6 +133,8 @@ contract ClientRaindrop is Withdrawable {
 
     // Common internal logic for all user signups
     function _userSignUp(string casedUserName, address userAddress) internal {
+        require(!initialized(addressDirectory[userAddress]), "Address already registered.");
+
         require(bytes(casedUserName).length < 31, "Username too long.");
         require(bytes(casedUserName).length > 3, "Username too short.");
 
@@ -142,7 +142,7 @@ contract ClientRaindrop is Withdrawable {
         require(!initialized(uncasedUserNameHash), "Username taken.");
 
         userDirectory[uncasedUserNameHash] = User(casedUserName, userAddress);
-        nameDirectory[userAddress] = uncasedUserNameHash;
+        addressDirectory[userAddress] = uncasedUserNameHash;
 
         emit UserSignUp(casedUserName, userAddress);
     }
