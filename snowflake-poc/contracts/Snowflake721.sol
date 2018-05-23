@@ -13,11 +13,16 @@ contract RaindropClient {
 }
 
 contract Snowflake721 is Ownable {
+    using bytes32Set for bytes32Set._bytes32Set;
 
     address raindropClientAddress;
 
     // Mapping from token ID to owner
     mapping (uint256 => address) internal tokenOwner;
+    mapping (address => uint256) internal ownerToToken;
+    mapping (uint256 => Identity) tokenIdentities;
+    mapping (address => bool) validators;
+    Identity[] internal identityList;
 
     struct Field {
         bytes32 fieldValue;
@@ -40,8 +45,8 @@ contract Snowflake721 is Ownable {
     }
 
     struct ContactInformation {
-        bytes32Set emails;
-        bytes32Set phoneNumbers;
+        bytes32Set._bytes32Set emails;
+        bytes32Set._bytes32Set phoneNumbers;
     }
 
     struct Misc {
@@ -58,10 +63,6 @@ contract Snowflake721 is Ownable {
         Misc other;
     }
 
-    mapping (address => bool) validators;
-    mapping (uint => Identity) tokenIdentities;
-
-
     modifier canTransfer(address _to, uint _id) {
         require(
           isOwner(msg.sender, _id),
@@ -73,8 +74,21 @@ contract Snowflake721 is Ownable {
           msg.sender == owner,
           "The to address is not an approved validator"
         );
-
         _;
+    }
+
+    modifier onlyValidator() {
+      require(validators[msg.sender], "You are not a validator.");
+      _;
+    }
+
+    modifier onlyTokenOwnerOrValidator(uint _tokenId) {
+      require(
+          isOwner(msg.sender, _tokenId) ||
+          validators[msg.sender],
+          "You are not the token owner or a validator."
+      );
+      _;
     }
 
     function isOwner(
@@ -95,9 +109,14 @@ contract Snowflake721 is Ownable {
      * @return owner address currently marked as the owner of the given token ID
      */
     function ownerOf(uint256 _tokenId) public view returns (address) {
-      address owner = tokenOwner[_tokenId];
-      require(owner != address(0));
-      return owner;
+        address owner = tokenOwner[_tokenId];
+        require(owner != address(0), "No one owns this token.");
+        return owner;
+    }
+
+    function tokenOf(address _address) public view returns (uint256) {
+        uint256 tokenId = ownerToToken[_address];
+        return tokenId;
     }
 
     function setValidator(address _validator) public onlyOwner {
@@ -110,7 +129,7 @@ contract Snowflake721 is Ownable {
 
     function transferFrom(address _from, address _to, uint256 _tokenId)
       public
-      canTransfer(_to)
+      canTransfer(_to, _tokenId)
     {
         require(_from != address(0));
         require(_to != address(0));
@@ -119,7 +138,12 @@ contract Snowflake721 is Ownable {
         emit Transfer(_from, _to, _tokenId);
     }
 
-    function setUserIdentity(
+    function addTokenTo(address _to, uint256 _tokenId) internal {
+        require(tokenOwner[_tokenId] == address(0));
+        tokenOwner[_tokenId] = _to;
+    }
+
+    function mintIdentityToken(
         uint _tokenId,
         bytes32[] information,
         address _id,
@@ -128,30 +152,31 @@ contract Snowflake721 is Ownable {
         public
         onlyOwner
     {
+        require(tokenOf(_id) == 0, "This address already has an identity token.");
+
         RaindropClient raindropClient = RaindropClient(raindropClientAddress);
         string memory hydroId = raindropClient.getUserByAddress(_id);
 
         ContactInformation memory contactInfo;
         Misc memory misc;
         tokenIdentities[_tokenId] = Identity(
-              _id,
-              hydroId,
-              DOB(
-                  Field(information[0], new bytes32[](0)),//bytes32List(_initialValidator)),
-                  Field(information[1], new bytes32[](0)),
-                  Field(information[2], new bytes32[](0))
-                ),
-              Name(
-                  Field(information[3], new bytes32[](0)),
-                  Field(information[4], new bytes32[](0))
-                ),
-              Address(
-                  Field(information[5], new bytes32[](0))
-                ),
-              contactInfo,
-              misc
-          );
-
+            _id,
+            hydroId,
+            DOB(
+                Field(information[0], new bytes32[](0)),
+                Field(information[1], new bytes32[](0)),
+                Field(information[2], new bytes32[](0))
+              ),
+            Name(
+                Field(information[3], new bytes32[](0)),
+                Field(information[4], new bytes32[](0))
+              ),
+            Address(
+                Field(information[5], new bytes32[](0))
+              ),
+            contactInfo,
+            misc
+        );
 
         tokenIdentities[_tokenId].dateOfBirth.month.validations.push(_initialValidator);
         tokenIdentities[_tokenId].dateOfBirth.day.validations.push(_initialValidator);
@@ -160,6 +185,60 @@ contract Snowflake721 is Ownable {
         tokenIdentities[_tokenId].fullName.familyName.validations.push(_initialValidator);
         tokenIdentities[_tokenId].homeAddress.homeAddress.validations.push(_initialValidator);
 
-        safeTransferFrom(msg.sender, _id, _tokenId);
+        transferFrom(msg.sender, _id, _tokenId);
     }
+
+    function addEmail(uint256 _tokenId, bytes32 _newEmail)
+        public
+        onlyTokenOwnerOrValidator(_tokenId)
+    {
+        Identity storage id = tokenIdentities[_tokenId];
+        id.contactInformation.emails.insert(_newEmail);
+    }
+
+    function removeEmail(uint256 _tokenId, bytes32 _email)
+        public
+        onlyTokenOwnerOrValidator(_tokenId)
+    {
+        Identity storage id = tokenIdentities[_tokenId];
+        id.contactInformation.emails.remove(_email);
+    }
+
+    function addPhone(uint256 _tokenId, bytes32 _newPhone)
+        public
+        onlyTokenOwnerOrValidator(_tokenId)
+    {
+        Identity storage id = tokenIdentities[_tokenId];
+        id.contactInformation.phoneNumbers.insert(_newPhone);
+    }
+
+    function removePhone(uint256 _tokenId, bytes32 _phone)
+        public
+        onlyTokenOwnerOrValidator(_tokenId)
+    {
+        Identity storage id = tokenIdentities[_tokenId];
+        id.contactInformation.phoneNumbers.remove(_phone);
+    }
+
+    function addMisc(uint256 _tokenId, bytes32 _category, bytes32 _data)
+        public
+        onlyTokenOwnerOrValidator(_tokenId)
+    {
+        Identity storage id = tokenIdentities[_tokenId];
+        id.other.miscellaneous[_category] = _data;
+    }
+
+    function removeMisc(uint256 _tokenId, bytes32 _category)
+        public
+        onlyTokenOwnerOrValidator(_tokenId)
+    {
+        Identity storage id = tokenIdentities[_tokenId];
+        id.other.miscellaneous[_category] = 0x0;
+    }
+
+    event Transfer(
+        address indexed _from,
+        address indexed _to,
+        uint256 _tokenId
+    );
 }
