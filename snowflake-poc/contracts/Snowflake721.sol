@@ -74,43 +74,25 @@ contract Snowflake721 is Ownable {
     }
 
     modifier canTransfer(address _to, uint _id) {
-        require(
-          isOwner(msg.sender, _id),
-          "You do not own the token you are trying to send."
-        );
+        require(isOwner(msg.sender, _id), "You do not own the token you are trying to send.");
 
-        require(
-          validators[_to] ||
-          msg.sender == owner,
-          "The to address is not an approved validator"
-        );
+        require(validators[_to] || msg.sender == owner, "The to address is not an approved validator");
         _;
     }
 
     modifier onlyValidator() {
-      require(validators[msg.sender], "You are not a validator.");
-      _;
+        require(validators[msg.sender], "You are not a validator.");
+        _;
     }
 
     modifier onlyTokenOwnerOrValidator(uint _tokenId) {
-      require(
-          isOwner(msg.sender, _tokenId) ||
-          validators[msg.sender],
-          "You are not the token owner or a validator."
-      );
-      _;
+        require(isOwner(msg.sender, _tokenId) || validators[msg.sender], "You are not the token owner or a validator.");
+        _;
     }
 
-    function isOwner(
-      address _spender,
-      uint256 _tokenId
-    )
-      internal
-      view
-      returns (bool)
-    {
-      address owner = ownerOf(_tokenId);
-      return _spender == owner;
+    function isOwner(address _spender, uint256 _tokenId) internal view returns (bool) {
+        address owner = ownerOf(_tokenId);
+        return _spender == owner;
     }
 
     /**
@@ -137,10 +119,7 @@ contract Snowflake721 is Ownable {
         raindropClientAddress = _address;
     }
 
-    function transferFrom(address _from, address _to, uint256 _tokenId)
-      public
-      canTransfer(_to, _tokenId)
-    {
+    function transferFrom(address _from, address _to, uint256 _tokenId) public canTransfer(_to, _tokenId) {
         require(_from != address(0));
         require(_to != address(0));
         addTokenTo(_to, _tokenId);
