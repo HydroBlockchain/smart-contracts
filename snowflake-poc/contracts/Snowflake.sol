@@ -12,11 +12,13 @@ contract RaindropClient {
     function getUserByAddress(address _address) external view returns (string userName);
 }
 
-
 contract Snowflake is Withdrawable {
     using stringSet for stringSet._stringSet;
     using bytes32Set for bytes32Set._bytes32Set;
     using addressSet for addressSet._addressSet;
+
+    mapping (address => uint256) public staking;
+    uint public balance;
 
     // Token lookup mappings
     mapping (uint256 => Identity) internal tokenIdentities;
@@ -26,6 +28,7 @@ contract Snowflake is Withdrawable {
     addressSet._addressSet internal validators;
     // contract variables
     address public raindropClientAddress;
+    address public hydroTokenAddress;
     uint internal nextTokenId = 1;
 
     struct Validation {
@@ -83,11 +86,8 @@ contract Snowflake is Withdrawable {
         _;
     }
 
-    modifier onlyTokenOwnerOrValidator(uint _tokenId) {
-        require(
-            ownerOf(_tokenId) == msg.sender || validators.contains(msg.sender),
-            "You are not the token owner or a validator."
-        );
+    modifier requireStake(address _address, uint stake) {
+        require(staking[_address] >= stake, "Insufficient HYDRO balance.");
         _;
     }
 
@@ -117,13 +117,21 @@ contract Snowflake is Withdrawable {
         validators.remove(_validator);
     }
 
+    function becomeValidator() public {
+        validators.insert(msg.sender);
+    }
+
+    function stopBeingValidator() public {
+        validators.remove(msg.sender);
+    }
+
     function setRaindropClientAddress(address _address) public onlyOwner {
         raindropClientAddress = _address;
     }
 
     function mintIdentityToken(bytes32[] names, bytes32[] dateOfBirth) public returns(uint tokenId) {
         require(names.length == 4, "The names parameter must contain four elements.");
-        require(dateOfBirth.length == 3, "The dateOfBirth parameter must contain four elements.");
+        require(dateOfBirth.length == 3, "The dateOfBirth parameter must contain three elements.");
         require(ownerToToken[msg.sender] == 0, "This address is already associated with an identity.");
 
         RaindropClient raindropClient = RaindropClient(raindropClientAddress);
@@ -152,7 +160,7 @@ contract Snowflake is Withdrawable {
         return newTokenId;
     }
 
-    function addNameValidation(uint tokenId, bytes32 validationMessage) public onlyValidator {
+    function addNameValidation(uint tokenId, bytes32 validationMessage) public onlyValidator requireStake(msg.sender, 1) {
         Identity storage identity = tokenIdentities[tokenId];
         require(identity.owner != address(0x0), "This token does not exist.");
         identity.name.validationList.push(Validation(msg.sender, validationMessage));
@@ -247,21 +255,21 @@ contract Snowflake is Withdrawable {
         }
     }
 
-    function addEmailValidation(uint tokenId, string identifier, bytes32 message) public onlyValidator {
+    function addEmailValidation(uint tokenId, string identifier, bytes32 message) public onlyValidator requireStake(msg.sender, 1) {
         Identity storage identity = tokenIdentities[tokenId];
         require(identity.owner != address(0x0), "This token does not exist.");
         require(identity.contactInformation.emailsAttestedTo.contains(identifier), "The field does not exist.");
         identity.contactInformation.email[identifier].validationList.push(Validation(msg.sender, message));
     }
 
-    function addPhoneNumberValidation(uint tokenId, string identifier, bytes32 message) public onlyValidator {
+    function addPhoneNumberValidation(uint tokenId, string identifier, bytes32 message) public onlyValidator requireStake(msg.sender, 1) {
         Identity storage identity = tokenIdentities[tokenId];
         require(identity.owner != address(0x0), "This token does not exist.");
         require(identity.contactInformation.phoneNumbersAttestedTo.contains(identifier), "The field does not exist.");
         identity.contactInformation.phoneNumbers[identifier].validationList.push(Validation(msg.sender, message));
     }
 
-    function addPhysicalAddressValidation(uint tokenId, string identifier, bytes32 message) public onlyValidator {
+    function addPhysicalAddressValidation(uint tokenId, string identifier, bytes32 message) public onlyValidator requireStake(msg.sender, 1) {
         Identity storage identity = tokenIdentities[tokenId];
         require(identity.owner != address(0x0), "This token does not exist.");
         require(
@@ -314,4 +322,21 @@ contract Snowflake is Withdrawable {
             identity.miscellaneous.resolvers.remove(resolver);
         }
     }
+
+    function receiveApproval(address _sender, uint _amount, address _tokenAddress, bytes _extraData) public {
+        require(msg.sender == _tokenAddress);
+        require(_tokenAddress == hydroTokenAddress);
+        ERC20Basic hydro = ERC20Basic(_tokenAddress);
+        require(hydro.transferFrom(_sender, this, _amount));
+        staking[_sender] += _amount;
+        balance += _amount;
+    }
+
+    function withdraw() public {
+        require(staking[msg.sender] > 0);
+        require(staking[msg.sender] < balance);
+        ERC20Basic hydro = ERC20Basic(_tokenAddress);
+        hydro.transfer(msg.sender, staking[msg.sender]);
+    }
+
 }
