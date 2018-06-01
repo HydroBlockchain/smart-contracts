@@ -58,6 +58,7 @@ contract Snowflake is Withdrawable {
         for (uint8 i; i < uint8(AllowedSnowflakeFields.MAXIMUM); i++) {
             allowedFields[i] = true;
         }
+    }
 
     modifier requireStake(address _address, uint stake) {
         require(staking[_address] >= stake, "Insufficient HYDRO balance.");
@@ -216,5 +217,14 @@ contract Snowflake is Withdrawable {
         ERC20Basic hydro = ERC20Basic(_tokenAddress);
         hydro.transfer(msg.sender, staking[msg.sender]);
     }
+
+    function snowflakeTransfer(address _to, uint _amount) public {
+        require(staking[msg.sender] >= _amount, "Your balance is too low to transfer this amount");
+        staking[msg.sender] -= _amount; //todo add SafeMath
+        staking[_to] += _amount;
+        emit SnowflakeTransfer(msg.sender, _to, _amount);
+    }
+
+    event SnowflakeTransfer(address _from, address _to, address _amount);
 
 }
