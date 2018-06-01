@@ -12,18 +12,21 @@ interface ClientRaindrop {
     function getUserByAddress(address _address) external view returns (string userName);
 }
 
-
 contract Snowflake is Withdrawable {
     using stringSet for stringSet._stringSet;
     using bytes32Set for bytes32Set._bytes32Set;
     using addressSet for addressSet._addressSet;
+
+    mapping (address => uint256) public staking;
+    uint public balance;
 
     // Token lookup mappings
     mapping (uint256 => Identity) internal tokenIdentities;
     mapping (address => uint256) public ownerToToken;
     mapping (string => uint256) internal hydroIdToToken;
     // contract variables
-    address public clientRaindropAddress;
+    address public raindropClientAddress;
+    address public hydroTokenAddress;
     uint internal nextTokenId = 1;
 
     string[4] public nameOrder = ["givenName", "middleName", "surname", "preferredName"];
@@ -55,6 +58,10 @@ contract Snowflake is Withdrawable {
         for (uint8 i; i < uint8(AllowedSnowflakeFields.MAXIMUM); i++) {
             allowedFields[i] = true;
         }
+
+    modifier requireStake(address _address, uint stake) {
+        require(staking[_address] >= stake, "Insufficient HYDRO balance.");
+        _;
     }
 
     function ownerOf(uint256 _tokenId) public view returns (address) {
@@ -77,6 +84,10 @@ contract Snowflake is Withdrawable {
 
     function setClientRaindropAddress(address _address) public onlyOwner {
         clientRaindropAddress = _address;
+    }
+
+    function setHydroTokenAddress(address _address) public onlyOwner {
+        hydroTokenAddress = _address;
     }
 
     function mintIdentityToken(bytes32[4] names, bytes32[3] dateOfBirth) public returns(uint tokenId) {
@@ -189,4 +200,21 @@ contract Snowflake is Withdrawable {
             identity.fields[field].entriesAttestedTo.remove(entries[i]);
         }
     }
+
+    function receiveApproval(address _sender, uint _amount, address _tokenAddress, bytes _extraData) public {
+        require(msg.sender == _tokenAddress);
+        require(_tokenAddress == hydroTokenAddress);
+        ERC20Basic hydro = ERC20Basic(_tokenAddress);
+        require(hydro.transferFrom(_sender, this, _amount));
+        staking[_sender] += _amount;
+        balance += _amount;
+    }
+
+    function withdraw() public {
+        require(staking[msg.sender] > 0);
+        require(staking[msg.sender] < balance);
+        ERC20Basic hydro = ERC20Basic(_tokenAddress);
+        hydro.transfer(msg.sender, staking[msg.sender]);
+    }
+
 }
