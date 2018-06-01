@@ -86,10 +86,10 @@ contract SnowflakeRegistry is Withdrawable {
         public onlyOwner
     {
         require(bytes(applicationName).length < 100);
-        bytes32 applicationNameHash = keccak256(applicationName);
+        bytes32 applicationNameHash = keccak256(abi.encodePacked(applicationName));
         require(!applicationDirectory[applicationNameHash]._initialized, "Application already exists.");
 
-        require(supportedKeyTypes.contains(keccak256(keyType)), "Passed keyType is not supported.");
+        require(supportedKeyTypes.contains(keccak256(abi.encodePacked(keyType))), "Passed keyType is not supported.");
 
         applicationDirectory[applicationNameHash] = Application(
             applicationName,
@@ -100,7 +100,7 @@ contract SnowflakeRegistry is Withdrawable {
             ),
             EncryptionKey(
                 key,
-                keccak256(keyType)
+                keccak256(abi.encodePacked(keyType))
             ),
             true
         );
@@ -133,7 +133,7 @@ contract SnowflakeRegistry is Withdrawable {
         string keyType
     )
     {
-        bytes32 applicationNameHash = keccak256(applicationName);
+        bytes32 applicationNameHash = keccak256(abi.encodePacked(applicationName));
         Application storage application = applicationDirectory[applicationNameHash];
         require(application._initialized, "Application does not exist.");
 
@@ -154,13 +154,13 @@ contract SnowflakeRegistry is Withdrawable {
     }
 
     function addKeyType(string keyType) public onlyOwner {
-        bytes32 keyTypeHash = keccak256(keyType);
+        bytes32 keyTypeHash = keccak256(abi.encodePacked(keyType));
         supportedKeyTypes.insert(keyTypeHash);
         keyNames[keyTypeHash] = keyType;
     }
 
     function addDataField(string dataFieldName) public onlyOwner {
-        bytes32 dataFieldNameHash = keccak256(dataFieldName);
+        bytes32 dataFieldNameHash = keccak256(abi.encodePacked(dataFieldName));
         supportedDataFields.insert(dataFieldNameHash);
         dataFieldNames[dataFieldNameHash] = dataFieldName;
     }
@@ -197,13 +197,14 @@ contract SnowflakeRegistry is Withdrawable {
         require(raindropClientUserAddress == userAddress, "Incorrect user information");
         for (uint i = 0; i < dataFields.length; i++) {
             require(supportedDataFields.contains(dataFields[i]), "Unsupported data field.");
-            bytes32Set._bytes32Set storage currentFields = userSaltedHashes[keccak256(userName)][dataFields[i]];
+            bytes32Set._bytes32Set storage currentFields =
+                userSaltedHashes[keccak256(abi.encodePacked(userName))][dataFields[i]];
             currentFields.insert(saltedHashes[i]);
         }
     }
 
     function getSaltedHashes(string userName, string dataField) public view returns (bytes32[]) {
-        return userSaltedHashes[keccak256(userName)][keccak256(dataField)].members;
+        return userSaltedHashes[keccak256(abi.encodePacked(userName))][keccak256(abi.encodePacked(dataField))].members;
     }
 
     function removeDataDelegated(address userAddress, string userName, bytes32[] dataFields, bytes32[] saltedHashes)
@@ -226,7 +227,7 @@ contract SnowflakeRegistry is Withdrawable {
         require(raindropClientUserAddress == userAddress, "Incorrect user information");
         for (uint i = 0; i < dataFields.length; i++) {
             require(supportedDataFields.contains(dataFields[i]), "Unsupported data field.");
-            userSaltedHashes[keccak256(userName)][dataFields[i]].remove(saltedHashes[i]);
+            userSaltedHashes[keccak256(abi.encodePacked(userName))][dataFields[i]].remove(saltedHashes[i]);
         }
     }
 
@@ -268,7 +269,7 @@ contract SnowflakeRegistry is Withdrawable {
         uint escrowId = escrow.initiateEscrow(
             ownerAddress, userAddress, application.applicationAddressBook.relayerAddress, tokenSender, amount
         );
-        escrowIds[keccak256(userName)][applicationNameHash] = escrowId;
+        escrowIds[keccak256(abi.encodePacked(userName))][applicationNameHash] = escrowId;
 
         emit DataRequested(application.applicationName, userName, dataFields);
     }

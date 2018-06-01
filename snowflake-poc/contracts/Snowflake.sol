@@ -8,7 +8,7 @@ import "./libraries/bytes32Set.sol";
 import "./libraries/addressSet.sol";
 
 
-contract RaindropClient {
+interface ClientRaindrop {
     function getUserByAddress(address _address) external view returns (string userName);
 }
 
@@ -21,74 +21,40 @@ contract Snowflake is Withdrawable {
     // Token lookup mappings
     mapping (uint256 => Identity) internal tokenIdentities;
     mapping (address => uint256) public ownerToToken;
-    mapping (string => uint256) public hydroIdToToken;
-    // approved validators
-    addressSet._addressSet internal validators;
+    mapping (string => uint256) internal hydroIdToToken;
     // contract variables
-    address public raindropClientAddress;
+    address public clientRaindropAddress;
     uint internal nextTokenId = 1;
 
-    struct Validation {
-        address validator;
-        bytes32 validationMessage;
+    string[4] public nameOrder = ["givenName", "middleName", "surname", "preferredName"];
+    string[3] public dateOrder = ["day", "month", "year"];
+
+    struct Entry {
+        bytes32 saltedHash; // required, encrypted plaintext data. specifically: keccak256(abi.encodePacked(data, salt))
+        addressSet._addressSet resolversFor; // optional, set of addresses that contain additional data about this field
     }
 
-    struct Name {
-        bytes32 givenName;
-        bytes32 middleName;
-        bytes32 surname;
-        bytes32 preferredName;
-        Validation[] validationList;
-        addressSet._addressSet resolvers;
-    }
-
-    struct DateOfBirth {
-        bytes32 day;
-        bytes32 month;
-        bytes32 year;
-        Validation[] validationList;
-        addressSet._addressSet resolvers;
-    }
-
-    struct Field {
-        bytes32 fieldValue;
-        Validation[] validationList;
-        addressSet._addressSet resolvers;
-    }
-
-    struct ContactInformation {
-        mapping (string => Field) emails; // todo: what is the best way to index this mapping?
-        stringSet._stringSet emailsAttestedTo; // todo: is this necessary?
-        mapping (string => Field) phoneNumbers; // todo: what is the best way to index this mapping?
-        stringSet._stringSet phoneNumbersAttestedTo; // todo: is this necessary?
-        mapping (string => Field) physicalAddresses; // todo: what is the best way to index this mapping?
-        stringSet._stringSet physicalAddressesAttestedTo; // todo: is this necessary?
-    }
-
-    struct Miscellaneous {
-        addressSet._addressSet resolvers; // todo: should this be a mapping?
+    struct SnowflakeField {
+        mapping (string => Entry) entries; // required, entries with encrypted data attested to by users and other info
+        stringSet._stringSet entriesAttestedTo; // required, entries that the user has made
+        addressSet._addressSet resolversFor; // optional, set of addresses that contain additional data about this field
     }
 
     struct Identity {
         address owner;
         string hydroId;
-        Name name;
-        DateOfBirth dateOfBirth;
-        ContactInformation contactInformation;
-        Miscellaneous miscellaneous;
+        mapping (uint8 => SnowflakeField) fields; // mapping of AllowedSnowflakeFields to SnowflakeFields
+        addressSet._addressSet thirdPartyResolvers; // optional, set of third-party resolvers
     }
 
-    modifier onlyValidator() {
-        require(validators.contains(msg.sender), "The sender address is not a validator.");
-        _;
-    }
+    enum AllowedSnowflakeFields { Name, DateOfBirth, Emails, PhoneNumbers, PhysicalAddresses, MAXIMUM }
+    mapping (uint8 => bool) public allowedFields;
 
-    modifier onlyTokenOwnerOrValidator(uint _tokenId) {
-        require(
-            ownerOf(_tokenId) == msg.sender || validators.contains(msg.sender),
-            "You are not the token owner or a validator."
-        );
-        _;
+    function Snowflake () public {
+        // initialize allowed snowflake fields
+        for (uint8 i; i < uint8(AllowedSnowflakeFields.MAXIMUM); i++) {
+            allowedFields[i] = true;
+        }
     }
 
     function ownerOf(uint256 _tokenId) public view returns (address) {
@@ -109,25 +75,15 @@ contract Snowflake is Withdrawable {
         return tokenId;
     }
 
-    function addValidator(address _validator) public onlyOwner {
-        validators.insert(_validator);
+    function setClientRaindropAddress(address _address) public onlyOwner {
+        clientRaindropAddress = _address;
     }
 
-    function removeValidator(address _validator) public onlyOwner {
-        validators.remove(_validator);
-    }
-
-    function setRaindropClientAddress(address _address) public onlyOwner {
-        raindropClientAddress = _address;
-    }
-
-    function mintIdentityToken(bytes32[] names, bytes32[] dateOfBirth) public returns(uint tokenId) {
-        require(names.length == 4, "The names parameter must contain four elements.");
-        require(dateOfBirth.length == 3, "The dateOfBirth parameter must contain four elements.");
+    function mintIdentityToken(bytes32[4] names, bytes32[3] dateOfBirth) public returns(uint tokenId) {
         require(ownerToToken[msg.sender] == 0, "This address is already associated with an identity.");
 
-        RaindropClient raindropClient = RaindropClient(raindropClientAddress);
-        string memory _hydroId = raindropClient.getUserByAddress(msg.sender);
+        ClientRaindrop clientRaindrop = ClientRaindrop(clientRaindropAddress);
+        string memory _hydroId = clientRaindrop.getUserByAddress(msg.sender);
 
         assert(hydroIdToToken[_hydroId] == 0);
 
@@ -137,14 +93,20 @@ contract Snowflake is Withdrawable {
         identity.owner = msg.sender;
         identity.hydroId = _hydroId;
 
-        identity.name.givenName = names[0];
-        identity.name.middleName = names[1];
-        identity.name.surname = names[2];
-        identity.name.preferredName = names[3];
+        for (uint8 i; i < names.length; i++) {
+            if (names[i] != bytes32(0x0)) {
+                identity.fields[uint8(AllowedSnowflakeFields.Name)].entries[nameOrder[i]].saltedHash = names[i];
+                identity.fields[uint8(AllowedSnowflakeFields.Name)].entriesAttestedTo.insert(nameOrder[i]);
+            }
+        }
 
-        identity.dateOfBirth.day = dateOfBirth[0];
-        identity.dateOfBirth.month = dateOfBirth[1];
-        identity.dateOfBirth.year = dateOfBirth[2];
+        for (uint8 j; j < dateOfBirth.length; j++) {
+            if (dateOfBirth[j] != bytes32(0x0)) {
+                identity.fields[uint8(AllowedSnowflakeFields.DateOfBirth)].entries[dateOrder[j]].saltedHash =
+                    dateOfBirth[j];
+                identity.fields[uint8(AllowedSnowflakeFields.DateOfBirth)].entriesAttestedTo.insert(dateOrder[j]);
+            }
+        }
 
         ownerToToken[msg.sender] = newTokenId;
         hydroIdToToken[_hydroId] = newTokenId;
@@ -152,166 +114,79 @@ contract Snowflake is Withdrawable {
         return newTokenId;
     }
 
-    function addNameValidation(uint tokenId, bytes32 validationMessage) public onlyValidator {
-        Identity storage identity = tokenIdentities[tokenId];
-        require(identity.owner != address(0x0), "This token does not exist.");
-        identity.name.validationList.push(Validation(msg.sender, validationMessage));
-    }
-
-    function modifyNameResolver(address resolver, bool add) public {
+    function addResolver(uint8 field, string entry, address[] resolvers) public {
         uint tokenId = tokenOfAddress(msg.sender);
         Identity storage identity = tokenIdentities[tokenId];
-        if (add) {
-            identity.name.resolvers.insert(resolver);
-        } else {
-            identity.name.resolvers.remove(resolver);
-        }
-    }
-
-    function modifyEmailInformation(
-        string[] emailNames, bytes32[] emails, bool add
-    ) public {
-        uint tokenId = tokenOfAddress(msg.sender);
-
-        require(emailNames.length == emails.length, "Malformed inputs.");
-        require(emailNames.length < 6, "Too many inputs.");
-
-        Identity storage identity = tokenIdentities[tokenId];
-
-        for (uint i; i < emailNames.length; i++) {
-            require(
-                identity.contactInformation.emailsAttestedTo.contains(emailNames[i]) != add,
-                "Incorrect initialization status."
-            );
-            if (add) {
-                identity.contactInformation.emails[emailNames[i]].fieldValue = emails[i];
-                identity.contactInformation.emailsAttestedTo.insert(emailNames[i]);
-            } else {
-                delete identity.contactInformation.emails[emailNames[i]].fieldValue;
-                identity.contactInformation.emailsAttestedTo.remove(emailNames[i]);
+        // setting resolvers for an entire field vs. for an entry within a field
+        if (bytes(entry).length == 0) {
+            for (uint i; i < resolvers.length; i++) {
+                identity.fields[field].resolversFor.insert(resolvers[i]);
             }
-            delete identity.contactInformation.emails[emailNames[i]].validationList;
-        }
-    }
-
-    function modifyPhoneNumbersInformation(
-        string[] phoneNumberNames, bytes32[] phoneNumbers, bool add
-    ) public {
-        uint tokenId = tokenOfAddress(msg.sender);
-
-        require(phoneNumberNames.length == phoneNumbers.length, "Malformed inputs.");
-        require(phoneNumberNames.length < 6, "Too many inputs.");
-
-        Identity storage identity = tokenIdentities[tokenId];
-
-        for (uint i; i < phoneNumberNames.length; i++) {
-            require(
-                identity.contactInformation.phoneNumbersAttestedTo.contains(phoneNumberNames[i]) != add,
-                "Incorrect initialization status."
-            );
-            if (add) {
-                identity.contactInformation.phoneNumbers[phoneNumberNames[i]].fieldValue = phoneNumbers[i];
-                identity.contactInformation.phoneNumbersAttestedTo.insert(phoneNumberNames[i]);
-            } else {
-                delete identity.contactInformation.phoneNumbers[phoneNumberNames[i]].fieldValue;
-                identity.contactInformation.phoneNumbersAttestedTo.remove(phoneNumberNames[i]);
+        } else {
+            for (uint j; j < resolvers.length; j++) {
+                identity.fields[field].entries[entry].resolversFor.insert(resolvers[j]);
             }
-            delete identity.contactInformation.phoneNumbers[phoneNumberNames[i]].validationList;
         }
     }
 
-    function modifyPhysicalAddressesInformation(
-        string[] physicalAddressNames, bytes32[] physicalAddresses, bool add
-    ) public {
+    function removeResolver(uint8 field, string entry, address[] resolvers) public {
         uint tokenId = tokenOfAddress(msg.sender);
-
-        require(physicalAddressNames.length == physicalAddresses.length, "Malformed inputs.");
-        require(physicalAddressNames.length < 6, "Too many inputs.");
-
         Identity storage identity = tokenIdentities[tokenId];
-
-        for (uint i; i < physicalAddressNames.length; i++) {
-            require(
-                identity.contactInformation.physicalAddressesAttestedTo.contains(physicalAddressNames[i]) != add,
-                "Incorrect initialization status."
-            );
-            if (add) {
-                identity.contactInformation.physicalAddresses[physicalAddressNames[i]].fieldValue =
-                    physicalAddresses[i];
-                identity.contactInformation.physicalAddressesAttestedTo.insert(physicalAddressNames[i]);
-            } else {
-                delete identity.contactInformation.physicalAddresses[physicalAddressNames[i]].fieldValue;
-                identity.contactInformation.physicalAddressesAttestedTo.remove(physicalAddressNames[i]);
+        // setting resolvers for an entire field vs. for an entry within a field
+        if (bytes(entry).length == 0) {
+            for (uint i; i < resolvers.length; i++) {
+                identity.fields[field].resolversFor.remove(resolvers[i]);
             }
-            delete identity.contactInformation.physicalAddresses[physicalAddressNames[i]].validationList;
+        } else {
+            for (uint j; j < resolvers.length; j++) {
+                identity.fields[field].entries[entry].resolversFor.remove(resolvers[j]);
+            }
         }
     }
 
-    function addEmailValidation(uint tokenId, string identifier, bytes32 message) public onlyValidator {
-        Identity storage identity = tokenIdentities[tokenId];
-        require(identity.owner != address(0x0), "This token does not exist.");
-        require(identity.contactInformation.emailsAttestedTo.contains(identifier), "The field does not exist.");
-        identity.contactInformation.email[identifier].validationList.push(Validation(msg.sender, message));
-    }
-
-    function addPhoneNumberValidation(uint tokenId, string identifier, bytes32 message) public onlyValidator {
-        Identity storage identity = tokenIdentities[tokenId];
-        require(identity.owner != address(0x0), "This token does not exist.");
-        require(identity.contactInformation.phoneNumbersAttestedTo.contains(identifier), "The field does not exist.");
-        identity.contactInformation.phoneNumbers[identifier].validationList.push(Validation(msg.sender, message));
-    }
-
-    function addPhysicalAddressValidation(uint tokenId, string identifier, bytes32 message) public onlyValidator {
-        Identity storage identity = tokenIdentities[tokenId];
-        require(identity.owner != address(0x0), "This token does not exist.");
-        require(
-            identity.contactInformation.physicalAddressesAttestedTo.contains(identifier), "The field does not exist."
-        );
-        identity.contactInformation.physicalAddresses[identifier].validationList.push(Validation(msg.sender, message));
-    }
-
-    function modifyEmailResolver(string identifier, address resolver, bool add) public {
+    function addThirdPartyResolvers(address[] resolvers) public {
         uint tokenId = tokenOfAddress(msg.sender);
         Identity storage identity = tokenIdentities[tokenId];
-        require(identity.contactInformation.emailsAttestedTo.contains(identifier), "The field does not exist.");
-        if (add) {
-            identity.contactInformation.emails[identifier].resolvers.insert(resolver);
-        } else {
-            identity.contactInformation.emails[identifier].resolvers.remove(resolver);
+        // setting resolvers for an entire field vs. for an entry within a field
+        for (uint i; i < resolvers.length; i++) {
+            identity.thirdPartyResolvers.insert(resolvers[i]);
         }
     }
 
-    function modifyPhoneNumberResolver(string identifier, address resolver, bool add) public {
+    function removeThirdPartyResolvers(address[] resolvers) public {
         uint tokenId = tokenOfAddress(msg.sender);
         Identity storage identity = tokenIdentities[tokenId];
-        require(identity.contactInformation.phoneNumbersAttestedTo.contains(identifier), "The field does not exist.");
-        if (add) {
-            identity.contactInformation.phoneNumbers[identifier].resolvers.insert(resolver);
-        } else {
-            identity.contactInformation.phoneNumbers[identifier].resolvers.remove(resolver);
+        // setting resolvers for an entire field vs. for an entry within a field
+        for (uint i; i < resolvers.length; i++) {
+            identity.thirdPartyResolvers.remove(resolvers[i]);
         }
     }
 
-    function modifyPhysicalAddressesResolver(string identifier, address resolver, bool add) public {
+    function modifyFieldEntries(uint8 field, string[] entries, bytes32[] saltedHashes) public {
+        require(allowedFields[field], "Invalid field.");
+        require(field > uint8(AllowedSnowflakeFields.DateOfBirth), "This field cannot be modified.");
+        require(entries.length == saltedHashes.length, "Malformed inputs.");
+
         uint tokenId = tokenOfAddress(msg.sender);
         Identity storage identity = tokenIdentities[tokenId];
-        require(
-            identity.contactInformation.physicalAddressesAttestedTo.contains(identifier), "The field does not exist."
-        );
-        if (add) {
-            identity.contactInformation.physicalAddresses[identifier].resolvers.insert(resolver);
-        } else {
-            identity.contactInformation.physicalAddresses[identifier].resolvers.remove(resolver);
+
+        for (uint i; i < entries.length; i++) {
+            identity.fields[field].entries[entries[i]].saltedHash = saltedHashes[i];
+            identity.fields[field].entriesAttestedTo.insert(entries[i]);
         }
     }
 
-    function modifyMiscellaneousResolver(address resolver, bool add) public {
+    function removeFieldEntries(uint8 field, string[] entries, bytes32[] saltedHashes) public {
+        require(allowedFields[field], "Invalid field.");
+        require(field > uint8(AllowedSnowflakeFields.DateOfBirth), "This field cannot be modified.");
+        require(entries.length == saltedHashes.length, "Malformed inputs.");
+
         uint tokenId = tokenOfAddress(msg.sender);
         Identity storage identity = tokenIdentities[tokenId];
-        if (add) {
-            identity.miscellaneous.resolvers.insert(resolver);
-        } else {
-            identity.miscellaneous.resolvers.remove(resolver);
+
+        for (uint i; i < entries.length; i++) {
+            delete identity.fields[field].entries[entries[i]].saltedHash;
+            identity.fields[field].entriesAttestedTo.remove(entries[i]);
         }
     }
 }

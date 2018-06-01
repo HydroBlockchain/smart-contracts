@@ -18,6 +18,11 @@ module.exports = {
       network_id: 1,
       gas: gas,
       gasPrice: gasPrice
+    },
+    ganache: {
+      host: 'localhost',
+      port: 8555,
+      network_id: '*'
     }
   },
   solc: {
