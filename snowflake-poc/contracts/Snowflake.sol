@@ -154,6 +154,8 @@ contract Snowflake is Ownable {
                 identity.fields[field].entries[entry].resolversFor.insert(resolvers[j]);
             }
         }
+
+        emit AddedEntryResolver(field, entry, resolvers);
     }
 
     function removeResolver(uint8 field, string entry, address[] resolvers) public {
@@ -169,6 +171,8 @@ contract Snowflake is Ownable {
                 identity.fields[field].entries[entry].resolversFor.remove(resolvers[j]);
             }
         }
+
+        emit RemovededEntryResolver(field, entry, resolvers);
     }
 
     function addThirdPartyResolvers(address[] resolvers) public {
@@ -178,6 +182,8 @@ contract Snowflake is Ownable {
         for (uint i; i < resolvers.length; i++) {
             identity.thirdPartyResolvers.insert(resolvers[i]);
         }
+
+        emit AddedResolver(tokenId, resolvers);
     }
 
     function removeThirdPartyResolvers(address[] resolvers) public {
@@ -187,6 +193,8 @@ contract Snowflake is Ownable {
         for (uint i; i < resolvers.length; i++) {
             identity.thirdPartyResolvers.remove(resolvers[i]);
         }
+
+        emit RemovedResolver(tokenId, resolvers);
     }
 
     function addUpdateFieldEntries(uint8 field, string[] entries, bytes32[] saltedHashes) public {
@@ -271,6 +279,7 @@ contract Snowflake is Ownable {
         balance = balance.add(_amount);
         ERC20 hydro = ERC20(_tokenAddress);
         require(hydro.transferFrom(_sender, address(this), _amount));
+        emit SnowflakeDeposit(_sender, _amount);
     }
 
     function withdrawSnowflakeBalance(uint _amount) public {
@@ -280,6 +289,7 @@ contract Snowflake is Ownable {
         balance = balance.sub(_amount);
         ERC20 hydro = ERC20(hydroTokenAddress);
         require(hydro.transfer(msg.sender, _amount));
+        emit SnowflakeWithdraw(msg.sender, _amount);
     }
 
     function transferSnowflakeBalance(address _to, uint _amount) public {
@@ -290,8 +300,25 @@ contract Snowflake is Ownable {
         emit SnowflakeTransfer(msg.sender, _to, _amount);
     }
 
+    function getSnowflakeBalance(address _user) public returns(uint){
+        return staking[_user];
+    }
+
+    function getContractBalance() public returns(uint){
+        return balance;
+    }
+
     function getEmptyAddressSet() internal pure returns (addressSet._addressSet memory) {
         addressSet._addressSet memory empty;
         return empty;
     }
+
+    event SnowflakeDeposit(address _owner, uint _amount);
+    event SnowflakeTransfer(address _sender, address _to, uint _amount);
+    event SnowflakeWithdraw(address _to, uint _amount);
+    event AddedEntryResolver(uint8 _field, string _entry, address[] _resolvers);
+    event RemovedEntryResolver(uint8 _field, string _entry, address[] _resolvers);
+    event AddedResolver(uint _tokenId, address[] _resolvers);
+    event RemovedResolver(uint _tokenId, address[] _resolvers);
+
 }
