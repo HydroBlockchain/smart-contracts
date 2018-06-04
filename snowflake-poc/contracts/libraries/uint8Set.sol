@@ -1,13 +1,13 @@
 pragma solidity ^0.4.23;
 
 
-library bytes32Set {
-    struct _bytes32Set {
-        bytes32[] members;
-        mapping(bytes32 => uint) memberIndices;
+library uint8Set {
+    struct _uint8Set {
+        uint8[] members;
+        mapping(uint8 => uint) memberIndices;
     }
 
-    function insert(_bytes32Set storage self, bytes32 other) public {
+    function insert(_uint8Set storage self, uint8 other) public {
         if (!contains(self, other)) {
             assert(length(self) < 2**256-1);
             self.members.push(other);
@@ -15,10 +15,10 @@ library bytes32Set {
         }
     }
 
-    function remove(_bytes32Set storage self, bytes32 other) public {
+    function remove(_uint8Set storage self, uint8 other) public {
         if (contains(self, other)) {
             uint replaceIndex = self.memberIndices[other];
-            bytes32 lastMember = self.members[length(self)-1];
+            uint8 lastMember = self.members[length(self)-1];
             // overwrite other with the last member and remove last member
             self.members[replaceIndex-1] = lastMember;
             self.members.length--;
@@ -28,11 +28,11 @@ library bytes32Set {
         }
     }
 
-    function contains(_bytes32Set storage self, bytes32 other) public view returns (bool) {
+    function contains(_uint8Set storage self, uint8 other) public view returns (bool) {
         return self.memberIndices[other] > 0;
     }
 
-    function length(_bytes32Set storage self) public view returns (uint) {
+    function length(_uint8Set storage self) public view returns (uint) {
         return self.members.length;
     }
 }

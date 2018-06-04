@@ -9,17 +9,23 @@ contract('Clean Room', function (accounts) {
   const owner = {
     public: accounts[0]
   }
-  const user = {
+  var user = {
     hydroID: 'p4hwf8t',
     public: accounts[1],
     private: '6bf410ff825d07346c110c5836b33ec76e7d1ee051283937392180b732aa3aff',
-    salt: web3.utils.keccak256('6bf410ff825d07346c110c5836b33ec76e7d1ee051283937392180b732aa3aff'),
-    names: ['First', 'Middle', 'Last', 'Preferred'],
+    names: ['Prefix', 'First', 'Middle', 'Last', 'Suffix', 'Preferred'],
     dateOfBirth: ['30', '7', '2015'],
     emails: { 'Main Email': 'test@test.test' },
     phoneNumbers: { 'Mobile': '1234567890' },
     physicalAddresses: { 'Home': 'P. Sherman, 42 Wallaby Way, Sydney' }
   }
+  user.salt = web3.utils.soliditySha3({t: 'bytes32', v: `0x${user.private}`}, {t: 'address', v: user.public})
+  const hashedNames = user.names.map(x => {
+    return web3.utils.soliditySha3({t: 'string', v: x}, {t: 'bytes32', v: user.salt})
+  })
+  const hashedDateOfBirth = user.dateOfBirth.map(x => {
+    return web3.utils.soliditySha3({t: 'string', v: x}, {t: 'bytes32', v: user.salt})
+  })
 
   var hydroInstance
   var raindropInstance
@@ -54,17 +60,14 @@ contract('Clean Room', function (accounts) {
       await snowflakeInstance.setClientRaindropAddress(
         raindropInstance.address
       )
+      await snowflakeInstance.setHydroTokenAddress(
+        hydroInstance.address
+      )
     })
   })
 
   describe('Test snowflake functionality', function () {
     it('mint identity token', async function () {
-      let hashedNames = user.names.map(x => {
-        web3.utils.soliditySha3({t: 'string', v: x}, {t: 'bytes32', v: user.salt})
-      })
-      let hashedDateOfBirth = user.dateOfBirth.map(x => {
-        web3.utils.soliditySha3({t: 'string', v: x}, {t: 'bytes32', v: user.salt})
-      })
       let tokenId = await snowflakeInstance.mintIdentityToken.call(
         hashedNames, hashedDateOfBirth, { from: user.public }
       )
@@ -80,59 +83,27 @@ contract('Clean Room', function (accounts) {
       let tokenofHydroID = await snowflakeInstance.tokenOfHydroID.call(user.hydroID)
       assert.equal(tokenofHydroID, '1')
     })
-  //
-  //   it('key stored correctly', async function () {
-  //     let entry = await snowflakeInstance.getApplication.call(application.name)
-  //     assert.equal(keyData.publicKey, entry[3])
-  //     assert.equal('RSA-4096', entry[4])
-  //   })
-  //
-  //   it('add user data', async function () {
-  //     await snowflakeInstance.addDataDelegated(
-  //       raindropDelegatedUser.public,
-  //       raindropDelegatedUser.name,
-  //       [web3.utils.keccak256(dataField)],
-  //       [web3.utils.keccak256(raindropDelegatedUser[dataField], raindropDelegatedUser.salt)],
-  //       { from: owner.public }
-  //     )
-  //   })
-  //
-  //   it('verify user data', async function () {
-  //     let saltedHashes = await snowflakeInstance.getSaltedHashes.call(raindropDelegatedUser.name, dataField)
-  //     assert.deepEqual(
-  //       saltedHashes,
-  //       [web3.utils.keccak256(raindropDelegatedUser[dataField], raindropDelegatedUser.salt)],
-  //       'data stored incorrectly'
-  //     )
-  //   })
-  //
-  //   it('passed data can be decrypted with on-chain public key', async function () {
-  //     let applicationData = await snowflakeInstance.getApplication.call(application.name)
-  //     let publicKey = applicationData[3]
-  //     let encryptedField = await keyUtils.encrypt(
-  //       publicKey,
-  //       JSON.stringify({
-  //         [dataField]: raindropDelegatedUser[dataField],
-  //         salt: raindropDelegatedUser.salt
-  //       })
-  //     )
-  //     let decryptedData = JSON.parse(await keyUtils.decrypt(keyData.secretKeyObject, encryptedField))
-  //     let receivedSaltedHash = web3.utils.keccak256(decryptedData[dataField], decryptedData.salt)
-  //     let onChainSaltedHashes = await snowflakeInstance.getSaltedHashes.call(raindropDelegatedUser.name, dataField)
-  //     assert.include(onChainSaltedHashes, receivedSaltedHash, 'received data did not match on-chain data')
-  //   })
-  //
-  //   it('delete user data', async function () {
-  //     await snowflakeInstance.removeDataDelegated(
-  //       raindropDelegatedUser.public,
-  //       raindropDelegatedUser.name,
-  //       [web3.utils.keccak256(dataField)],
-  //       [web3.utils.keccak256(raindropDelegatedUser[dataField], raindropDelegatedUser.salt)]
-  //     )
-  //   })
-  //
-  //   it('delete application', async function () {
-  //     await snowflakeInstance.deleteApplication(web3.utils.keccak256(application.name))
-  //   })
+
+    it('verify token details', async function () {
+      let tokenDetails = await snowflakeInstance.tokenDetails.call(1)
+      assert.equal(tokenDetails[0], user.public)
+      assert.equal(tokenDetails[1], user.hydroID)
+      assert.deepEqual(tokenDetails[2].map(x => { return x.toNumber() }), [0, 1])
+      assert.deepEqual(tokenDetails[3], [])
+    })
+
+    it('verify field details', async function () {
+      let nameDetails = await snowflakeInstance.fieldDetails.call(1, 0)
+      console.log(nameDetails)
+      // assert.deepEqual(nameDetails[0], ['prefix', 'givenName', 'middleName', 'surname', 'suffix', 'preferredName'])
+      // assert.deepEqual(nameDetails[1], [])
+    })
+
+    it('verify entry details', async function () {
+      let givenNameEntryDetails = await snowflakeInstance.entryDetails.call(1, 0, 'prefix')
+      console.log(givenNameEntryDetails)
+      // assert.deepEqual(nameDetails[0], ['prefix', 'givenName', 'middleName', 'surname', 'suffix', 'preferredName'])
+      // assert.deepEqual(nameDetails[1], [])
+    })
   })
 })

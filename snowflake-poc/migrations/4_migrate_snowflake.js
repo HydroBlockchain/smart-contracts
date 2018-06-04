@@ -1,15 +1,18 @@
 const snowflake = artifacts.require('./Snowflake.sol')
 
+const SafeMath = artifacts.require('./libraries/SafeMath.sol')
+const uint8Set = artifacts.require('./libraries/uint8Set.sol')
 const stringSet = artifacts.require('./libraries/stringSet.sol')
-const bytes32Set = artifacts.require('./libraries/bytes32Set.sol')
 const addressSet = artifacts.require('./libraries/addressSet.sol')
 
 module.exports = function (deployer) {
+  deployer.deploy(SafeMath)
+  deployer.deploy(uint8Set)
   deployer.deploy(stringSet)
-  deployer.deploy(bytes32Set)
   deployer.deploy(addressSet)
+  deployer.link(SafeMath, snowflake)
+  deployer.link(uint8Set, snowflake)
   deployer.link(stringSet, snowflake)
-  deployer.link(bytes32Set, snowflake)
   deployer.link(addressSet, snowflake)
 
   deployer.deploy(snowflake)

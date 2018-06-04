@@ -1,10 +1,12 @@
 pragma solidity ^0.4.24;
 pragma experimental ABIEncoderV2;
 
-import "./Withdrawable.sol";
+import "./zeppelin/ownership/Ownable.sol";
+import "./zeppelin/token/ERC20/ERC20.sol";
+import "./zeppelin/math/SafeMath.sol";
 
+import "./libraries/uint8Set.sol";
 import "./libraries/stringSet.sol";
-import "./libraries/bytes32Set.sol";
 import "./libraries/addressSet.sol";
 
 
@@ -12,24 +14,31 @@ interface ClientRaindrop {
     function getUserByAddress(address _address) external view returns (string userName);
 }
 
-contract Snowflake is Withdrawable {
+
+contract Snowflake is Ownable {
+    using SafeMath for uint256;
+    using uint8Set for uint8Set._uint8Set;
     using stringSet for stringSet._stringSet;
-    using bytes32Set for bytes32Set._bytes32Set;
     using addressSet for addressSet._addressSet;
 
-    mapping (address => uint256) public staking;
+    event SnowflakeTransfer(address _from, address _to, uint _amount);
+
+    // hydro token wrapper variables
+    mapping (address => uint256) public deposits;
     uint public balance;
 
     // Token lookup mappings
     mapping (uint256 => Identity) internal tokenIdentities;
     mapping (address => uint256) public ownerToToken;
     mapping (string => uint256) internal hydroIdToToken;
+
     // contract variables
-    address public raindropClientAddress;
+    address public clientRaindropAddress;
     address public hydroTokenAddress;
     uint internal nextTokenId = 1;
 
-    string[4] public nameOrder = ["givenName", "middleName", "surname", "preferredName"];
+    string[6] public nameOrder = ["prefix", "givenName", "middleName", "surname", "suffix", "preferredName"];
+    stringSet._stringSet internal editableNameEntries;
     string[3] public dateOrder = ["day", "month", "year"];
 
     struct Entry {
@@ -47,21 +56,25 @@ contract Snowflake is Withdrawable {
         address owner;
         string hydroId;
         mapping (uint8 => SnowflakeField) fields; // mapping of AllowedSnowflakeFields to SnowflakeFields
+        uint8Set._uint8Set fieldsAttestedTo;
         addressSet._addressSet thirdPartyResolvers; // optional, set of third-party resolvers
     }
 
     enum AllowedSnowflakeFields { Name, DateOfBirth, Emails, PhoneNumbers, PhysicalAddresses, MAXIMUM }
     mapping (uint8 => bool) public allowedFields;
 
-    function Snowflake () public {
+    constructor () public {
         // initialize allowed snowflake fields
         for (uint8 i; i < uint8(AllowedSnowflakeFields.MAXIMUM); i++) {
             allowedFields[i] = true;
         }
+        editableNameEntries.insert("prefix");
+        editableNameEntries.insert("suffix");
+        editableNameEntries.insert("preferredName");
     }
 
-    modifier requireStake(address _address, uint stake) {
-        require(staking[_address] >= stake, "Insufficient HYDRO balance.");
+    modifier requireMinimumBalance(address _address, uint _balance) {
+        require(deposits[_address] >= _balance, "Insufficient HYDRO balance.");
         _;
     }
 
@@ -91,7 +104,7 @@ contract Snowflake is Withdrawable {
         hydroTokenAddress = _address;
     }
 
-    function mintIdentityToken(bytes32[4] names, bytes32[3] dateOfBirth) public returns(uint tokenId) {
+    function mintIdentityToken(bytes32[6] names, bytes32[3] dateOfBirth) public returns(uint tokenId) {
         require(ownerToToken[msg.sender] == 0, "This address is already associated with an identity.");
 
         ClientRaindrop clientRaindrop = ClientRaindrop(clientRaindropAddress);
@@ -111,14 +124,16 @@ contract Snowflake is Withdrawable {
                 identity.fields[uint8(AllowedSnowflakeFields.Name)].entriesAttestedTo.insert(nameOrder[i]);
             }
         }
+        identity.fieldsAttestedTo.insert(uint8(AllowedSnowflakeFields.Name));
 
         for (uint8 j; j < dateOfBirth.length; j++) {
             if (dateOfBirth[j] != bytes32(0x0)) {
-                identity.fields[uint8(AllowedSnowflakeFields.DateOfBirth)].entries[dateOrder[j]].saltedHash =
-                    dateOfBirth[j];
+                identity.fields[uint8(AllowedSnowflakeFields.DateOfBirth)]
+                    .entries[dateOrder[j]].saltedHash = dateOfBirth[j];
                 identity.fields[uint8(AllowedSnowflakeFields.DateOfBirth)].entriesAttestedTo.insert(dateOrder[j]);
             }
         }
+        identity.fieldsAttestedTo.insert(uint8(AllowedSnowflakeFields.DateOfBirth));
 
         ownerToToken[msg.sender] = newTokenId;
         hydroIdToToken[_hydroId] = newTokenId;
@@ -174,23 +189,27 @@ contract Snowflake is Withdrawable {
         }
     }
 
-    function modifyFieldEntries(uint8 field, string[] entries, bytes32[] saltedHashes) public {
+    function addUpdateFieldEntries(uint8 field, string[] entries, bytes32[] saltedHashes) public {
         require(allowedFields[field], "Invalid field.");
-        require(field > uint8(AllowedSnowflakeFields.DateOfBirth), "This field cannot be modified.");
+        require(field != uint8(AllowedSnowflakeFields.DateOfBirth), "This field cannot be modified.");
         require(entries.length == saltedHashes.length, "Malformed inputs.");
 
         uint tokenId = tokenOfAddress(msg.sender);
         Identity storage identity = tokenIdentities[tokenId];
 
         for (uint i; i < entries.length; i++) {
+            if (field == uint8(AllowedSnowflakeFields.Name))
+                require(editableNameEntries.contains(entries[i]));
             identity.fields[field].entries[entries[i]].saltedHash = saltedHashes[i];
+            identity.fields[field].entries[entries[i]].resolversFor = getEmptyAddressSet();
             identity.fields[field].entriesAttestedTo.insert(entries[i]);
         }
+        identity.fieldsAttestedTo.insert(field);
     }
 
     function removeFieldEntries(uint8 field, string[] entries, bytes32[] saltedHashes) public {
         require(allowedFields[field], "Invalid field.");
-        require(field > uint8(AllowedSnowflakeFields.DateOfBirth), "This field cannot be modified.");
+        require(field > uint8(AllowedSnowflakeFields.DateOfBirth), "These fields cannot be removed.");
         require(entries.length == saltedHashes.length, "Malformed inputs.");
 
         uint tokenId = tokenOfAddress(msg.sender);
@@ -198,33 +217,81 @@ contract Snowflake is Withdrawable {
 
         for (uint i; i < entries.length; i++) {
             delete identity.fields[field].entries[entries[i]].saltedHash;
+            identity.fields[field].entries[entries[i]].resolversFor = getEmptyAddressSet();
             identity.fields[field].entriesAttestedTo.remove(entries[i]);
         }
+
+        if (identity.fields[field].entriesAttestedTo.length() == 0)
+            identity.fieldsAttestedTo.remove(field);
     }
 
-    function receiveApproval(address _sender, uint _amount, address _tokenAddress, bytes _extraData) public {
+    // functions to read token values
+    function tokenDetails(uint tokenId) public view returns (
+        address owner, string hydroId, uint8[] fieldsAttestedTo, address[] thirdPartyResolvers
+    ) {
+        Identity storage identity = tokenIdentities[tokenId];
+        require(identity.owner != address(0), "This token has not yet been minted.");
+        return (
+            identity.owner,
+            identity.hydroId,
+            identity.fieldsAttestedTo.members,
+            identity.thirdPartyResolvers.members
+        );
+    }
+
+    function fieldDetails(uint tokenId, uint8 field) public view returns (
+        string[] entriesAttestedTo, address[] resolversFor
+    ) {
+        Identity storage identity = tokenIdentities[tokenId];
+        require(identity.owner != address(0), "This token has not yet been minted.");
+        require(identity.fieldsAttestedTo.contains(field));
+        return (
+            identity.fields[field].entriesAttestedTo.members,
+            identity.fields[field].resolversFor.members
+        );
+    }
+
+    function entryDetails(uint tokenId, uint8 field, string entry) public view returns (
+        bytes32 saltedHash, address[] resolversFor
+    ) {
+        Identity storage identity = tokenIdentities[tokenId];
+        require(identity.owner != address(0), "This token has not yet been minted.");
+        require(identity.fieldsAttestedTo.contains(field));
+        require(identity.fields[field].entriesAttestedTo.contains(entry));
+        return (
+            identity.fields[field].entries[entry].saltedHash,
+            identity.fields[field].entries[entry].resolversFor.members
+        );
+    }
+
+    function receiveApproval(address _sender, uint _amount, address _tokenAddress, bytes) public {
         require(msg.sender == _tokenAddress);
         require(_tokenAddress == hydroTokenAddress);
-        ERC20Basic hydro = ERC20Basic(_tokenAddress);
-        require(hydro.transferFrom(_sender, this, _amount));
-        staking[_sender] += _amount;
-        balance += _amount;
+        deposits[_sender] = deposits[_sender].add(_amount);
+        balance = balance.add(_amount);
+        ERC20 hydro = ERC20(_tokenAddress);
+        require(hydro.transferFrom(_sender, address(this), _amount));
     }
 
-    function withdraw() public {
-        require(staking[msg.sender] > 0);
-        require(staking[msg.sender] < balance);
-        ERC20Basic hydro = ERC20Basic(_tokenAddress);
-        hydro.transfer(msg.sender, staking[msg.sender]);
+    function withdrawSnowflakeBalance(uint _amount) public {
+        require(_amount > 0);
+        require(deposits[msg.sender] >= _amount, "Your balance is too low to withdraw this amount.");
+        deposits[msg.sender] = deposits[msg.sender].sub(_amount);
+        balance = balance.sub(_amount);
+        ERC20 hydro = ERC20(hydroTokenAddress);
+        require(hydro.transfer(msg.sender, _amount));
     }
 
-    function snowflakeTransfer(address _to, uint _amount) public {
-        require(staking[msg.sender] >= _amount, "Your balance is too low to transfer this amount");
-        staking[msg.sender] -= _amount; //todo add SafeMath
-        staking[_to] += _amount;
+    function transferSnowflakeBalance(address _to, uint _amount) public {
+        require(_amount > 0);
+        require(deposits[msg.sender] >= _amount, "Your balance is too low to transfer this amount.");
+        deposits[msg.sender] = deposits[msg.sender].sub(_amount);
+        deposits[_to] = deposits[_to].add(_amount);
         emit SnowflakeTransfer(msg.sender, _to, _amount);
     }
 
-    event SnowflakeTransfer(address _from, address _to, address _amount);
-
+    function getEmptyAddressSet() internal pure returns (addressSet._addressSet memory) {
+        addressSet._addressSet memory empty;
+        return empty;
+    }
 }
