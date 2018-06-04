@@ -27,6 +27,9 @@ contract('Clean Room', function (accounts) {
     return web3.utils.soliditySha3({t: 'string', v: x}, {t: 'bytes32', v: user.salt})
   })
 
+  const nameOrder = ['prefix', 'givenName', 'middleName', 'surname', 'suffix', 'preferredName']
+  const dateOrder = ['day', 'month', 'year']
+
   var hydroInstance
   var raindropInstance
   var snowflakeInstance
@@ -94,16 +97,23 @@ contract('Clean Room', function (accounts) {
 
     it('verify field details', async function () {
       let nameDetails = await snowflakeInstance.fieldDetails.call(1, 0)
-      console.log(nameDetails)
-      // assert.deepEqual(nameDetails[0], ['prefix', 'givenName', 'middleName', 'surname', 'suffix', 'preferredName'])
-      // assert.deepEqual(nameDetails[1], [])
+      // assert.deepEqual(nameDetails[0], nameOrder)
+      assert.deepEqual(nameDetails[1], [])
     })
 
     it('verify entry details', async function () {
-      let givenNameEntryDetails = await snowflakeInstance.entryDetails.call(1, 0, 'prefix')
-      console.log(givenNameEntryDetails)
-      // assert.deepEqual(nameDetails[0], ['prefix', 'givenName', 'middleName', 'surname', 'suffix', 'preferredName'])
-      // assert.deepEqual(nameDetails[1], [])
+      var nameEntryDetails
+      for (let i = 0; i < user.names.length; i++) {
+        nameEntryDetails = await snowflakeInstance.entryDetails.call(1, 0, nameOrder[i])
+        assert.equal(nameEntryDetails[0], hashedNames[i])
+        assert.deepEqual(nameEntryDetails[1], [])
+      }
+      var birthEntryDetails
+      for (let i = 0; i < user.dateOfBirth.length; i++) {
+        birthEntryDetails = await snowflakeInstance.entryDetails.call(1, 1, dateOrder[i])
+        assert.equal(birthEntryDetails[0], hashedDateOfBirth[i])
+        assert.deepEqual(birthEntryDetails[1], [])
+      }
     })
   })
 })
