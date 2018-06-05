@@ -172,7 +172,7 @@ contract Snowflake is Ownable {
             }
         }
 
-        emit RemovededEntryResolver(field, entry, resolvers);
+        emit RemovedEntryResolver(field, entry, resolvers);
     }
 
     function addThirdPartyResolvers(address[] resolvers) public {
@@ -301,7 +301,7 @@ contract Snowflake is Ownable {
     }
 
     function getSnowflakeBalance(address _user) public returns(uint){
-        return staking[_user];
+        return deposits[_user];
     }
 
     function getContractBalance() public returns(uint){
