@@ -1,9 +1,9 @@
 pragma solidity ^0.4.23;
 
-import "./Withdrawable.sol";
+import "../Withdrawable.sol";
 
-import "./libraries/bytesLibrary.sol";
-import "./libraries/bytes32Set.sol";
+import "../libraries/bytesLibrary.sol";
+import "../libraries/bytes32Set.sol";
 
 
 contract RaindropClient {

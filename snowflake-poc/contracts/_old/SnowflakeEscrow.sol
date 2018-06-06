@@ -1,6 +1,6 @@
 pragma solidity ^0.4.23;
 
-import "./Withdrawable.sol";
+import "../Withdrawable.sol";
 
 
 contract SnowflakeEscrow is Withdrawable {

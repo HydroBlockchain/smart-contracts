@@ -1,0 +1,637 @@
+{
+  "contractName": "SnowflakeResolver",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_address",
+          "type": "address"
+        }
+      ],
+      "name": "setSnowflakeAddress",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405260008054600160a060020a031916331790556101e5806100256000396000f3006080604052600436106100565763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416638da5cb5b811461005b578063c979b05a1461008c578063f2fde38b146100af575b600080fd5b34801561006757600080fd5b506100706100d0565b60408051600160a060020a039092168252519081900360200190f35b34801561009857600080fd5b506100ad600160a060020a03600435166100df565b005b3480156100bb57600080fd5b506100ad600160a060020a0360043516610125565b600054600160a060020a031681565b600054600160a060020a031633146100f657600080fd5b6003805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a0392909216919091179055565b600054600160a060020a0316331461013c57600080fd5b600160a060020a038116151561015157600080fd5b60008054604051600160a060020a03808516939216917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a36000805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a03929092169190911790555600a165627a7a7230582044db908e251b615c6bd2a2d3d86079c693953f303bc110e27ce6771996a7f2e70029",
+  "deployedBytecode": "0x6080604052600436106100565763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416638da5cb5b811461005b578063c979b05a1461008c578063f2fde38b146100af575b600080fd5b34801561006757600080fd5b506100706100d0565b60408051600160a060020a039092168252519081900360200190f35b34801561009857600080fd5b506100ad600160a060020a03600435166100df565b005b3480156100bb57600080fd5b506100ad600160a060020a0360043516610125565b600054600160a060020a031681565b600054600160a060020a031633146100f657600080fd5b6003805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a0392909216919091179055565b600054600160a060020a0316331461013c57600080fd5b600160a060020a038116151561015157600080fd5b60008054604051600160a060020a03808516939216917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a36000805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a03929092169190911790555600a165627a7a7230582044db908e251b615c6bd2a2d3d86079c693953f303bc110e27ce6771996a7f2e70029",
+  "sourceMap": "72:244:20:-;;;506:5:22;:18;;-1:-1:-1;;;;;;506:18:22;514:10;506:18;;;72:244:20;;;;;;",
+  "deployedSourceMap": "72:244:20:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;235:20:22;;8:9:-1;5:2;;;30:1;27;20:12;5:2;235:20:22;;;;;;;;-1:-1:-1;;;;;235:20:22;;;;;;;;;;;;;;206:108:20;;8:9:-1;5:2;;;30:1;27;20:12;5:2;-1:-1;206:108:20;-1:-1:-1;;;;;206:108:20;;;;;;;862:188:22;;8:9:-1;5:2;;;30:1;27;20:12;5:2;-1:-1;862:188:22;-1:-1:-1;;;;;862:188:22;;;;;235:20;;;-1:-1:-1;;;;;235:20:22;;:::o;206:108:20:-;670:5:22;;-1:-1:-1;;;;;670:5:22;656:10;:19;648:28;;;;;;280:16:20;:27;;-1:-1:-1;;280:27:20;-1:-1:-1;;;;;280:27:20;;;;;;;;;;206:108::o;862:188:22:-;670:5;;-1:-1:-1;;;;;670:5:22;656:10;:19;648:28;;;;;;-1:-1:-1;;;;;942:22:22;;;;934:31;;;;;;1001:5;;;980:37;;-1:-1:-1;;;;;980:37:22;;;;1001:5;;;980:37;;;1027:5;:16;;-1:-1:-1;;1027:16:22;-1:-1:-1;;;;;1027:16:22;;;;;;;;;;862:188::o",
+  "source": "pragma solidity ^0.4.23;\n\nimport \"../zeppelin/ownership/Ownable.sol\";\n\n\ncontract SnowflakeResolver is Ownable {\n    string snowflakeName;\n    string snowflakeDescription;\n    address snowflakeAddress;\n\n    function setSnowflakeAddress(address _address) public onlyOwner {\n        snowflakeAddress = _address;\n    }\n}\n",
+  "sourcePath": "/Users/noahzinsmeister/Documents/github/smart-contracts/snowflake-poc/contracts/resolvers/SnowflakeResolver.sol",
+  "ast": {
+    "absolutePath": "/Users/noahzinsmeister/Documents/github/smart-contracts/snowflake-poc/contracts/resolvers/SnowflakeResolver.sol",
+    "exportedSymbols": {
+      "SnowflakeResolver": [
+        5944
+      ]
+    },
+    "id": 5945,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 5922,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".23"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:20"
+      },
+      {
+        "absolutePath": "/Users/noahzinsmeister/Documents/github/smart-contracts/snowflake-poc/contracts/zeppelin/ownership/Ownable.sol",
+        "file": "../zeppelin/ownership/Ownable.sol",
+        "id": 5923,
+        "nodeType": "ImportDirective",
+        "scope": 5945,
+        "sourceUnit": 6095,
+        "src": "26:43:20",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 5924,
+              "name": "Ownable",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 6094,
+              "src": "102:7:20",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_Ownable_$6094",
+                "typeString": "contract Ownable"
+              }
+            },
+            "id": 5925,
+            "nodeType": "InheritanceSpecifier",
+            "src": "102:7:20"
+          }
+        ],
+        "contractDependencies": [
+          6094
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 5944,
+        "linearizedBaseContracts": [
+          5944,
+          6094
+        ],
+        "name": "SnowflakeResolver",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 5927,
+            "name": "snowflakeName",
+            "nodeType": "VariableDeclaration",
+            "scope": 5944,
+            "src": "116:20:20",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_string_storage",
+              "typeString": "string"
+            },
+            "typeName": {
+              "id": 5926,
+              "name": "string",
+              "nodeType": "ElementaryTypeName",
+              "src": "116:6:20",
+              "typeDescriptions": {
+                "typeIdentifier": "t_string_storage_ptr",
+                "typeString": "string"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 5929,
+            "name": "snowflakeDescription",
+            "nodeType": "VariableDeclaration",
+            "scope": 5944,
+            "src": "142:27:20",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_string_storage",
+              "typeString": "string"
+            },
+            "typeName": {
+              "id": 5928,
+              "name": "string",
+              "nodeType": "ElementaryTypeName",
+              "src": "142:6:20",
+              "typeDescriptions": {
+                "typeIdentifier": "t_string_storage_ptr",
+                "typeString": "string"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 5931,
+            "name": "snowflakeAddress",
+            "nodeType": "VariableDeclaration",
+            "scope": 5944,
+            "src": "175:24:20",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 5930,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "175:7:20",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 5942,
+              "nodeType": "Block",
+              "src": "270:44:20",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 5940,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 5938,
+                      "name": "snowflakeAddress",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 5931,
+                      "src": "280:16:20",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 5939,
+                      "name": "_address",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 5933,
+                      "src": "299:8:20",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "src": "280:27:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "id": 5941,
+                  "nodeType": "ExpressionStatement",
+                  "src": "280:27:20"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 5943,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [
+              {
+                "arguments": null,
+                "id": 5936,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 5935,
+                  "name": "onlyOwner",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 6068,
+                  "src": "260:9:20",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_modifier$__$",
+                    "typeString": "modifier ()"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "260:9:20"
+              }
+            ],
+            "name": "setSnowflakeAddress",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5934,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5933,
+                  "name": "_address",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5943,
+                  "src": "235:16:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5932,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "235:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "234:18:20"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 5937,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "270:0:20"
+            },
+            "scope": 5944,
+            "src": "206:108:20",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 5945,
+        "src": "72:244:20"
+      }
+    ],
+    "src": "0:317:20"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/noahzinsmeister/Documents/github/smart-contracts/snowflake-poc/contracts/resolvers/SnowflakeResolver.sol",
+    "exportedSymbols": {
+      "SnowflakeResolver": [
+        5944
+      ]
+    },
+    "id": 5945,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 5922,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".23"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:20"
+      },
+      {
+        "absolutePath": "/Users/noahzinsmeister/Documents/github/smart-contracts/snowflake-poc/contracts/zeppelin/ownership/Ownable.sol",
+        "file": "../zeppelin/ownership/Ownable.sol",
+        "id": 5923,
+        "nodeType": "ImportDirective",
+        "scope": 5945,
+        "sourceUnit": 6095,
+        "src": "26:43:20",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 5924,
+              "name": "Ownable",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 6094,
+              "src": "102:7:20",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_Ownable_$6094",
+                "typeString": "contract Ownable"
+              }
+            },
+            "id": 5925,
+            "nodeType": "InheritanceSpecifier",
+            "src": "102:7:20"
+          }
+        ],
+        "contractDependencies": [
+          6094
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 5944,
+        "linearizedBaseContracts": [
+          5944,
+          6094
+        ],
+        "name": "SnowflakeResolver",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 5927,
+            "name": "snowflakeName",
+            "nodeType": "VariableDeclaration",
+            "scope": 5944,
+            "src": "116:20:20",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_string_storage",
+              "typeString": "string"
+            },
+            "typeName": {
+              "id": 5926,
+              "name": "string",
+              "nodeType": "ElementaryTypeName",
+              "src": "116:6:20",
+              "typeDescriptions": {
+                "typeIdentifier": "t_string_storage_ptr",
+                "typeString": "string"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 5929,
+            "name": "snowflakeDescription",
+            "nodeType": "VariableDeclaration",
+            "scope": 5944,
+            "src": "142:27:20",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_string_storage",
+              "typeString": "string"
+            },
+            "typeName": {
+              "id": 5928,
+              "name": "string",
+              "nodeType": "ElementaryTypeName",
+              "src": "142:6:20",
+              "typeDescriptions": {
+                "typeIdentifier": "t_string_storage_ptr",
+                "typeString": "string"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 5931,
+            "name": "snowflakeAddress",
+            "nodeType": "VariableDeclaration",
+            "scope": 5944,
+            "src": "175:24:20",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 5930,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "175:7:20",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 5942,
+              "nodeType": "Block",
+              "src": "270:44:20",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 5940,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 5938,
+                      "name": "snowflakeAddress",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 5931,
+                      "src": "280:16:20",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 5939,
+                      "name": "_address",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 5933,
+                      "src": "299:8:20",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "src": "280:27:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "id": 5941,
+                  "nodeType": "ExpressionStatement",
+                  "src": "280:27:20"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 5943,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [
+              {
+                "arguments": null,
+                "id": 5936,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 5935,
+                  "name": "onlyOwner",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 6068,
+                  "src": "260:9:20",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_modifier$__$",
+                    "typeString": "modifier ()"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "260:9:20"
+              }
+            ],
+            "name": "setSnowflakeAddress",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5934,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5933,
+                  "name": "_address",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5943,
+                  "src": "235:16:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5932,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "235:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "234:18:20"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 5937,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "270:0:20"
+            },
+            "scope": 5944,
+            "src": "206:108:20",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 5945,
+        "src": "72:244:20"
+      }
+    ],
+    "src": "0:317:20"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.24+commit.e67f0147.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "2.0.0",
+  "updatedAt": "2018-06-06T14:30:58.309Z"
+}

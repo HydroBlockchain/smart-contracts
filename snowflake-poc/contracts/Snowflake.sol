@@ -21,8 +21,6 @@ contract Snowflake is Ownable {
     using stringSet for stringSet._stringSet;
     using addressSet for addressSet._addressSet;
 
-    event SnowflakeTransfer(address _from, address _to, uint _amount);
-
     // hydro token wrapper variables
     mapping (address => uint256) public deposits;
     uint public balance;
@@ -196,7 +194,6 @@ contract Snowflake is Ownable {
 
         emit RemovedResolver(tokenId, resolvers);
     }
-
     function addUpdateFieldEntries(uint8 field, string[] entries, bytes32[] saltedHashes) public {
         require(allowedFields[field], "Invalid field.");
         require(field != uint8(AllowedSnowflakeFields.DateOfBirth), "This field cannot be modified.");
@@ -233,8 +230,54 @@ contract Snowflake is Ownable {
             identity.fieldsAttestedTo.remove(field);
     }
 
+    // functions to check resolver membership
+    function hasResolver(uint tokenId, address resolver) public view returns (bool) {
+        Identity storage identity = tokenIdentities[tokenId];
+        require(identity.owner != address(0), "This token has not yet been minted.");
+
+        return identity.thirdPartyResolvers.contains(resolver);
+    }
+
+    function hasResolver(uint tokenId, uint8 field, address resolver) public view returns (bool) {
+        Identity storage identity = tokenIdentities[tokenId];
+        require(identity.owner != address(0), "This token has not yet been minted.");
+        if (!identity.fieldsAttestedTo.contains(field)) {
+            return false;
+        }
+
+        return identity.fields[field].resolversFor.contains(resolver);
+    }
+
+    function hasResolver(uint tokenId, uint8 field, string entry, address resolver) public view returns (bool) {
+        Identity storage identity = tokenIdentities[tokenId];
+        require(identity.owner != address(0), "This token has not yet been minted.");
+        if (!identity.fieldsAttestedTo.contains(field) || !identity.fields[field].entriesAttestedTo.contains(entry)) {
+            return false;
+        }
+
+        return identity.fields[field].entries[entry].resolversFor.contains(resolver);
+    }
+
+    // functions to check attestations
+    function haAttested(uint tokenId, uint8 field) public view returns (bool) {
+        Identity storage identity = tokenIdentities[tokenId];
+        require(identity.owner != address(0), "This token has not yet been minted.");
+
+        return identity.fieldsAttestedTo.contains(field);
+    }
+
+    function haAttested(uint tokenId, uint8 field, string entry) public view returns (bool) {
+        Identity storage identity = tokenIdentities[tokenId];
+        require(identity.owner != address(0), "This token has not yet been minted.");
+        if (!identity.fieldsAttestedTo.contains(field)) {
+            return false;
+        }
+
+        return identity.fields[field].entriesAttestedTo.contains(entry);
+    }
+
     // functions to read token values
-    function tokenDetails(uint tokenId) public view returns (
+    function getDetails(uint tokenId) public view returns (
         address owner, string hydroId, uint8[] fieldsAttestedTo, address[] thirdPartyResolvers
     ) {
         Identity storage identity = tokenIdentities[tokenId];
@@ -247,7 +290,7 @@ contract Snowflake is Ownable {
         );
     }
 
-    function fieldDetails(uint tokenId, uint8 field) public view returns (
+    function getDetails(uint tokenId, uint8 field) public view returns (
         string[] entriesAttestedTo, address[] resolversFor
     ) {
         Identity storage identity = tokenIdentities[tokenId];
@@ -259,7 +302,7 @@ contract Snowflake is Ownable {
         );
     }
 
-    function entryDetails(uint tokenId, uint8 field, string entry) public view returns (
+    function getDetails(uint tokenId, uint8 field, string entry) public view returns (
         bytes32 saltedHash, address[] resolversFor
     ) {
         Identity storage identity = tokenIdentities[tokenId];
@@ -272,6 +315,7 @@ contract Snowflake is Ownable {
         );
     }
 
+    // functions that enbale HYDRO functionality
     function receiveApproval(address _sender, uint _amount, address _tokenAddress, bytes) public {
         require(msg.sender == _tokenAddress);
         require(_tokenAddress == hydroTokenAddress);
@@ -300,11 +344,11 @@ contract Snowflake is Ownable {
         emit SnowflakeTransfer(msg.sender, _to, _amount);
     }
 
-    function getSnowflakeBalance(address _user) public returns(uint){
+    function getSnowflakeBalance(address _user) public view returns(uint){
         return deposits[_user];
     }
 
-    function getContractBalance() public returns(uint){
+    function getContractBalance() public view returns(uint){
         return balance;
     }
 
@@ -313,6 +357,7 @@ contract Snowflake is Ownable {
         return empty;
     }
 
+    // events
     event SnowflakeDeposit(address _owner, uint _amount);
     event SnowflakeTransfer(address _sender, address _to, uint _amount);
     event SnowflakeWithdraw(address _to, uint _amount);
@@ -320,5 +365,4 @@ contract Snowflake is Ownable {
     event RemovedEntryResolver(uint8 _field, string _entry, address[] _resolvers);
     event AddedResolver(uint _tokenId, address[] _resolvers);
     event RemovedResolver(uint _tokenId, address[] _resolvers);
-
 }
