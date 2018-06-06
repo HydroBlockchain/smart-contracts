@@ -38,7 +38,8 @@ contract HydroReputation is SnowflakeResolver {
     }
 
     function addReputationField(string _field) public {
-        require(addedReputationsLookup[msg.sender][_field] == 0,"");
+        require(reputationList[msg.sender].identityTokenId != 0,"You must join the reputation program.");
+        require(addedReputationsLookup[msg.sender][_field] == 0,"This field has not been added.");
 
         uint256 id = addedReputationsList[msg.sender].push(_field);
         addedReputationsLookup[msg.sender][_field] = id;
@@ -50,7 +51,9 @@ contract HydroReputation is SnowflakeResolver {
     }
 
     function attestToReputation(address _user, string _field) public {
-        require(addedReputationsLookup[_user][_field] > 0,"");
+        require(reputationList[msg.sender].identityTokenId != 0,"You must join the reputation program.");
+        require(reputationList[_user].identityTokenId != 0,"The user must join the reputation program.");
+        require(addedReputationsLookup[_user][_field] > 0,"This field has not been added.");
 
         require(!addresses[reputationList[_user].reputationFieldsLookup[_field].addressGroupIndex].addressLookup[msg.sender], "");
 
@@ -61,8 +64,9 @@ contract HydroReputation is SnowflakeResolver {
     }
 
     function getReputation(address _user, string _field) public view returns(uint){
-        require(addedReputationsLookup[_user][_field] > 0,"");
-        uint addressId = reputationList[_user].reputationFieldsLookup[_field].addressGroupIndex;
+        require(reputationList[_user].identityTokenId != 0,"The user must join the reputation program.");
+        require(addedReputationsLookup[_user][_field] > 0,"This field has not been added.");
+        uint addressId = reputationList[_user].repuationFieldsLookup[_field].addressGroupIndex;
         return addresses[addressId].addressList.length;
     }
 
