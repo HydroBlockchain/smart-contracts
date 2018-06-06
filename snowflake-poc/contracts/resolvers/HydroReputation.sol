@@ -16,7 +16,7 @@ contract HydroReputation is SnowflakeResolver {
 
     mapping (address => Reputation) internal reputationList;
     mapping (address => string[]) public addedReputationsList;
-    mapping (address => mapping(string => uint)) public addedReputationsLookup;
+    mapping (address => mapping(string => uint)) internal addedReputationsLookup;
 
     AddressGroup[] internal addresses;
 
@@ -56,8 +56,7 @@ contract HydroReputation is SnowflakeResolver {
         require(addedReputationsLookup[_user][_field] > 0, "This field has not been added.");
 
         require(
-            !addresses[reputationList[_user]
-                .reputationFieldsLookup[_field].addressGroupIndex].addressLookup[msg.sender], ""
+            !addresses[reputationList[_user].reputationFieldsLookup[_field].addressGroupIndex].addressLookup[msg.sender]
         );
 
         uint256 id = addedReputationsLookup[_user][_field] - 1;
@@ -69,7 +68,7 @@ contract HydroReputation is SnowflakeResolver {
     function getReputation(address _user, string _field) public view returns(uint) {
         require(reputationList[_user].identityTokenId != 0, "The user must join the reputation program.");
         require(addedReputationsLookup[_user][_field] > 0, "This field has not been added.");
-        uint addressId = reputationList[_user].repuationFieldsLookup[_field].addressGroupIndex;
+        uint addressId = reputationList[_user].reputationFieldsLookup[_field].addressGroupIndex;
         return addresses[addressId].addressList.length;
     }
 

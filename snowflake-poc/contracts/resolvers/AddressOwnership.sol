@@ -1,11 +1,11 @@
-pragma solidity ^0.4.23;
+pragma solidity ^0.4.24;
 
 import "./SnowflakeResolver.sol";
 import "../libraries/addressSet.sol";
 
 
 contract Snowflake {
-    function ownerToToken(address) public view returns(uint256);
+    function getTokenId(address _address) public view returns (uint tokenId);
 }
 
 
@@ -13,6 +13,7 @@ contract AddressOwnership is SnowflakeResolver {
     using addressSet for addressSet._addressSet;
 
     uint blockLag;
+    mapping (bytes32 => uint) public initiatedClaims;
     mapping (uint => addressSet._addressSet) internal snowflakeToOwnedAddresses;
 
     constructor () public {
@@ -38,10 +39,23 @@ contract AddressOwnership is SnowflakeResolver {
     // they'd like to claim, as well as a signature from that address of:
     // keccak256(abi.encodePacked("Link Address to Snowflake", blockhash(block.number), where block.number is any of the
     // last blockLag blocks
-    function claimAddress(address _address, uint8 v, bytes32 r, bytes32 s) public returns (bool success) {
-        Snowflake snowflake = Snowflake(snowflakeAddress);
-        uint tokenId = snowflake.ownerToToken(msg.sender);
 
+    function initiateClaim(bytes32 sealedSignature) public {
+        require(initiatedClaims[sealedSignature] == 0, "This sealed signature has already been submitted.");
+
+        Snowflake snowflake = Snowflake(snowflakeAddress);
+        uint tokenId = snowflake.getTokenId(msg.sender);
+
+        initiatedClaims[sealedSignature] = tokenId;
+    }
+
+    function finalizeClaim(address _address, uint8 v, bytes32 r, bytes32 s) public returns (bool success) {
+        Snowflake snowflake = Snowflake(snowflakeAddress);
+        uint tokenId = snowflake.getTokenId(msg.sender);
+
+        bytes32 claimedSealedBid = keccak256(abi.encodePacked(_address, v, r, s));
+
+        require(initiatedClaims[claimedSealedBid] == tokenId, "This token has not.");
         uint i;
         bool signed;
         bytes32 challengeMessage;
@@ -59,7 +73,7 @@ contract AddressOwnership is SnowflakeResolver {
 
     function unclaimAddress(address _address) public {
         Snowflake snowflake = Snowflake(snowflakeAddress);
-        uint tokenId = snowflake.ownerToToken(msg.sender);
+        uint tokenId = snowflake.getTokenId(msg.sender);
         snowflakeToOwnedAddresses[tokenId].remove(_address);
     }
 

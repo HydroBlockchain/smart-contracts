@@ -1,5 +1,8 @@
-var Migrations = artifacts.require('./Migrations.sol')
+var StringUtils = artifacts.require('./StringUtils.sol')
+var ClientRaindrop = artifacts.require('./ClientRaindrop.sol')
 
 module.exports = function (deployer) {
-  deployer.deploy(Migrations)
+  deployer.deploy(StringUtils)
+  deployer.link(StringUtils, ClientRaindrop)
+  deployer.deploy(ClientRaindrop)
 }
