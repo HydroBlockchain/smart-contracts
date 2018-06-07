@@ -5,7 +5,7 @@
 The client-facing implementation of Raindrop is a natural successor to legacy two-factor authentication solutions. Applications like [Google Authenticator](https://en.wikipedia.org/wiki/Google_Authenticator) and Authy rely on access to shared secrets, secrets that are vulnerable to hacks and data breaches. With Client Raindrop, user's secrets never leave their device. And on the backend, we're using the blockchain to eliminate reliance on trusted third parties while ensuring that users will still be able to verify sign-in and other requests with the click of a button.
 
 ## Contract Address
-Client Raindrop is live on the [Rinkeby testnet](https://rinkeby.etherscan.io/address/0xb29778Cf8abFFF8BF245b9060CD2299ADb358040).
+Client Raindrop is live on the Ethereum [mainnet](https://etherscan.io/address/0xc58466b48d4f1554ac999920e358aeaf6de63a47) and the [Rinkeby testnet](https://rinkeby.etherscan.io/address/0xb29778Cf8abFFF8BF245b9060CD2299ADb358040).
 
 ## Technical Note
 Unfortunately, message signing in Ethereum is implemented inconsistently across software packages. Our view is that only message hashes should be signed, not raw messages, and that the Ethereum signed message prefix can optionally be appended to the message hash before it's hashed again. Please see the table below for a summary:
