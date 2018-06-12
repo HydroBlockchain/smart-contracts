@@ -53,17 +53,15 @@ contract AddressOwnership is SnowflakeResolver {
         Snowflake snowflake = Snowflake(snowflakeAddress);
         uint tokenId = snowflake.getTokenId(msg.sender);
 
-        bytes32 claimedSealedBid = keccak256(abi.encodePacked(_address, v, r, s));
-
-        require(initiatedClaims[claimedSealedBid] == tokenId, "This token has not.");
         uint i;
         bool signed;
-        bytes32 challengeMessage;
+        bytes32 claimedSealedBid;
         while(!signed && (i < blockLag)) {
-            challengeMessage = keccak256(abi.encodePacked("Link Address to Snowflake", blockhash(block.number - ++i)));
-            signed = isSigned(_address, challengeMessage, v, r, s);
+            claimedSealedBid = keccak256(abi.encodePacked("Link Address to Snowflake", blockhash(block.number - ++i)));
+            signed = isSigned(_address, claimedSealedBid, v, r, s);
         }
         if (signed) {
+            require(initiatedClaims[claimedSealedBid] == tokenId, "No claim was initiated for this sealed signature.");
             snowflakeToOwnedAddresses[tokenId].insert(_address);
             return true;
         } else {
