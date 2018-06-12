@@ -79,6 +79,14 @@ contract HydroReputation is SnowflakeResolver {
         return addresses[addressId].addressList;
     }
 
+    function getReputationIndividual(address _user, string _field, uint _index) public view returns(address) {
+        require(reputationList[_user].identityTokenId != 0, "The user must join the reputation program.");
+        require(addedReputationsLookup[_user][_field] > 0, "This field has not been added.");
+        require(addresses[addressId].addressList.length > _index, "This is an invalid index");
+        uint addressId = reputationList[_user].reputationFieldsLookup[_field].addressGroupIndex;
+        return addresses[addressId].addressList[_index];
+    }
+
     function alreadyAttested(address _user, string _field) public view returns(bool) {
         return addresses[reputationList[_user]
               .reputationFieldsLookup[_field].addressGroupIndex].addressLookup[msg.sender];

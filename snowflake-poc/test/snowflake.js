@@ -20,6 +20,16 @@ contract('Clean Room', function (accounts) {
     phoneNumbers: { 'Mobile': '1234567890' },
     physicalAddresses: { 'Home': 'P. Sherman, 42 Wallaby Way, Sydney' }
   }
+  var user2 = {
+    hydroID: 'p4hwf8l',
+    public: accounts[2],
+    private: '6bf410ff825d07346c110c5836b33ec76e7d1ee051283937392180b732aa3aff',
+    names: ['Prefix', 'First', 'Middle', 'Last', 'Suffix', 'Preferred'],
+    dateOfBirth: ['30', '7', '2015'],
+    emails: { 'Main Email': 'test@test.test' },
+    phoneNumbers: { 'Mobile': '1234567890' },
+    physicalAddresses: { 'Home': 'P. Sherman, 42 Wallaby Way, Sydney' }
+  }
   user.salt = web3.utils.soliditySha3({t: 'bytes32', v: `0x${user.private}`}, {t: 'address', v: user.public})
   const encrypt = (strings, salt) => {
     return strings.map(x => { return web3.utils.soliditySha3({ t: 'string', v: x }, { t: 'bytes32', v: salt }) })
@@ -55,6 +65,7 @@ contract('Clean Room', function (accounts) {
 
     it('Client Raindrop user signed up', async function () {
       await raindropInstance.signUpUser(user.hydroID, {from: user.public})
+      await raindropInstance.signUpUser(user2.hydroID, {from: user2.public})
     })
   })
 
@@ -64,11 +75,8 @@ contract('Clean Room', function (accounts) {
     })
 
     it('snowflake linked', async function () {
-      await snowflakeInstance.setClientRaindropAddress(
-        raindropInstance.address
-      )
-      await snowflakeInstance.setHydroTokenAddress(
-        hydroInstance.address
+      await snowflakeInstance.setAddresses(
+        raindropInstance.address, hydroInstance.address
       )
     })
   })
@@ -192,19 +200,58 @@ contract('Clean Room', function (accounts) {
   })
 
   describe('Test address resolver', function () {
-    it('mint identity token', async function () {
-      let tokenId = await snowflakeInstance.mintIdentityToken.call(
-        hashedNames, hashedDateOfBirth, { from: user.public }
-      )
-      assert.equal(tokenId, '1')
-      await snowflakeInstance.mintIdentityToken(hashedNames, hashedDateOfBirth, { from: user.public })
-    })
+    // it('mint identity token', async function () {
+    //   let tokenId = await snowflakeInstance.mintIdentityToken.call(
+    //     hashedNames, hashedDateOfBirth, { from: user.public }
+    //   )
+    //   assert.equal(tokenId, '1')
+    //   await snowflakeInstance.mintIdentityToken(hashedNames, hashedDateOfBirth, { from: user.public })
+    // })
   })
 
   describe('Hydro Reputation Tests', function() {
     it('join hydro reputation', async function () {
-      await snowflakeInstance.mintIdentityToken(hashedNames, hashedDateOfBirth, { from: user.public })
+      await hydroReputationInstance.joinHydroReputation({from: user.public})
+      await snowflakeInstance.mintIdentityToken(hashedNames, hashedDateOfBirth, { from: user2.public})
+      await hydroReputationInstance.joinHydroReputation({from: user2.public})
+    })
 
+    it('add field and attest to field', async function () {
+      await hydroReputationInstance.addReputationField("Hydro Is Awesome!!", {from: user.public})
+      await hydroReputationInstance.attestToReputation(user.public, "Hydro Is Awesome!!", {from: user2.public})
+    })
+
+    it('add duplicate field fail', async function () {
+      hydroReputationInstance.addReputationField.call("Hydro Is Awesome!!", {from: user.public})
+          .then(() => {assert.fail("", "", "application should have been rejected")})
+          .catch(error => {assert.include(error.message, "revert", "unexpected error")});
+    })
+
+    it('attest duplicate field fail', async function () {
+      hydroReputationInstance.attestToReputation.call(user.public, "Hydro Is Awesome!!", {from: user2.public})
+          .then(() => {assert.fail("", "", "application should have been rejected")})
+          .catch(error => {assert.include(error.message, "revert", "unexpected error")});
+    })
+
+    it('get reputation for added field', async function () {
+      let repCount = await hydroReputationInstance.getReputation.call(user.public, "Hydro Is Awesome!!", {from: user2.public})
+      assert.equal(repCount, 1)
+    })
+
+    it('get reputation list for added field', async function () {
+      let repList = await hydroReputationInstance.getReputationList.call(user.public, "Hydro Is Awesome!!", {from: user2.public})
+      assert.equal(repList[0], user2.public)
+    })
+
+    it('get single reputation for added field', async function () {
+      let rep = await hydroReputationInstance.getReputationIndividual.call(user.public, "Hydro Is Awesome!!", 0, {from: user2.public})
+      assert.equal(rep, user2.public)
+    })
+
+    it('get nonexistant rep fail', async function () {
+      hydroReputationInstance.getReputationIndividual.call(user.public, "Hydro Is Awesome!!", 45, {from: user2.public})
+          .then(() => {assert.fail("", "", "application should have been rejected")})
+          .catch(error => {assert.include(error.message, "revert", "unexpected error")});
     })
   })
 })
