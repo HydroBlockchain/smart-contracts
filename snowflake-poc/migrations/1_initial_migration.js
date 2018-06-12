@@ -5,7 +5,7 @@ const uint8Set = artifacts.require('./libraries/uint8Set.sol')
 const stringSet = artifacts.require('./libraries/stringSet.sol')
 const addressSet = artifacts.require('./libraries/addressSet.sol')
 
-// const AddressOwnership = artifacts.require('./resolvers/AddressOwnership.sol')
+const AddressOwnership = artifacts.require('./resolvers/AddressOwnership.sol')
 
 module.exports = function (deployer) {
   deployer.deploy(SafeMath)
@@ -20,8 +20,8 @@ module.exports = function (deployer) {
 
   deployer.deploy(snowflake)
 
-  // deployer.deploy(addressSet)
-  // deployer.link(addressSet, AddressOwnership)
+  deployer.deploy(addressSet)
+  deployer.link(addressSet, AddressOwnership)
 
-  // deployer.deploy(AddressOwnership)
+  deployer.deploy(AddressOwnership)
 }
