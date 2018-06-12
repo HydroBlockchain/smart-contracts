@@ -2,13 +2,12 @@ pragma solidity ^0.4.23;
 
 import "./SnowflakeResolver.sol";
 
-
 contract Snowflake {
     function ownerToToken(address _sender) public view returns(uint256);
 }
 
-
 contract HydroReputation is SnowflakeResolver {
+
     struct AddressGroup {
         address[] addressList;
         mapping (address => bool) addressLookup;
@@ -56,7 +55,8 @@ contract HydroReputation is SnowflakeResolver {
         require(addedReputationsLookup[_user][_field] > 0, "This field has not been added.");
 
         require(
-            !addresses[reputationList[_user].reputationFieldsLookup[_field].addressGroupIndex].addressLookup[msg.sender]
+          !addresses[reputationList[_user].reputationFieldsLookup[_field].addressGroupIndex].addressLookup[msg.sender],
+          "You have already attested this field."
         );
 
         uint256 id = addedReputationsLookup[_user][_field] - 1;
@@ -72,9 +72,24 @@ contract HydroReputation is SnowflakeResolver {
         return addresses[addressId].addressList.length;
     }
 
+    function getReputationList(address _user, string _field) public view returns(address[]) {
+        require(reputationList[_user].identityTokenId != 0, "The user must join the reputation program.");
+        require(addedReputationsLookup[_user][_field] > 0, "This field has not been added.");
+        uint addressId = reputationList[_user].reputationFieldsLookup[_field].addressGroupIndex;
+        return addresses[addressId].addressList;
+    }
+
+    function getReputationIndividual(address _user, string _field, uint _index) public view returns(address) {
+        require(reputationList[_user].identityTokenId != 0, "The user must join the reputation program.");
+        require(addedReputationsLookup[_user][_field] > 0, "This field has not been added.");
+        require(addresses[addressId].addressList.length > _index, "This is an invalid index");
+        uint addressId = reputationList[_user].reputationFieldsLookup[_field].addressGroupIndex;
+        return addresses[addressId].addressList[_index];
+    }
+
     function alreadyAttested(address _user, string _field) public view returns(bool) {
         return addresses[reputationList[_user]
-            .reputationFieldsLookup[_field].addressGroupIndex].addressLookup[msg.sender];
+              .reputationFieldsLookup[_field].addressGroupIndex].addressLookup[msg.sender];
     }
 
     function addedRepLookup(address _user, string _field) public view returns(uint) {

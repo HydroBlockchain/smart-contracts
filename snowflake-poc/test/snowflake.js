@@ -4,6 +4,7 @@ const web3 = new Web3(Web3.givenProvider || 'http://localhost:8555')
 const HydroToken = artifacts.require('./_testing/HydroToken.sol')
 const ClientRaindrop = artifacts.require('./_testing/ClientRaindrop.sol')
 const Snowflake = artifacts.require('./Snowflake.sol')
+const HydroReputation = artifacts.require('./resolvers/HydroReputation.sol')
 
 contract('Clean Room', function (accounts) {
   const owner = {
@@ -12,6 +13,16 @@ contract('Clean Room', function (accounts) {
   var user = {
     hydroID: 'p4hwf8t',
     public: accounts[1],
+    private: '6bf410ff825d07346c110c5836b33ec76e7d1ee051283937392180b732aa3aff',
+    names: ['Prefix', 'First', 'Middle', 'Last', 'Suffix', 'Preferred'],
+    dateOfBirth: ['30', '7', '2015'],
+    emails: { 'Main Email': 'test@test.test' },
+    phoneNumbers: { 'Mobile': '1234567890' },
+    physicalAddresses: { 'Home': 'P. Sherman, 42 Wallaby Way, Sydney' }
+  }
+  var user2 = {
+    hydroID: 'p4hwf8l',
+    public: accounts[2],
     private: '6bf410ff825d07346c110c5836b33ec76e7d1ee051283937392180b732aa3aff',
     names: ['Prefix', 'First', 'Middle', 'Last', 'Suffix', 'Preferred'],
     dateOfBirth: ['30', '7', '2015'],
@@ -35,6 +46,7 @@ contract('Clean Room', function (accounts) {
   var hydroInstance
   var raindropInstance
   var snowflakeInstance
+  var hydroReputationInstance
 
   describe('Deploy and prepare testing-only contracts', async function () {
     it('hydro token deployed', async function () {
@@ -53,6 +65,7 @@ contract('Clean Room', function (accounts) {
 
     it('Client Raindrop user signed up', async function () {
       await raindropInstance.signUpUser(user.hydroID, {from: user.public})
+      await raindropInstance.signUpUser(user2.hydroID, {from: user2.public})
     })
   })
 
@@ -62,11 +75,20 @@ contract('Clean Room', function (accounts) {
     })
 
     it('snowflake linked', async function () {
-      await snowflakeInstance.setClientRaindropAddress(
-        raindropInstance.address
+      await snowflakeInstance.setAddresses(
+        raindropInstance.address, hydroInstance.address
       )
-      await snowflakeInstance.setHydroTokenAddress(
-        hydroInstance.address
+    })
+  })
+
+  describe('Deploy Hydro Reputation', async function () {
+    it('hydro reputation deployed', async function () {
+      hydroReputationInstance = await HydroReputation.new({from: owner.public})
+    })
+
+    it('set snowflake address', async function () {
+      await hydroReputationInstance.setSnowflakeAddress(
+        snowflakeInstance.address
       )
     })
   })
@@ -81,46 +103,44 @@ contract('Clean Room', function (accounts) {
     })
 
     it('verify token ownership', async function () {
-      let ownerOf = await snowflakeInstance.ownerOf.call(1)
-      assert.equal(ownerOf, user.public)
-      let tokenofAddress = await snowflakeInstance.tokenOfAddress.call(user.public)
+      let tokenDetails = await snowflakeInstance.getDetails.call(1)
+      assert.equal(tokenDetails[0], user.public)
+      let tokenofAddress = await snowflakeInstance.getTokenId.call(user.public)
       assert.equal(tokenofAddress, '1')
-      let tokenofHydroID = await snowflakeInstance.tokenOfHydroID.call(user.hydroID)
-      assert.equal(tokenofHydroID, '1')
     })
 
     it('verify token details', async function () {
-      let tokenDetails = await snowflakeInstance.tokenDetails.call(1)
+      let tokenDetails = await snowflakeInstance.getDetails.call(1)
       assert.equal(tokenDetails[0], user.public)
       assert.equal(tokenDetails[1], user.hydroID)
       assert.deepEqual(tokenDetails[2].map(x => { return x.toNumber() }), [0, 1])
       assert.deepEqual(tokenDetails[3], [])
     })
 
-    it('verify field details', async function () {
-      let nameDetails = await snowflakeInstance.fieldDetails.call(1, 0)
-      // assert.deepEqual(nameDetails[0], nameOrder)
-      assert.deepEqual(nameDetails[1], [])
-
-      let dateDetails = await snowflakeInstance.fieldDetails.call(1, 1)
-      // assert.deepEqual(dateDetails[0], dateOrder)
-      assert.deepEqual(dateDetails[1], [])
-    })
-
-    it('verify entry details', async function () {
-      var nameEntryDetails
-      for (let i = 0; i < user.names.length; i++) {
-        nameEntryDetails = await snowflakeInstance.entryDetails.call(1, 0, nameOrder[i])
-        assert.equal(nameEntryDetails[0], hashedNames[i])
-        assert.deepEqual(nameEntryDetails[1], [])
-      }
-      var birthEntryDetails
-      for (let i = 0; i < user.dateOfBirth.length; i++) {
-        birthEntryDetails = await snowflakeInstance.entryDetails.call(1, 1, dateOrder[i])
-        assert.equal(birthEntryDetails[0], hashedDateOfBirth[i])
-        assert.deepEqual(birthEntryDetails[1], [])
-      }
-    })
+    // it('verify field details', async function () {
+    //   let nameDetails = await snowflakeInstance.getDetails.call(1, 0)
+    //   // assert.deepEqual(nameDetails[0], nameOrder)
+    //   assert.deepEqual(nameDetails[1], [])
+    //
+    //   let dateDetails = await snowflakeInstance.getDetails.call(1, 1)
+    //   // assert.deepEqual(dateDetails[0], dateOrder)
+    //   assert.deepEqual(dateDetails[1], [])
+    // })
+    //
+    // it('verify entry details', async function () {
+    //   var nameEntryDetails
+    //   for (let i = 0; i < user.names.length; i++) {
+    //     nameEntryDetails = await snowflakeInstance.getDetails.call(1, 0, nameOrder[i])
+    //     assert.equal(nameEntryDetails[0], hashedNames[i])
+    //     assert.deepEqual(nameEntryDetails[1], [])
+    //   }
+    //   var birthEntryDetails
+    //   for (let i = 0; i < user.dateOfBirth.length; i++) {
+    //     birthEntryDetails = await snowflakeInstance.getDetails.call(1, 1, dateOrder[i])
+    //     assert.equal(birthEntryDetails[0], hashedDateOfBirth[i])
+    //     assert.deepEqual(birthEntryDetails[1], [])
+    //   }
+    // })
 
     // it('add new fields', async function () {
     //   await snowflakeInstance.addUpdateFieldEntries.call(
@@ -178,12 +198,58 @@ contract('Clean Room', function (accounts) {
   })
 
   describe('Test address resolver', function () {
-    it('mint identity token', async function () {
-      let tokenId = await snowflakeInstance.mintIdentityToken.call(
-        hashedNames, hashedDateOfBirth, { from: user.public }
-      )
-      assert.equal(tokenId, '1')
-      await snowflakeInstance.mintIdentityToken(hashedNames, hashedDateOfBirth, { from: user.public })
+    // it('mint identity token', async function () {
+    //   let tokenId = await snowflakeInstance.mintIdentityToken.call(
+    //     hashedNames, hashedDateOfBirth, { from: user.public }
+    //   )
+    //   assert.equal(tokenId, '1')
+    //   await snowflakeInstance.mintIdentityToken(hashedNames, hashedDateOfBirth, { from: user.public })
+    // })
+  })
+
+  describe('Hydro Reputation Tests', function() {
+    it('join hydro reputation', async function () {
+      await hydroReputationInstance.joinHydroReputation({from: user.public})
+      await snowflakeInstance.mintIdentityToken(hashedNames, hashedDateOfBirth, { from: user2.public})
+      await hydroReputationInstance.joinHydroReputation({from: user2.public})
+    })
+
+    it('add field and attest to field', async function () {
+      await hydroReputationInstance.addReputationField("Hydro Is Awesome!!", {from: user.public})
+      await hydroReputationInstance.attestToReputation(user.public, "Hydro Is Awesome!!", {from: user2.public})
+    })
+
+    it('add duplicate field fail', async function () {
+      hydroReputationInstance.addReputationField.call("Hydro Is Awesome!!", {from: user.public})
+          .then(() => {assert.fail("", "", "application should have been rejected")})
+          .catch(error => {assert.include(error.message, "revert", "unexpected error")});
+    })
+
+    it('attest duplicate field fail', async function () {
+      hydroReputationInstance.attestToReputation.call(user.public, "Hydro Is Awesome!!", {from: user2.public})
+          .then(() => {assert.fail("", "", "application should have been rejected")})
+          .catch(error => {assert.include(error.message, "revert", "unexpected error")});
+    })
+
+    it('get reputation for added field', async function () {
+      let repCount = await hydroReputationInstance.getReputation.call(user.public, "Hydro Is Awesome!!", {from: user2.public})
+      assert.equal(repCount, 1)
+    })
+
+    it('get reputation list for added field', async function () {
+      let repList = await hydroReputationInstance.getReputationList.call(user.public, "Hydro Is Awesome!!", {from: user2.public})
+      assert.equal(repList[0], user2.public)
+    })
+
+    it('get single reputation for added field', async function () {
+      let rep = await hydroReputationInstance.getReputationIndividual.call(user.public, "Hydro Is Awesome!!", 0, {from: user2.public})
+      assert.equal(rep, user2.public)
+    })
+
+    it('get nonexistant rep fail', async function () {
+      hydroReputationInstance.getReputationIndividual.call(user.public, "Hydro Is Awesome!!", 45, {from: user2.public})
+          .then(() => {assert.fail("", "", "application should have been rejected")})
+          .catch(error => {assert.include(error.message, "revert", "unexpected error")});
     })
   })
 })
