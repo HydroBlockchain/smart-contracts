@@ -40,7 +40,7 @@ contract AddressOwnership is SnowflakeResolver {
     // keccak256(abi.encodePacked("Link Address to Snowflake", blockhash(block.number), where block.number is any of the
     // last blockLag blocks
 
-    function initiateClaim(bytes32 sealedSignature) public {
+    function initiateClaim(bytes32 sealedHash) public {
         require(initiatedClaims[sealedSignature] == 0, "This sealed signature has already been submitted.");
 
         Snowflake snowflake = Snowflake(snowflakeAddress);
@@ -57,7 +57,9 @@ contract AddressOwnership is SnowflakeResolver {
         bool signed;
         bytes32 claimedSealedBid;
         while(!signed && (i < blockLag)) {
-            claimedSealedBid = keccak256(abi.encodePacked("Link Address to Snowflake", blockhash(block.number - ++i)));
+            claimedSealedBid = keccak256(abi.encodePacked(
+                "Link Address to Snowflake", blockhash(block.number - ++i), _address
+            ));
             signed = isSigned(_address, claimedSealedBid, v, r, s);
         }
         if (signed) {
