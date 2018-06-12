@@ -4,6 +4,7 @@ const web3 = new Web3(Web3.givenProvider || 'http://localhost:8555')
 const HydroToken = artifacts.require('./_testing/HydroToken.sol')
 const ClientRaindrop = artifacts.require('./_testing/ClientRaindrop.sol')
 const Snowflake = artifacts.require('./Snowflake.sol')
+const HydroReputation = artifacts.require('./resolvers/HydroReputation.sol')
 
 contract('Clean Room', function (accounts) {
   const owner = {
@@ -35,6 +36,7 @@ contract('Clean Room', function (accounts) {
   var hydroInstance
   var raindropInstance
   var snowflakeInstance
+  var hydroReputationInstance
 
   describe('Deploy and prepare testing-only contracts', async function () {
     it('hydro token deployed', async function () {
@@ -67,6 +69,18 @@ contract('Clean Room', function (accounts) {
       )
       await snowflakeInstance.setHydroTokenAddress(
         hydroInstance.address
+      )
+    })
+  })
+
+  describe('Deploy Hydro Reputation', async function () {
+    it('hydro reputation deployed', async function () {
+      hydroReputationInstance = await HydroReputation.new({from: owner.public})
+    })
+
+    it('set snowflake address', async function () {
+      await hydroReputationInstance.setSnowflakeAddress(
+        snowflakeInstance.address
       )
     })
   })
@@ -184,6 +198,13 @@ contract('Clean Room', function (accounts) {
       )
       assert.equal(tokenId, '1')
       await snowflakeInstance.mintIdentityToken(hashedNames, hashedDateOfBirth, { from: user.public })
+    })
+  })
+
+  describe('Hydro Reputation Tests', function() {
+    it('join hydro reputation', async function () {
+      await snowflakeInstance.mintIdentityToken(hashedNames, hashedDateOfBirth, { from: user.public })
+
     })
   })
 })
