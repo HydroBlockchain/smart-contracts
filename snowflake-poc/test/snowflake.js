@@ -103,46 +103,44 @@ contract('Clean Room', function (accounts) {
     })
 
     it('verify token ownership', async function () {
-      let ownerOf = await snowflakeInstance.ownerOf.call(1)
-      assert.equal(ownerOf, user.public)
-      let tokenofAddress = await snowflakeInstance.tokenOfAddress.call(user.public)
+      let tokenDetails = await snowflakeInstance.getDetails.call(1)
+      assert.equal(tokenDetails[0], user.public)
+      let tokenofAddress = await snowflakeInstance.getTokenId.call(user.public)
       assert.equal(tokenofAddress, '1')
-      let tokenofHydroID = await snowflakeInstance.tokenOfHydroID.call(user.hydroID)
-      assert.equal(tokenofHydroID, '1')
     })
 
     it('verify token details', async function () {
-      let tokenDetails = await snowflakeInstance.tokenDetails.call(1)
+      let tokenDetails = await snowflakeInstance.getDetails.call(1)
       assert.equal(tokenDetails[0], user.public)
       assert.equal(tokenDetails[1], user.hydroID)
       assert.deepEqual(tokenDetails[2].map(x => { return x.toNumber() }), [0, 1])
       assert.deepEqual(tokenDetails[3], [])
     })
 
-    it('verify field details', async function () {
-      let nameDetails = await snowflakeInstance.fieldDetails.call(1, 0)
-      // assert.deepEqual(nameDetails[0], nameOrder)
-      assert.deepEqual(nameDetails[1], [])
-
-      let dateDetails = await snowflakeInstance.fieldDetails.call(1, 1)
-      // assert.deepEqual(dateDetails[0], dateOrder)
-      assert.deepEqual(dateDetails[1], [])
-    })
-
-    it('verify entry details', async function () {
-      var nameEntryDetails
-      for (let i = 0; i < user.names.length; i++) {
-        nameEntryDetails = await snowflakeInstance.entryDetails.call(1, 0, nameOrder[i])
-        assert.equal(nameEntryDetails[0], hashedNames[i])
-        assert.deepEqual(nameEntryDetails[1], [])
-      }
-      var birthEntryDetails
-      for (let i = 0; i < user.dateOfBirth.length; i++) {
-        birthEntryDetails = await snowflakeInstance.entryDetails.call(1, 1, dateOrder[i])
-        assert.equal(birthEntryDetails[0], hashedDateOfBirth[i])
-        assert.deepEqual(birthEntryDetails[1], [])
-      }
-    })
+    // it('verify field details', async function () {
+    //   let nameDetails = await snowflakeInstance.getDetails.call(1, 0)
+    //   // assert.deepEqual(nameDetails[0], nameOrder)
+    //   assert.deepEqual(nameDetails[1], [])
+    //
+    //   let dateDetails = await snowflakeInstance.getDetails.call(1, 1)
+    //   // assert.deepEqual(dateDetails[0], dateOrder)
+    //   assert.deepEqual(dateDetails[1], [])
+    // })
+    //
+    // it('verify entry details', async function () {
+    //   var nameEntryDetails
+    //   for (let i = 0; i < user.names.length; i++) {
+    //     nameEntryDetails = await snowflakeInstance.getDetails.call(1, 0, nameOrder[i])
+    //     assert.equal(nameEntryDetails[0], hashedNames[i])
+    //     assert.deepEqual(nameEntryDetails[1], [])
+    //   }
+    //   var birthEntryDetails
+    //   for (let i = 0; i < user.dateOfBirth.length; i++) {
+    //     birthEntryDetails = await snowflakeInstance.getDetails.call(1, 1, dateOrder[i])
+    //     assert.equal(birthEntryDetails[0], hashedDateOfBirth[i])
+    //     assert.deepEqual(birthEntryDetails[1], [])
+    //   }
+    // })
 
     // it('add new fields', async function () {
     //   await snowflakeInstance.addUpdateFieldEntries.call(
