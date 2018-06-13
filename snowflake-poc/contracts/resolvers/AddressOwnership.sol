@@ -41,27 +41,22 @@ contract AddressOwnership is SnowflakeResolver {
     // last blockLag blocks
 
     function initiateClaim(bytes32 sealedHash) public {
-        require(initiatedClaims[sealedSignature] == 0, "This sealed signature has already been submitted.");
+        require(initiatedClaims[sealedHash] == 0, "This sealed signature has already been submitted.");
 
         Snowflake snowflake = Snowflake(snowflakeAddress);
         uint tokenId = snowflake.getTokenId(msg.sender);
 
-        initiatedClaims[sealedSignature] = tokenId;
+        initiatedClaims[sealedHash] = tokenId;
     }
 
-    function finalizeClaim(address _address, uint8 v, bytes32 r, bytes32 s) public returns (bool success) {
+    function finalizeClaim(address _address, uint8 v, bytes32 r, bytes32 s, bytes32 _secret) public returns (bool success) {
         Snowflake snowflake = Snowflake(snowflakeAddress);
         uint tokenId = snowflake.getTokenId(msg.sender);
 
         uint i;
         bool signed;
-        bytes32 claimedSealedBid;
-        while(!signed && (i < blockLag)) {
-            claimedSealedBid = keccak256(
-                abi.encodePacked("Link Address to Snowflake", blockhash(block.number - ++i), _address)
-            );
-            signed = isSigned(_address, claimedSealedBid, v, r, s);
-        }
+        bytes32 claimedSealedBid = keccak256(abi.encodePacked("Link Address to Snowflake", _secret, _address));
+        signed = isSigned(_address, claimedSealedBid, v, r, s);
         if (signed) {
             require(initiatedClaims[claimedSealedBid] == tokenId, "No claim was initiated for this sealed signature.");
             snowflakeToOwnedAddresses[tokenId].insert(_address);

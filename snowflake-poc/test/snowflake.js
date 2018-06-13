@@ -1,10 +1,37 @@
 const Web3 = require('web3') // 1.0.0-beta.34
+const util = require('ethereumjs-util')
 const web3 = new Web3(Web3.givenProvider || 'http://localhost:8555')
 
 const HydroToken = artifacts.require('./_testing/HydroToken.sol')
 const ClientRaindrop = artifacts.require('./_testing/ClientRaindrop.sol')
 const Snowflake = artifacts.require('./Snowflake.sol')
 const HydroReputation = artifacts.require('./resolvers/HydroReputation.sol')
+const AddressOwnership = artifacts.require('./resolvers/AddressOwnership.sol')
+
+function sign (message, user, method) {
+  return new Promise((resolve, reject) => {
+    let messageHash = web3.utils.keccak256(message)
+    if (method === 'unprefixed') {
+      let signature = util.ecsign(
+        Buffer.from(util.stripHexPrefix(messageHash), 'hex'), Buffer.from(user.private, 'hex')
+      )
+      signature.r = util.bufferToHex(signature.r)
+      signature.s = util.bufferToHex(signature.s)
+      resolve(signature)
+    } else {
+      web3.eth.sign(messageHash, user.public)
+        .then(concatenatedSignature => {
+          let strippedSignature = util.stripHexPrefix(concatenatedSignature)
+          let signature = {
+            r: util.addHexPrefix(strippedSignature.substr(0, 64)),
+            s: util.addHexPrefix(strippedSignature.substr(64, 64)),
+            v: parseInt(util.addHexPrefix(strippedSignature.substr(128, 2))) + 27
+          }
+          resolve(signature)
+        })
+    }
+  })
+}
 
 contract('Clean Room', function (accounts) {
   const owner = {
@@ -47,6 +74,7 @@ contract('Clean Room', function (accounts) {
   var raindropInstance
   var snowflakeInstance
   var hydroReputationInstance
+  var addressOwnershipInstance
 
   describe('Deploy and prepare testing-only contracts', async function () {
     it('hydro token deployed', async function () {
@@ -88,6 +116,18 @@ contract('Clean Room', function (accounts) {
 
     it('set snowflake address', async function () {
       await hydroReputationInstance.setSnowflakeAddress(
+        snowflakeInstance.address
+      )
+    })
+  })
+
+  describe('Deploy Address Ownership', async function () {
+    it('address ownership deployed', async function () {
+      addressOwnershipInstance = await AddressOwnership.new({from: owner.public})
+    })
+
+    it('set snowflake address', async function () {
+      await addressOwnershipInstance.setSnowflakeAddress(
         snowflakeInstance.address
       )
     })
@@ -252,4 +292,26 @@ contract('Clean Room', function (accounts) {
           .catch(error => {assert.include(error.message, "revert", "unexpected error")});
     })
   })
+
+  describe('Address Ownership Tests', function () {
+    it('sign message', async function () {
+      var hashedMessage = await web3.utils.soliditySha3("Link Address to Snowflake", web3.utils.soliditySha3("shhhh"), user.public)
+      var signedMessage = await sign(hashedMessage, user, 'unprefixed')
+
+      var isSigned = await addressOwnershipInstance.isSigned.call(user.public, hashedMessage, signedMessage.v, signedMessage.r, signedMessage.s)
+      console.log(isSigned)
+
+      // await addressOwnershipInstance.initiateClaim(hashedMessage, {from: user2.public})
+      // var success = await addressOwnershipInstance.finalizeClaim.call(user.public, web3.utils.hexToNumber(signedMessage.v), signedMessage.r, signedMessage.s, web3.utils.soliditySha3("shhhh"), {from: user2.public})
+      // console.log(success)
+      // await addressOwnershipInstance.finalizeClaim(user.public, web3.utils.hexToNumber(signedMessage.v), signedMessage.r, signedMessage.s, web3.utils.soliditySha3("shhhh"), {from: user2.public})
+      //
+      // var tokenId = await snowflakeInstance.getTokenId.call(user2.public)
+      // console.log(tokenId.toNumber())
+      // var ownedAddresses = await addressOwnershipInstance.ownedAddresses.call(tokenId.toNumber())
+      // assert.equal(ownedAddresses[0], user.public)
+    })
+
+  })
+
 })
