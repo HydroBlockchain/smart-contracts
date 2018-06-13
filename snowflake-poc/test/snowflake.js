@@ -8,9 +8,8 @@ const Snowflake = artifacts.require('./Snowflake.sol')
 const HydroReputation = artifacts.require('./resolvers/HydroReputation.sol')
 const AddressOwnership = artifacts.require('./resolvers/AddressOwnership.sol')
 
-function sign (message, user, method) {
+function sign (messageHash, user, method) {
   return new Promise((resolve, reject) => {
-    let messageHash = web3.utils.keccak256(message)
     if (method === 'unprefixed') {
       let signature = util.ecsign(
         Buffer.from(util.stripHexPrefix(messageHash), 'hex'), Buffer.from(user.private, 'hex')
@@ -294,24 +293,63 @@ contract('Clean Room', function (accounts) {
   })
 
   describe('Address Ownership Tests', function () {
-    it('sign message', async function () {
+    it('happy path tests', async function () {
       var hashedMessage = await web3.utils.soliditySha3("Link Address to Snowflake", web3.utils.soliditySha3("shhhh"), user.public)
       var signedMessage = await sign(hashedMessage, user, 'unprefixed')
 
-      var isSigned = await addressOwnershipInstance.isSigned.call(user.public, hashedMessage, signedMessage.v, signedMessage.r, signedMessage.s)
-      console.log(isSigned)
+      await addressOwnershipInstance.initiateClaim(hashedMessage, {from: user2.public})
+      var success = await addressOwnershipInstance.finalizeClaim.call(user.public, web3.utils.hexToNumber(signedMessage.v), signedMessage.r, signedMessage.s, web3.utils.soliditySha3("shhhh"), {from: user2.public})
+      assert.equal(success, true)
+      await addressOwnershipInstance.finalizeClaim(user.public, web3.utils.hexToNumber(signedMessage.v), signedMessage.r, signedMessage.s, web3.utils.soliditySha3("shhhh"), {from: user2.public})
 
-      // await addressOwnershipInstance.initiateClaim(hashedMessage, {from: user2.public})
-      // var success = await addressOwnershipInstance.finalizeClaim.call(user.public, web3.utils.hexToNumber(signedMessage.v), signedMessage.r, signedMessage.s, web3.utils.soliditySha3("shhhh"), {from: user2.public})
-      // console.log(success)
-      // await addressOwnershipInstance.finalizeClaim(user.public, web3.utils.hexToNumber(signedMessage.v), signedMessage.r, signedMessage.s, web3.utils.soliditySha3("shhhh"), {from: user2.public})
-      //
-      // var tokenId = await snowflakeInstance.getTokenId.call(user2.public)
-      // console.log(tokenId.toNumber())
-      // var ownedAddresses = await addressOwnershipInstance.ownedAddresses.call(tokenId.toNumber())
-      // assert.equal(ownedAddresses[0], user.public)
+      var tokenId = await snowflakeInstance.getTokenId.call(user2.public)
+      var ownedAddresses = await addressOwnershipInstance.ownedAddresses.call(tokenId.toNumber())
+      assert.equal(ownedAddresses[0], user.public)
+
+      var ownedAddress = await addressOwnershipInstance.ownsAddress.call(tokenId.toNumber(), user.public)
+      assert.equal(ownedAddress, true)
+
+      await addressOwnershipInstance.unclaimAddress(user.public, {from: user2.public})
     })
 
+    it('fail to sign', async function () {
+      var hashedMessage = await web3.utils.soliditySha3("random stuff")
+      var signedMessage = await sign(hashedMessage, user, 'unprefixed')
+
+      await addressOwnershipInstance.initiateClaim(hashedMessage, {from: user2.public})
+      var success = await addressOwnershipInstance.finalizeClaim.call(user.public, web3.utils.hexToNumber(signedMessage.v), signedMessage.r, signedMessage.s, web3.utils.soliditySha3("shhhh"), {from: user2.public})
+      assert.equal(success, false)
+    })
+
+    it('fail to sign (revert)', async function () {
+      var hashedMessage = await web3.utils.soliditySha3("Link Address to Snowflake", web3.utils.soliditySha3("secret"), user.public)
+      var signedMessage = await sign(hashedMessage, user, 'unprefixed')
+
+      await addressOwnershipInstance.finalizeClaim.call(user.public, web3.utils.hexToNumber(signedMessage.v), signedMessage.r, signedMessage.s, web3.utils.soliditySha3("secret"), {from: user2.public})
+        .then(() => {assert.fail("", "", "application should have been rejected")})
+        .catch(error => {assert.include(error.message, "revert", "unexpected error")});
+    })
+
+    it('own no addresses', async function () {
+      var tokenId = await snowflakeInstance.getTokenId.call(user.public)
+      await addressOwnershipInstance.ownedAddresses.call(tokenId.toNumber())
+        .then(() => {assert.fail("", "", "application should have been rejected")})
+        .catch(error => {assert.include(error.message, "revert", "unexpected error")});
+    })
+
+    it('does not own address', async function () {
+      var tokenId = await snowflakeInstance.getTokenId.call(user.public)
+      var ownedAddress = await addressOwnershipInstance.ownsAddress.call(tokenId.toNumber(), user2.public)
+      assert.equal(ownedAddress, false)
+    })
+
+    it('submit an already submitted hash', async function () {
+      var hashedMessage = await web3.utils.soliditySha3("Link Address to Snowflake", web3.utils.soliditySha3("shhhh"), user.public)
+
+      await addressOwnershipInstance.initiateClaim.call(hashedMessage, {from: user2.public})
+        .then(() => {assert.fail("", "", "application should have been rejected")})
+        .catch(error => {assert.include(error.message, "revert", "unexpected error")});
+    })
   })
 
 })
