@@ -78,7 +78,7 @@ contract Snowflake is Ownable {
         _;
     }
 
-    modifier tokenExists(uint tokenId) {
+    modifier _tokenExists(uint tokenId) {
         require(tokenDirectory[tokenId].owner != address(0), "This token has not yet been minted.");
         _;
     }
@@ -192,13 +192,13 @@ contract Snowflake is Ownable {
     }
 
     // check resolver membership
-    function hasResolver(uint tokenId, address resolver) public view tokenExists(tokenId) returns (bool) {
+    function hasResolver(uint tokenId, address resolver) public view _tokenExists(tokenId) returns (bool) {
         Identity storage identity = tokenDirectory[tokenId];
 
         return identity.resolversFor.contains(resolver);
     }
 
-    function hasResolver(uint tokenId, uint8 field, address resolver) public view tokenExists(tokenId) returns (bool) {
+    function hasResolver(uint tokenId, uint8 field, address resolver) public view _tokenExists(tokenId) returns (bool) {
         Identity storage identity = tokenDirectory[tokenId];
 
         if (!identity.fieldsAttestedTo.contains(field)) {
@@ -211,7 +211,7 @@ contract Snowflake is Ownable {
     function hasResolver(uint tokenId, uint8 field, string entry, address resolver)
         public
         view
-        tokenExists(tokenId)
+        _tokenExists(tokenId)
         returns (bool)
     {
         Identity storage identity = tokenDirectory[tokenId];
@@ -224,13 +224,13 @@ contract Snowflake is Ownable {
     }
 
     // functions to check attestations
-    function hasAttested(uint tokenId, uint8 field) public view tokenExists(tokenId) returns (bool) {
+    function hasAttested(uint tokenId, uint8 field) public view _tokenExists(tokenId) returns (bool) {
         Identity storage identity = tokenDirectory[tokenId];
 
         return identity.fieldsAttestedTo.contains(field);
     }
 
-    function hasAttested(uint tokenId, uint8 field, string entry) public view tokenExists(tokenId) returns (bool) {
+    function hasAttested(uint tokenId, uint8 field, string entry) public view _tokenExists(tokenId) returns (bool) {
         Identity storage identity = tokenDirectory[tokenId];
 
         if (!identity.fieldsAttestedTo.contains(field)) {
@@ -240,8 +240,12 @@ contract Snowflake is Ownable {
         return identity.fields[field].entriesAttestedTo.contains(entry);
     }
 
+    function tokenExists(uint _tokenId) public view returns(bool) {
+        return tokenDirectory[_tokenId].owner != address(0);
+    }
+
     // functions to read token values
-    function getDetails(uint tokenId) public view tokenExists(tokenId) returns (
+    function getDetails(uint tokenId) public view _tokenExists(tokenId) returns (
         address owner,
         string hydroId,
         uint8[] fieldsAttestedTo,
@@ -257,7 +261,7 @@ contract Snowflake is Ownable {
         );
     }
 
-    function getDetails(uint tokenId, uint8 field) public view tokenExists(tokenId) returns (
+    function getDetails(uint tokenId, uint8 field) public view _tokenExists(tokenId) returns (
         string[] entriesAttestedTo,
         address[] resolversFor
     ) {
@@ -271,7 +275,7 @@ contract Snowflake is Ownable {
         );
     }
 
-    function getDetails(uint tokenId, uint8 field, string entry) public view tokenExists(tokenId) returns (
+    function getDetails(uint tokenId, uint8 field, string entry) public view _tokenExists(tokenId) returns (
         bytes32 saltedHash,
         address[] resolversFor
     ) {

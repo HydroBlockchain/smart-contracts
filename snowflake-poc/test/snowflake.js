@@ -7,6 +7,7 @@ const ClientRaindrop = artifacts.require('./_testing/ClientRaindrop.sol')
 const Snowflake = artifacts.require('./Snowflake.sol')
 const HydroReputation = artifacts.require('./resolvers/HydroReputation.sol')
 const AddressOwnership = artifacts.require('./resolvers/AddressOwnership.sol')
+const HydroKYC = artifacts.require('./resolvers/HydroKYC.sol')
 
 function sign (messageHash, user, method) {
   return new Promise((resolve, reject) => {
@@ -74,6 +75,7 @@ contract('Clean Room', function (accounts) {
   var snowflakeInstance
   var hydroReputationInstance
   var addressOwnershipInstance
+  var kycInstance
 
   describe('Deploy and prepare testing-only contracts', async function () {
     it('hydro token deployed', async function () {
@@ -127,6 +129,18 @@ contract('Clean Room', function (accounts) {
 
     it('set snowflake address', async function () {
       await addressOwnershipInstance.setSnowflakeAddress(
+        snowflakeInstance.address
+      )
+    })
+  })
+
+  describe('Deploy Hydro KYC', async function () {
+    it('hydro kyc deployed', async function () {
+      kycInstance = await HydroKYC.new({from: owner.public})
+    })
+
+    it('set snowflake address', async function () {
+      await kycInstance.setSnowflakeAddress(
         snowflakeInstance.address
       )
     })
@@ -351,5 +365,42 @@ contract('Clean Room', function (accounts) {
         .catch(error => {assert.include(error.message, "revert", "unexpected error")});
     })
   })
+
+  describe('KYC Tests', function () {
+    it('happy path tests', async function () {
+      await kycInstance.addKYCStandard("0x1234", {from: user.public})
+      await kycInstance.attestToUsersKYC("0x1234", 1, {from: user2.public})
+
+      var count = await kycInstance.getAttestationCountToUser("0x1234", 1, {from: user2.public})
+      assert.equal(count, 1)
+
+      var addresses = await kycInstance.getAttestationsToUser("0x1234", 1, {from: user2.public})
+      assert.equal(addresses.length, 1)
+      assert.equal(addresses[0], user2.public)
+
+      var blockNumber = await kycInstance.getTimeOfAttestation("0x1234", 1, user2.public, {from: user2.public})
+      assert.equal(blockNumber.toNumber(), await web3.eth.getBlockNumber())
+    })
+
+    it('standard already added', async function () {
+      await kycInstance.addKYCStandard.call("0x1234", {from: user.public})
+        .then(() => {assert.fail("", "", "application should have been rejected")})
+        .catch(error => {assert.include(error.message, "revert", "unexpected error")});
+    })
+
+    it('snowflake doesnt exist', async function () {
+      await kycInstance.attestToUsersKYC.call("0x1234", 100, {from: user2.public})
+        .then(() => {assert.fail("", "", "application should have been rejected")})
+        .catch(error => {assert.include(error.message, "revert", "unexpected error")});
+    })
+
+    it('standard doesnt exist', async function () {
+      await kycInstance.attestToUsersKYC.call("0x12345", 1, {from: user2.public})
+        .then(() => {assert.fail("", "", "application should have been rejected")})
+        .catch(error => {assert.include(error.message, "revert", "unexpected error")});
+    })
+  })
+
+
 
 })

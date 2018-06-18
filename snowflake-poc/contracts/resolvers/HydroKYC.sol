@@ -1,12 +1,11 @@
 pragma solidity ^0.4.24;
 
 import "./SnowflakeResolver.sol";
-import "./bytes32Set.sol";
-import "./addressSet.sol";
+import "../libraries/bytes32Set.sol";
+import "../libraries/addressSet.sol";
 
 contract Snowflake {
-    function ownerToToken(address _sender) public view returns(uint256);
-    function getTokenId(address _address) public view returns (uint tokenId);
+    function tokenExists(uint _tokenId) public view returns(bool);
 }
 
 contract HydroKYC is SnowflakeResolver {
@@ -21,8 +20,7 @@ contract HydroKYC is SnowflakeResolver {
   }
 
   struct passedKYC {
-  /* uint[] blockNumber; */
-  mapping(address => uint) attestersToBlockNumber;
+    mapping(address => uint) attestersToBlockNumber;
     bytes32 standard;
     addressSet._addressSet attesters;
   }
@@ -35,6 +33,8 @@ contract HydroKYC is SnowflakeResolver {
   }
 
   function attestToUsersKYC(bytes32 _standard, uint _id) public {
+    Snowflake snowflake = Snowflake(snowflakeAddress);
+    require(snowflake.tokenExists(_id), "This snowflake id does not exist.");
     require(KYCStandards.contains(_standard), "This standard does not currently exist in the smart contract.");
     uint membersId;
     if (usersToKYC[_id].standardLookup[_standard] > 0){
@@ -55,6 +55,8 @@ contract HydroKYC is SnowflakeResolver {
   }
 
   function getAttestationsToUser(bytes32 _standard, uint _id) public view returns(address[]) {
+    Snowflake snowflake = Snowflake(snowflakeAddress);
+    require(snowflake.tokenExists(_id), "This snowflake id does not exist.");
     require(KYCStandards.contains(_standard), "This standard does not currently exist in the smart contract.");
     require(usersToKYC[_id].standardLookup[_standard] > 0, "This standard is not passed by this user.");
 
@@ -63,6 +65,8 @@ contract HydroKYC is SnowflakeResolver {
   }
 
   function getAttestationCountToUser(bytes32 _standard, uint _id) public view returns(uint) {
+    Snowflake snowflake = Snowflake(snowflakeAddress);
+    require(snowflake.tokenExists(_id), "This snowflake id does not exist.");
     require(KYCStandards.contains(_standard), "This standard does not currently exist in the smart contract.");
     require(usersToKYC[_id].standardLookup[_standard] > 0, "This standard is not passed by this user.");
 
@@ -71,6 +75,8 @@ contract HydroKYC is SnowflakeResolver {
   }
 
   function getTimeOfAttestation(bytes32 _standard, uint _id, address _attester) public view returns(uint) {
+    Snowflake snowflake = Snowflake(snowflakeAddress);
+    require(snowflake.tokenExists(_id), "This snowflake id does not exist.");
     require(KYCStandards.contains(_standard), "This standard does not currently exist in the smart contract.");
     require(usersToKYC[_id].standardLookup[_standard] > 0, "This standard is not passed by this user.");
 

@@ -90,14 +90,14 @@
     "absolutePath": "/Users/andychorlian/Documents/GitHub/smart-contracts/snowflake-poc/contracts/libraries/stringSet.sol",
     "exportedSymbols": {
       "stringSet": [
-        4930
+        4947
       ]
     },
-    "id": 4931,
+    "id": 4948,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 4784,
+        "id": 4801,
         "literals": [
           "solidity",
           "^",
@@ -113,23 +113,23 @@
         "contractKind": "library",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 4930,
+        "id": 4947,
         "linearizedBaseContracts": [
-          4930
+          4947
         ],
         "name": "stringSet",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "canonicalName": "stringSet._stringSet",
-            "id": 4792,
+            "id": 4809,
             "members": [
               {
                 "constant": false,
-                "id": 4787,
+                "id": 4804,
                 "name": "members",
                 "nodeType": "VariableDeclaration",
-                "scope": 4792,
+                "scope": 4809,
                 "src": "79:16:16",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -139,7 +139,7 @@
                 },
                 "typeName": {
                   "baseType": {
-                    "id": 4785,
+                    "id": 4802,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "79:6:16",
@@ -148,7 +148,7 @@
                       "typeString": "string"
                     }
                   },
-                  "id": 4786,
+                  "id": 4803,
                   "length": null,
                   "nodeType": "ArrayTypeName",
                   "src": "79:8:16",
@@ -162,10 +162,10 @@
               },
               {
                 "constant": false,
-                "id": 4791,
+                "id": 4808,
                 "name": "memberIndices",
                 "nodeType": "VariableDeclaration",
-                "scope": 4792,
+                "scope": 4809,
                 "src": "105:37:16",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -174,9 +174,9 @@
                   "typeString": "mapping(string => uint256)"
                 },
                 "typeName": {
-                  "id": 4790,
+                  "id": 4807,
                   "keyType": {
-                    "id": 4788,
+                    "id": 4805,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "113:6:16",
@@ -192,7 +192,7 @@
                     "typeString": "mapping(string => uint256)"
                   },
                   "valueType": {
-                    "id": 4789,
+                    "id": 4806,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "123:4:16",
@@ -208,20 +208,20 @@
             ],
             "name": "_stringSet",
             "nodeType": "StructDefinition",
-            "scope": 4930,
+            "scope": 4947,
             "src": "51:98:16",
             "visibility": "public"
           },
           {
             "body": {
-              "id": 4836,
+              "id": 4853,
               "nodeType": "Block",
               "src": "217:192:16",
               "statements": [
                 {
                   "condition": {
                     "argumentTypes": null,
-                    "id": 4803,
+                    "id": 4820,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -235,24 +235,24 @@
                       "arguments": [
                         {
                           "argumentTypes": null,
-                          "id": 4800,
+                          "id": 4817,
                           "name": "self",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 4794,
+                          "referencedDeclaration": 4811,
                           "src": "241:4:16",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                            "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                             "typeString": "struct stringSet._stringSet storage pointer"
                           }
                         },
                         {
                           "argumentTypes": null,
-                          "id": 4801,
+                          "id": 4818,
                           "name": "other",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 4796,
+                          "referencedDeclaration": 4813,
                           "src": "247:5:16",
                           "typeDescriptions": {
                             "typeIdentifier": "t_string_memory_ptr",
@@ -263,7 +263,7 @@
                       "expression": {
                         "argumentTypes": [
                           {
-                            "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                            "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                             "typeString": "struct stringSet._stringSet storage pointer"
                           },
                           {
@@ -271,18 +271,18 @@
                             "typeString": "string memory"
                           }
                         ],
-                        "id": 4799,
+                        "id": 4816,
                         "name": "contains",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 4917,
+                        "referencedDeclaration": 4934,
                         "src": "232:8:16",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_function_internal_view$_t_struct$__stringSet_$4792_storage_ptr_$_t_string_memory_ptr_$returns$_t_bool_$",
+                          "typeIdentifier": "t_function_internal_view$_t_struct$__stringSet_$4809_storage_ptr_$_t_string_memory_ptr_$returns$_t_bool_$",
                           "typeString": "function (struct stringSet._stringSet storage pointer,string memory) view returns (bool)"
                         }
                       },
-                      "id": 4802,
+                      "id": 4819,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -302,11 +302,11 @@
                     }
                   },
                   "falseBody": null,
-                  "id": 4835,
+                  "id": 4852,
                   "nodeType": "IfStatement",
                   "src": "227:176:16",
                   "trueBody": {
-                    "id": 4834,
+                    "id": 4851,
                     "nodeType": "Block",
                     "src": "255:148:16",
                     "statements": [
@@ -320,7 +320,7 @@
                                 "typeIdentifier": "t_uint256",
                                 "typeString": "uint256"
                               },
-                              "id": 4813,
+                              "id": 4830,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": false,
@@ -330,14 +330,14 @@
                                 "arguments": [
                                   {
                                     "argumentTypes": null,
-                                    "id": 4806,
+                                    "id": 4823,
                                     "name": "self",
                                     "nodeType": "Identifier",
                                     "overloadedDeclarations": [],
-                                    "referencedDeclaration": 4794,
+                                    "referencedDeclaration": 4811,
                                     "src": "283:4:16",
                                     "typeDescriptions": {
-                                      "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                      "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                       "typeString": "struct stringSet._stringSet storage pointer"
                                     }
                                   }
@@ -345,22 +345,22 @@
                                 "expression": {
                                   "argumentTypes": [
                                     {
-                                      "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                      "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                       "typeString": "struct stringSet._stringSet storage pointer"
                                     }
                                   ],
-                                  "id": 4805,
+                                  "id": 4822,
                                   "name": "length",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 4929,
+                                  "referencedDeclaration": 4946,
                                   "src": "276:6:16",
                                   "typeDescriptions": {
-                                    "typeIdentifier": "t_function_internal_view$_t_struct$__stringSet_$4792_storage_ptr_$returns$_t_uint256_$",
+                                    "typeIdentifier": "t_function_internal_view$_t_struct$__stringSet_$4809_storage_ptr_$returns$_t_uint256_$",
                                     "typeString": "function (struct stringSet._stringSet storage pointer) view returns (uint256)"
                                   }
                                 },
-                                "id": 4807,
+                                "id": 4824,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": false,
@@ -382,7 +382,7 @@
                                   "typeIdentifier": "t_rational_115792089237316195423570985008687907853269984665640564039457584007913129639935_by_1",
                                   "typeString": "int_const 1157...(70 digits omitted)...9935"
                                 },
-                                "id": 4812,
+                                "id": 4829,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": true,
@@ -393,7 +393,7 @@
                                     "typeIdentifier": "t_rational_115792089237316195423570985008687907853269984665640564039457584007913129639936_by_1",
                                     "typeString": "int_const 1157...(70 digits omitted)...9936"
                                   },
-                                  "id": 4810,
+                                  "id": 4827,
                                   "isConstant": false,
                                   "isLValue": false,
                                   "isPure": true,
@@ -401,7 +401,7 @@
                                   "leftExpression": {
                                     "argumentTypes": null,
                                     "hexValue": "32",
-                                    "id": 4808,
+                                    "id": 4825,
                                     "isConstant": false,
                                     "isLValue": false,
                                     "isPure": true,
@@ -421,7 +421,7 @@
                                   "rightExpression": {
                                     "argumentTypes": null,
                                     "hexValue": "323536",
-                                    "id": 4809,
+                                    "id": 4826,
                                     "isConstant": false,
                                     "isLValue": false,
                                     "isPure": true,
@@ -447,7 +447,7 @@
                                 "rightExpression": {
                                   "argumentTypes": null,
                                   "hexValue": "31",
-                                  "id": 4811,
+                                  "id": 4828,
                                   "isConstant": false,
                                   "isLValue": false,
                                   "isPure": true,
@@ -482,18 +482,18 @@
                                 "typeString": "bool"
                               }
                             ],
-                            "id": 4804,
+                            "id": 4821,
                             "name": "assert",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 6128,
+                            "referencedDeclaration": 6602,
                             "src": "269:6:16",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_assert_pure$_t_bool_$returns$__$",
                               "typeString": "function (bool) pure"
                             }
                           },
-                          "id": 4814,
+                          "id": 4831,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -507,7 +507,7 @@
                             "typeString": "tuple()"
                           }
                         },
-                        "id": 4815,
+                        "id": 4832,
                         "nodeType": "ExpressionStatement",
                         "src": "269:31:16"
                       },
@@ -517,11 +517,11 @@
                           "arguments": [
                             {
                               "argumentTypes": null,
-                              "id": 4821,
+                              "id": 4838,
                               "name": "other",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 4796,
+                              "referencedDeclaration": 4813,
                               "src": "332:5:16",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_string_memory_ptr",
@@ -540,32 +540,32 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 4816,
+                                "id": 4833,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 4794,
+                                "referencedDeclaration": 4811,
                                 "src": "314:4:16",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                  "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                   "typeString": "struct stringSet._stringSet storage pointer"
                                 }
                               },
-                              "id": 4819,
+                              "id": 4836,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "members",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 4787,
+                              "referencedDeclaration": 4804,
                               "src": "314:12:16",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_array$_t_string_storage_$dyn_storage",
                                 "typeString": "string storage ref[] storage ref"
                               }
                             },
-                            "id": 4820,
+                            "id": 4837,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -579,7 +579,7 @@
                               "typeString": "function (string storage ref) returns (uint256)"
                             }
                           },
-                          "id": 4822,
+                          "id": 4839,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -593,14 +593,14 @@
                             "typeString": "uint256"
                           }
                         },
-                        "id": 4823,
+                        "id": 4840,
                         "nodeType": "ExpressionStatement",
                         "src": "314:24:16"
                       },
                       {
                         "expression": {
                           "argumentTypes": null,
-                          "id": 4832,
+                          "id": 4849,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -611,39 +611,39 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 4824,
+                                "id": 4841,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 4794,
+                                "referencedDeclaration": 4811,
                                 "src": "352:4:16",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                  "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                   "typeString": "struct stringSet._stringSet storage pointer"
                                 }
                               },
-                              "id": 4827,
+                              "id": 4844,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "memberIndices",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 4791,
+                              "referencedDeclaration": 4808,
                               "src": "352:18:16",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
                                 "typeString": "mapping(string memory => uint256)"
                               }
                             },
-                            "id": 4828,
+                            "id": 4845,
                             "indexExpression": {
                               "argumentTypes": null,
-                              "id": 4826,
+                              "id": 4843,
                               "name": "other",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 4796,
+                              "referencedDeclaration": 4813,
                               "src": "371:5:16",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_string_memory_ptr",
@@ -668,14 +668,14 @@
                             "arguments": [
                               {
                                 "argumentTypes": null,
-                                "id": 4830,
+                                "id": 4847,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 4794,
+                                "referencedDeclaration": 4811,
                                 "src": "387:4:16",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                  "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                   "typeString": "struct stringSet._stringSet storage pointer"
                                 }
                               }
@@ -683,22 +683,22 @@
                             "expression": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                  "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                   "typeString": "struct stringSet._stringSet storage pointer"
                                 }
                               ],
-                              "id": 4829,
+                              "id": 4846,
                               "name": "length",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 4929,
+                              "referencedDeclaration": 4946,
                               "src": "380:6:16",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_function_internal_view$_t_struct$__stringSet_$4792_storage_ptr_$returns$_t_uint256_$",
+                                "typeIdentifier": "t_function_internal_view$_t_struct$__stringSet_$4809_storage_ptr_$returns$_t_uint256_$",
                                 "typeString": "function (struct stringSet._stringSet storage pointer) view returns (uint256)"
                               }
                             },
-                            "id": 4831,
+                            "id": 4848,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -718,7 +718,7 @@
                             "typeString": "uint256"
                           }
                         },
-                        "id": 4833,
+                        "id": 4850,
                         "nodeType": "ExpressionStatement",
                         "src": "352:40:16"
                       }
@@ -728,7 +728,7 @@
               ]
             },
             "documentation": null,
-            "id": 4837,
+            "id": 4854,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -736,31 +736,31 @@
             "name": "insert",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 4797,
+              "id": 4814,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4794,
+                  "id": 4811,
                   "name": "self",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4837,
+                  "scope": 4854,
                   "src": "171:23:16",
                   "stateVariable": false,
                   "storageLocation": "storage",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                    "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                     "typeString": "struct stringSet._stringSet"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 4793,
+                    "id": 4810,
                     "name": "_stringSet",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 4792,
+                    "referencedDeclaration": 4809,
                     "src": "171:10:16",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                      "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                       "typeString": "struct stringSet._stringSet"
                     }
                   },
@@ -769,10 +769,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 4796,
+                  "id": 4813,
                   "name": "other",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4837,
+                  "scope": 4854,
                   "src": "196:12:16",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -781,7 +781,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 4795,
+                    "id": 4812,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "196:6:16",
@@ -798,12 +798,12 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 4798,
+              "id": 4815,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "217:0:16"
             },
-            "scope": 4930,
+            "scope": 4947,
             "src": "155:254:16",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -811,7 +811,7 @@
           },
           {
             "body": {
-              "id": 4899,
+              "id": 4916,
               "nodeType": "Block",
               "src": "477:502:16",
               "statements": [
@@ -821,24 +821,24 @@
                     "arguments": [
                       {
                         "argumentTypes": null,
-                        "id": 4845,
+                        "id": 4862,
                         "name": "self",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 4839,
+                        "referencedDeclaration": 4856,
                         "src": "500:4:16",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                          "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                           "typeString": "struct stringSet._stringSet storage pointer"
                         }
                       },
                       {
                         "argumentTypes": null,
-                        "id": 4846,
+                        "id": 4863,
                         "name": "other",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 4841,
+                        "referencedDeclaration": 4858,
                         "src": "506:5:16",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_memory_ptr",
@@ -849,7 +849,7 @@
                     "expression": {
                       "argumentTypes": [
                         {
-                          "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                          "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                           "typeString": "struct stringSet._stringSet storage pointer"
                         },
                         {
@@ -857,18 +857,18 @@
                           "typeString": "string memory"
                         }
                       ],
-                      "id": 4844,
+                      "id": 4861,
                       "name": "contains",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 4917,
+                      "referencedDeclaration": 4934,
                       "src": "491:8:16",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_internal_view$_t_struct$__stringSet_$4792_storage_ptr_$_t_string_memory_ptr_$returns$_t_bool_$",
+                        "typeIdentifier": "t_function_internal_view$_t_struct$__stringSet_$4809_storage_ptr_$_t_string_memory_ptr_$returns$_t_bool_$",
                         "typeString": "function (struct stringSet._stringSet storage pointer,string memory) view returns (bool)"
                       }
                     },
-                    "id": 4847,
+                    "id": 4864,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -883,25 +883,25 @@
                     }
                   },
                   "falseBody": null,
-                  "id": 4898,
+                  "id": 4915,
                   "nodeType": "IfStatement",
                   "src": "487:486:16",
                   "trueBody": {
-                    "id": 4897,
+                    "id": 4914,
                     "nodeType": "Block",
                     "src": "514:459:16",
                     "statements": [
                       {
                         "assignments": [
-                          4849
+                          4866
                         ],
                         "declarations": [
                           {
                             "constant": false,
-                            "id": 4849,
+                            "id": 4866,
                             "name": "replaceIndex",
                             "nodeType": "VariableDeclaration",
-                            "scope": 4900,
+                            "scope": 4917,
                             "src": "528:17:16",
                             "stateVariable": false,
                             "storageLocation": "default",
@@ -910,7 +910,7 @@
                               "typeString": "uint256"
                             },
                             "typeName": {
-                              "id": 4848,
+                              "id": 4865,
                               "name": "uint",
                               "nodeType": "ElementaryTypeName",
                               "src": "528:4:16",
@@ -923,46 +923,46 @@
                             "visibility": "internal"
                           }
                         ],
-                        "id": 4854,
+                        "id": 4871,
                         "initialValue": {
                           "argumentTypes": null,
                           "baseExpression": {
                             "argumentTypes": null,
                             "expression": {
                               "argumentTypes": null,
-                              "id": 4850,
+                              "id": 4867,
                               "name": "self",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 4839,
+                              "referencedDeclaration": 4856,
                               "src": "548:4:16",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                 "typeString": "struct stringSet._stringSet storage pointer"
                               }
                             },
-                            "id": 4851,
+                            "id": 4868,
                             "isConstant": false,
                             "isLValue": true,
                             "isPure": false,
                             "lValueRequested": false,
                             "memberName": "memberIndices",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 4791,
+                            "referencedDeclaration": 4808,
                             "src": "548:18:16",
                             "typeDescriptions": {
                               "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
                               "typeString": "mapping(string memory => uint256)"
                             }
                           },
-                          "id": 4853,
+                          "id": 4870,
                           "indexExpression": {
                             "argumentTypes": null,
-                            "id": 4852,
+                            "id": 4869,
                             "name": "other",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 4841,
+                            "referencedDeclaration": 4858,
                             "src": "567:5:16",
                             "typeDescriptions": {
                               "typeIdentifier": "t_string_memory_ptr",
@@ -985,15 +985,15 @@
                       },
                       {
                         "assignments": [
-                          4856
+                          4873
                         ],
                         "declarations": [
                           {
                             "constant": false,
-                            "id": 4856,
+                            "id": 4873,
                             "name": "lastMember",
                             "nodeType": "VariableDeclaration",
-                            "scope": 4900,
+                            "scope": 4917,
                             "src": "587:24:16",
                             "stateVariable": false,
                             "storageLocation": "memory",
@@ -1002,7 +1002,7 @@
                               "typeString": "string"
                             },
                             "typeName": {
-                              "id": 4855,
+                              "id": 4872,
                               "name": "string",
                               "nodeType": "ElementaryTypeName",
                               "src": "587:6:16",
@@ -1015,46 +1015,46 @@
                             "visibility": "internal"
                           }
                         ],
-                        "id": 4865,
+                        "id": 4882,
                         "initialValue": {
                           "argumentTypes": null,
                           "baseExpression": {
                             "argumentTypes": null,
                             "expression": {
                               "argumentTypes": null,
-                              "id": 4857,
+                              "id": 4874,
                               "name": "self",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 4839,
+                              "referencedDeclaration": 4856,
                               "src": "614:4:16",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                 "typeString": "struct stringSet._stringSet storage pointer"
                               }
                             },
-                            "id": 4858,
+                            "id": 4875,
                             "isConstant": false,
                             "isLValue": true,
                             "isPure": false,
                             "lValueRequested": false,
                             "memberName": "members",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 4787,
+                            "referencedDeclaration": 4804,
                             "src": "614:12:16",
                             "typeDescriptions": {
                               "typeIdentifier": "t_array$_t_string_storage_$dyn_storage",
                               "typeString": "string storage ref[] storage ref"
                             }
                           },
-                          "id": 4864,
+                          "id": 4881,
                           "indexExpression": {
                             "argumentTypes": null,
                             "commonType": {
                               "typeIdentifier": "t_uint256",
                               "typeString": "uint256"
                             },
-                            "id": 4863,
+                            "id": 4880,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -1064,14 +1064,14 @@
                               "arguments": [
                                 {
                                   "argumentTypes": null,
-                                  "id": 4860,
+                                  "id": 4877,
                                   "name": "self",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 4839,
+                                  "referencedDeclaration": 4856,
                                   "src": "634:4:16",
                                   "typeDescriptions": {
-                                    "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                    "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                     "typeString": "struct stringSet._stringSet storage pointer"
                                   }
                                 }
@@ -1079,22 +1079,22 @@
                               "expression": {
                                 "argumentTypes": [
                                   {
-                                    "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                    "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                     "typeString": "struct stringSet._stringSet storage pointer"
                                   }
                                 ],
-                                "id": 4859,
+                                "id": 4876,
                                 "name": "length",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 4929,
+                                "referencedDeclaration": 4946,
                                 "src": "627:6:16",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_function_internal_view$_t_struct$__stringSet_$4792_storage_ptr_$returns$_t_uint256_$",
+                                  "typeIdentifier": "t_function_internal_view$_t_struct$__stringSet_$4809_storage_ptr_$returns$_t_uint256_$",
                                   "typeString": "function (struct stringSet._stringSet storage pointer) view returns (uint256)"
                                 }
                               },
-                              "id": 4861,
+                              "id": 4878,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": false,
@@ -1113,7 +1113,7 @@
                             "rightExpression": {
                               "argumentTypes": null,
                               "hexValue": "31",
-                              "id": 4862,
+                              "id": 4879,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -1151,7 +1151,7 @@
                       {
                         "expression": {
                           "argumentTypes": null,
-                          "id": 4874,
+                          "id": 4891,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -1162,50 +1162,50 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 4866,
+                                "id": 4883,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 4839,
+                                "referencedDeclaration": 4856,
                                 "src": "731:4:16",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                  "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                   "typeString": "struct stringSet._stringSet storage pointer"
                                 }
                               },
-                              "id": 4871,
+                              "id": 4888,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "members",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 4787,
+                              "referencedDeclaration": 4804,
                               "src": "731:12:16",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_array$_t_string_storage_$dyn_storage",
                                 "typeString": "string storage ref[] storage ref"
                               }
                             },
-                            "id": 4872,
+                            "id": 4889,
                             "indexExpression": {
                               "argumentTypes": null,
                               "commonType": {
                                 "typeIdentifier": "t_uint256",
                                 "typeString": "uint256"
                               },
-                              "id": 4870,
+                              "id": 4887,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": false,
                               "lValueRequested": false,
                               "leftExpression": {
                                 "argumentTypes": null,
-                                "id": 4868,
+                                "id": 4885,
                                 "name": "replaceIndex",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 4849,
+                                "referencedDeclaration": 4866,
                                 "src": "744:12:16",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_uint256",
@@ -1217,7 +1217,7 @@
                               "rightExpression": {
                                 "argumentTypes": null,
                                 "hexValue": "31",
-                                "id": 4869,
+                                "id": 4886,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": true,
@@ -1253,11 +1253,11 @@
                           "operator": "=",
                           "rightHandSide": {
                             "argumentTypes": null,
-                            "id": 4873,
+                            "id": 4890,
                             "name": "lastMember",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 4856,
+                            "referencedDeclaration": 4873,
                             "src": "762:10:16",
                             "typeDescriptions": {
                               "typeIdentifier": "t_string_memory_ptr",
@@ -1270,14 +1270,14 @@
                             "typeString": "string storage ref"
                           }
                         },
-                        "id": 4875,
+                        "id": 4892,
                         "nodeType": "ExpressionStatement",
                         "src": "731:41:16"
                       },
                       {
                         "expression": {
                           "argumentTypes": null,
-                          "id": 4881,
+                          "id": 4898,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -1292,32 +1292,32 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 4876,
+                                "id": 4893,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 4839,
+                                "referencedDeclaration": 4856,
                                 "src": "786:4:16",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                  "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                   "typeString": "struct stringSet._stringSet storage pointer"
                                 }
                               },
-                              "id": 4879,
+                              "id": 4896,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "members",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 4787,
+                              "referencedDeclaration": 4804,
                               "src": "786:12:16",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_array$_t_string_storage_$dyn_storage",
                                 "typeString": "string storage ref[] storage ref"
                               }
                             },
-                            "id": 4880,
+                            "id": 4897,
                             "isConstant": false,
                             "isLValue": true,
                             "isPure": false,
@@ -1336,14 +1336,14 @@
                             "typeString": "uint256"
                           }
                         },
-                        "id": 4882,
+                        "id": 4899,
                         "nodeType": "ExpressionStatement",
                         "src": "786:21:16"
                       },
                       {
                         "expression": {
                           "argumentTypes": null,
-                          "id": 4889,
+                          "id": 4906,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -1354,39 +1354,39 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 4883,
+                                "id": 4900,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 4839,
+                                "referencedDeclaration": 4856,
                                 "src": "871:4:16",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                  "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                   "typeString": "struct stringSet._stringSet storage pointer"
                                 }
                               },
-                              "id": 4886,
+                              "id": 4903,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "memberIndices",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 4791,
+                              "referencedDeclaration": 4808,
                               "src": "871:18:16",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
                                 "typeString": "mapping(string memory => uint256)"
                               }
                             },
-                            "id": 4887,
+                            "id": 4904,
                             "indexExpression": {
                               "argumentTypes": null,
-                              "id": 4885,
+                              "id": 4902,
                               "name": "lastMember",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 4856,
+                              "referencedDeclaration": 4873,
                               "src": "890:10:16",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_string_memory_ptr",
@@ -1408,11 +1408,11 @@
                           "operator": "=",
                           "rightHandSide": {
                             "argumentTypes": null,
-                            "id": 4888,
+                            "id": 4905,
                             "name": "replaceIndex",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 4849,
+                            "referencedDeclaration": 4866,
                             "src": "904:12:16",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint256",
@@ -1425,14 +1425,14 @@
                             "typeString": "uint256"
                           }
                         },
-                        "id": 4890,
+                        "id": 4907,
                         "nodeType": "ExpressionStatement",
                         "src": "871:45:16"
                       },
                       {
                         "expression": {
                           "argumentTypes": null,
-                          "id": 4895,
+                          "id": 4912,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -1447,39 +1447,39 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 4891,
+                                "id": 4908,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 4839,
+                                "referencedDeclaration": 4856,
                                 "src": "937:4:16",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                  "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                   "typeString": "struct stringSet._stringSet storage pointer"
                                 }
                               },
-                              "id": 4892,
+                              "id": 4909,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "memberIndices",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 4791,
+                              "referencedDeclaration": 4808,
                               "src": "937:18:16",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
                                 "typeString": "mapping(string memory => uint256)"
                               }
                             },
-                            "id": 4894,
+                            "id": 4911,
                             "indexExpression": {
                               "argumentTypes": null,
-                              "id": 4893,
+                              "id": 4910,
                               "name": "other",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 4841,
+                              "referencedDeclaration": 4858,
                               "src": "956:5:16",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_string_memory_ptr",
@@ -1502,7 +1502,7 @@
                             "typeString": "tuple()"
                           }
                         },
-                        "id": 4896,
+                        "id": 4913,
                         "nodeType": "ExpressionStatement",
                         "src": "930:32:16"
                       }
@@ -1512,7 +1512,7 @@
               ]
             },
             "documentation": null,
-            "id": 4900,
+            "id": 4917,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -1520,31 +1520,31 @@
             "name": "remove",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 4842,
+              "id": 4859,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4839,
+                  "id": 4856,
                   "name": "self",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4900,
+                  "scope": 4917,
                   "src": "431:23:16",
                   "stateVariable": false,
                   "storageLocation": "storage",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                    "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                     "typeString": "struct stringSet._stringSet"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 4838,
+                    "id": 4855,
                     "name": "_stringSet",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 4792,
+                    "referencedDeclaration": 4809,
                     "src": "431:10:16",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                      "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                       "typeString": "struct stringSet._stringSet"
                     }
                   },
@@ -1553,10 +1553,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 4841,
+                  "id": 4858,
                   "name": "other",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4900,
+                  "scope": 4917,
                   "src": "456:12:16",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1565,7 +1565,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 4840,
+                    "id": 4857,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "456:6:16",
@@ -1582,12 +1582,12 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 4843,
+              "id": 4860,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "477:0:16"
             },
-            "scope": 4930,
+            "scope": 4947,
             "src": "415:564:16",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -1595,7 +1595,7 @@
           },
           {
             "body": {
-              "id": 4916,
+              "id": 4933,
               "nodeType": "Block",
               "src": "1069:53:16",
               "statements": [
@@ -1606,7 +1606,7 @@
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     },
-                    "id": 4914,
+                    "id": 4931,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1617,39 +1617,39 @@
                         "argumentTypes": null,
                         "expression": {
                           "argumentTypes": null,
-                          "id": 4909,
+                          "id": 4926,
                           "name": "self",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 4902,
+                          "referencedDeclaration": 4919,
                           "src": "1086:4:16",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                            "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                             "typeString": "struct stringSet._stringSet storage pointer"
                           }
                         },
-                        "id": 4910,
+                        "id": 4927,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
                         "lValueRequested": false,
                         "memberName": "memberIndices",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 4791,
+                        "referencedDeclaration": 4808,
                         "src": "1086:18:16",
                         "typeDescriptions": {
                           "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
                           "typeString": "mapping(string memory => uint256)"
                         }
                       },
-                      "id": 4912,
+                      "id": 4929,
                       "indexExpression": {
                         "argumentTypes": null,
-                        "id": 4911,
+                        "id": 4928,
                         "name": "other",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 4904,
+                        "referencedDeclaration": 4921,
                         "src": "1105:5:16",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_memory_ptr",
@@ -1672,7 +1672,7 @@
                     "rightExpression": {
                       "argumentTypes": null,
                       "hexValue": "30",
-                      "id": 4913,
+                      "id": 4930,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -1693,15 +1693,15 @@
                       "typeString": "bool"
                     }
                   },
-                  "functionReturnParameters": 4908,
-                  "id": 4915,
+                  "functionReturnParameters": 4925,
+                  "id": 4932,
                   "nodeType": "Return",
                   "src": "1079:36:16"
                 }
               ]
             },
             "documentation": null,
-            "id": 4917,
+            "id": 4934,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -1709,31 +1709,31 @@
             "name": "contains",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 4905,
+              "id": 4922,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4902,
+                  "id": 4919,
                   "name": "self",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4917,
+                  "scope": 4934,
                   "src": "1003:23:16",
                   "stateVariable": false,
                   "storageLocation": "storage",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                    "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                     "typeString": "struct stringSet._stringSet"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 4901,
+                    "id": 4918,
                     "name": "_stringSet",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 4792,
+                    "referencedDeclaration": 4809,
                     "src": "1003:10:16",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                      "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                       "typeString": "struct stringSet._stringSet"
                     }
                   },
@@ -1742,10 +1742,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 4904,
+                  "id": 4921,
                   "name": "other",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4917,
+                  "scope": 4934,
                   "src": "1028:12:16",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1754,7 +1754,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 4903,
+                    "id": 4920,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "1028:6:16",
@@ -1771,15 +1771,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 4908,
+              "id": 4925,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4907,
+                  "id": 4924,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4917,
+                  "scope": 4934,
                   "src": "1063:4:16",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1788,7 +1788,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 4906,
+                    "id": 4923,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1063:4:16",
@@ -1803,7 +1803,7 @@
               ],
               "src": "1062:6:16"
             },
-            "scope": 4930,
+            "scope": 4947,
             "src": "985:137:16",
             "stateMutability": "view",
             "superFunction": null,
@@ -1811,7 +1811,7 @@
           },
           {
             "body": {
-              "id": 4928,
+              "id": 4945,
               "nodeType": "Block",
               "src": "1196:43:16",
               "statements": [
@@ -1822,32 +1822,32 @@
                       "argumentTypes": null,
                       "expression": {
                         "argumentTypes": null,
-                        "id": 4924,
+                        "id": 4941,
                         "name": "self",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 4919,
+                        "referencedDeclaration": 4936,
                         "src": "1213:4:16",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                          "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                           "typeString": "struct stringSet._stringSet storage pointer"
                         }
                       },
-                      "id": 4925,
+                      "id": 4942,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "members",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 4787,
+                      "referencedDeclaration": 4804,
                       "src": "1213:12:16",
                       "typeDescriptions": {
                         "typeIdentifier": "t_array$_t_string_storage_$dyn_storage",
                         "typeString": "string storage ref[] storage ref"
                       }
                     },
-                    "id": 4926,
+                    "id": 4943,
                     "isConstant": false,
                     "isLValue": true,
                     "isPure": false,
@@ -1861,15 +1861,15 @@
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 4923,
-                  "id": 4927,
+                  "functionReturnParameters": 4940,
+                  "id": 4944,
                   "nodeType": "Return",
                   "src": "1206:26:16"
                 }
               ]
             },
             "documentation": null,
-            "id": 4929,
+            "id": 4946,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -1877,31 +1877,31 @@
             "name": "length",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 4920,
+              "id": 4937,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4919,
+                  "id": 4936,
                   "name": "self",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4929,
+                  "scope": 4946,
                   "src": "1144:23:16",
                   "stateVariable": false,
                   "storageLocation": "storage",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                    "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                     "typeString": "struct stringSet._stringSet"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 4918,
+                    "id": 4935,
                     "name": "_stringSet",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 4792,
+                    "referencedDeclaration": 4809,
                     "src": "1144:10:16",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                      "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                       "typeString": "struct stringSet._stringSet"
                     }
                   },
@@ -1913,15 +1913,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 4923,
+              "id": 4940,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4922,
+                  "id": 4939,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4929,
+                  "scope": 4946,
                   "src": "1190:4:16",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1930,7 +1930,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 4921,
+                    "id": 4938,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "1190:4:16",
@@ -1945,14 +1945,14 @@
               ],
               "src": "1189:6:16"
             },
-            "scope": 4930,
+            "scope": 4947,
             "src": "1128:111:16",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "public"
           }
         ],
-        "scope": 4931,
+        "scope": 4948,
         "src": "27:1214:16"
       }
     ],
@@ -1962,14 +1962,14 @@
     "absolutePath": "/Users/andychorlian/Documents/GitHub/smart-contracts/snowflake-poc/contracts/libraries/stringSet.sol",
     "exportedSymbols": {
       "stringSet": [
-        4930
+        4947
       ]
     },
-    "id": 4931,
+    "id": 4948,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 4784,
+        "id": 4801,
         "literals": [
           "solidity",
           "^",
@@ -1985,23 +1985,23 @@
         "contractKind": "library",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 4930,
+        "id": 4947,
         "linearizedBaseContracts": [
-          4930
+          4947
         ],
         "name": "stringSet",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "canonicalName": "stringSet._stringSet",
-            "id": 4792,
+            "id": 4809,
             "members": [
               {
                 "constant": false,
-                "id": 4787,
+                "id": 4804,
                 "name": "members",
                 "nodeType": "VariableDeclaration",
-                "scope": 4792,
+                "scope": 4809,
                 "src": "79:16:16",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -2011,7 +2011,7 @@
                 },
                 "typeName": {
                   "baseType": {
-                    "id": 4785,
+                    "id": 4802,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "79:6:16",
@@ -2020,7 +2020,7 @@
                       "typeString": "string"
                     }
                   },
-                  "id": 4786,
+                  "id": 4803,
                   "length": null,
                   "nodeType": "ArrayTypeName",
                   "src": "79:8:16",
@@ -2034,10 +2034,10 @@
               },
               {
                 "constant": false,
-                "id": 4791,
+                "id": 4808,
                 "name": "memberIndices",
                 "nodeType": "VariableDeclaration",
-                "scope": 4792,
+                "scope": 4809,
                 "src": "105:37:16",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -2046,9 +2046,9 @@
                   "typeString": "mapping(string => uint256)"
                 },
                 "typeName": {
-                  "id": 4790,
+                  "id": 4807,
                   "keyType": {
-                    "id": 4788,
+                    "id": 4805,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "113:6:16",
@@ -2064,7 +2064,7 @@
                     "typeString": "mapping(string => uint256)"
                   },
                   "valueType": {
-                    "id": 4789,
+                    "id": 4806,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "123:4:16",
@@ -2080,20 +2080,20 @@
             ],
             "name": "_stringSet",
             "nodeType": "StructDefinition",
-            "scope": 4930,
+            "scope": 4947,
             "src": "51:98:16",
             "visibility": "public"
           },
           {
             "body": {
-              "id": 4836,
+              "id": 4853,
               "nodeType": "Block",
               "src": "217:192:16",
               "statements": [
                 {
                   "condition": {
                     "argumentTypes": null,
-                    "id": 4803,
+                    "id": 4820,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2107,24 +2107,24 @@
                       "arguments": [
                         {
                           "argumentTypes": null,
-                          "id": 4800,
+                          "id": 4817,
                           "name": "self",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 4794,
+                          "referencedDeclaration": 4811,
                           "src": "241:4:16",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                            "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                             "typeString": "struct stringSet._stringSet storage pointer"
                           }
                         },
                         {
                           "argumentTypes": null,
-                          "id": 4801,
+                          "id": 4818,
                           "name": "other",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 4796,
+                          "referencedDeclaration": 4813,
                           "src": "247:5:16",
                           "typeDescriptions": {
                             "typeIdentifier": "t_string_memory_ptr",
@@ -2135,7 +2135,7 @@
                       "expression": {
                         "argumentTypes": [
                           {
-                            "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                            "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                             "typeString": "struct stringSet._stringSet storage pointer"
                           },
                           {
@@ -2143,18 +2143,18 @@
                             "typeString": "string memory"
                           }
                         ],
-                        "id": 4799,
+                        "id": 4816,
                         "name": "contains",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 4917,
+                        "referencedDeclaration": 4934,
                         "src": "232:8:16",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_function_internal_view$_t_struct$__stringSet_$4792_storage_ptr_$_t_string_memory_ptr_$returns$_t_bool_$",
+                          "typeIdentifier": "t_function_internal_view$_t_struct$__stringSet_$4809_storage_ptr_$_t_string_memory_ptr_$returns$_t_bool_$",
                           "typeString": "function (struct stringSet._stringSet storage pointer,string memory) view returns (bool)"
                         }
                       },
-                      "id": 4802,
+                      "id": 4819,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -2174,11 +2174,11 @@
                     }
                   },
                   "falseBody": null,
-                  "id": 4835,
+                  "id": 4852,
                   "nodeType": "IfStatement",
                   "src": "227:176:16",
                   "trueBody": {
-                    "id": 4834,
+                    "id": 4851,
                     "nodeType": "Block",
                     "src": "255:148:16",
                     "statements": [
@@ -2192,7 +2192,7 @@
                                 "typeIdentifier": "t_uint256",
                                 "typeString": "uint256"
                               },
-                              "id": 4813,
+                              "id": 4830,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": false,
@@ -2202,14 +2202,14 @@
                                 "arguments": [
                                   {
                                     "argumentTypes": null,
-                                    "id": 4806,
+                                    "id": 4823,
                                     "name": "self",
                                     "nodeType": "Identifier",
                                     "overloadedDeclarations": [],
-                                    "referencedDeclaration": 4794,
+                                    "referencedDeclaration": 4811,
                                     "src": "283:4:16",
                                     "typeDescriptions": {
-                                      "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                      "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                       "typeString": "struct stringSet._stringSet storage pointer"
                                     }
                                   }
@@ -2217,22 +2217,22 @@
                                 "expression": {
                                   "argumentTypes": [
                                     {
-                                      "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                      "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                       "typeString": "struct stringSet._stringSet storage pointer"
                                     }
                                   ],
-                                  "id": 4805,
+                                  "id": 4822,
                                   "name": "length",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 4929,
+                                  "referencedDeclaration": 4946,
                                   "src": "276:6:16",
                                   "typeDescriptions": {
-                                    "typeIdentifier": "t_function_internal_view$_t_struct$__stringSet_$4792_storage_ptr_$returns$_t_uint256_$",
+                                    "typeIdentifier": "t_function_internal_view$_t_struct$__stringSet_$4809_storage_ptr_$returns$_t_uint256_$",
                                     "typeString": "function (struct stringSet._stringSet storage pointer) view returns (uint256)"
                                   }
                                 },
-                                "id": 4807,
+                                "id": 4824,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": false,
@@ -2254,7 +2254,7 @@
                                   "typeIdentifier": "t_rational_115792089237316195423570985008687907853269984665640564039457584007913129639935_by_1",
                                   "typeString": "int_const 1157...(70 digits omitted)...9935"
                                 },
-                                "id": 4812,
+                                "id": 4829,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": true,
@@ -2265,7 +2265,7 @@
                                     "typeIdentifier": "t_rational_115792089237316195423570985008687907853269984665640564039457584007913129639936_by_1",
                                     "typeString": "int_const 1157...(70 digits omitted)...9936"
                                   },
-                                  "id": 4810,
+                                  "id": 4827,
                                   "isConstant": false,
                                   "isLValue": false,
                                   "isPure": true,
@@ -2273,7 +2273,7 @@
                                   "leftExpression": {
                                     "argumentTypes": null,
                                     "hexValue": "32",
-                                    "id": 4808,
+                                    "id": 4825,
                                     "isConstant": false,
                                     "isLValue": false,
                                     "isPure": true,
@@ -2293,7 +2293,7 @@
                                   "rightExpression": {
                                     "argumentTypes": null,
                                     "hexValue": "323536",
-                                    "id": 4809,
+                                    "id": 4826,
                                     "isConstant": false,
                                     "isLValue": false,
                                     "isPure": true,
@@ -2319,7 +2319,7 @@
                                 "rightExpression": {
                                   "argumentTypes": null,
                                   "hexValue": "31",
-                                  "id": 4811,
+                                  "id": 4828,
                                   "isConstant": false,
                                   "isLValue": false,
                                   "isPure": true,
@@ -2354,18 +2354,18 @@
                                 "typeString": "bool"
                               }
                             ],
-                            "id": 4804,
+                            "id": 4821,
                             "name": "assert",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 6128,
+                            "referencedDeclaration": 6602,
                             "src": "269:6:16",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_assert_pure$_t_bool_$returns$__$",
                               "typeString": "function (bool) pure"
                             }
                           },
-                          "id": 4814,
+                          "id": 4831,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -2379,7 +2379,7 @@
                             "typeString": "tuple()"
                           }
                         },
-                        "id": 4815,
+                        "id": 4832,
                         "nodeType": "ExpressionStatement",
                         "src": "269:31:16"
                       },
@@ -2389,11 +2389,11 @@
                           "arguments": [
                             {
                               "argumentTypes": null,
-                              "id": 4821,
+                              "id": 4838,
                               "name": "other",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 4796,
+                              "referencedDeclaration": 4813,
                               "src": "332:5:16",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_string_memory_ptr",
@@ -2412,32 +2412,32 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 4816,
+                                "id": 4833,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 4794,
+                                "referencedDeclaration": 4811,
                                 "src": "314:4:16",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                  "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                   "typeString": "struct stringSet._stringSet storage pointer"
                                 }
                               },
-                              "id": 4819,
+                              "id": 4836,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "members",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 4787,
+                              "referencedDeclaration": 4804,
                               "src": "314:12:16",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_array$_t_string_storage_$dyn_storage",
                                 "typeString": "string storage ref[] storage ref"
                               }
                             },
-                            "id": 4820,
+                            "id": 4837,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -2451,7 +2451,7 @@
                               "typeString": "function (string storage ref) returns (uint256)"
                             }
                           },
-                          "id": 4822,
+                          "id": 4839,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -2465,14 +2465,14 @@
                             "typeString": "uint256"
                           }
                         },
-                        "id": 4823,
+                        "id": 4840,
                         "nodeType": "ExpressionStatement",
                         "src": "314:24:16"
                       },
                       {
                         "expression": {
                           "argumentTypes": null,
-                          "id": 4832,
+                          "id": 4849,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -2483,39 +2483,39 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 4824,
+                                "id": 4841,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 4794,
+                                "referencedDeclaration": 4811,
                                 "src": "352:4:16",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                  "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                   "typeString": "struct stringSet._stringSet storage pointer"
                                 }
                               },
-                              "id": 4827,
+                              "id": 4844,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "memberIndices",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 4791,
+                              "referencedDeclaration": 4808,
                               "src": "352:18:16",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
                                 "typeString": "mapping(string memory => uint256)"
                               }
                             },
-                            "id": 4828,
+                            "id": 4845,
                             "indexExpression": {
                               "argumentTypes": null,
-                              "id": 4826,
+                              "id": 4843,
                               "name": "other",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 4796,
+                              "referencedDeclaration": 4813,
                               "src": "371:5:16",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_string_memory_ptr",
@@ -2540,14 +2540,14 @@
                             "arguments": [
                               {
                                 "argumentTypes": null,
-                                "id": 4830,
+                                "id": 4847,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 4794,
+                                "referencedDeclaration": 4811,
                                 "src": "387:4:16",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                  "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                   "typeString": "struct stringSet._stringSet storage pointer"
                                 }
                               }
@@ -2555,22 +2555,22 @@
                             "expression": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                  "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                   "typeString": "struct stringSet._stringSet storage pointer"
                                 }
                               ],
-                              "id": 4829,
+                              "id": 4846,
                               "name": "length",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 4929,
+                              "referencedDeclaration": 4946,
                               "src": "380:6:16",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_function_internal_view$_t_struct$__stringSet_$4792_storage_ptr_$returns$_t_uint256_$",
+                                "typeIdentifier": "t_function_internal_view$_t_struct$__stringSet_$4809_storage_ptr_$returns$_t_uint256_$",
                                 "typeString": "function (struct stringSet._stringSet storage pointer) view returns (uint256)"
                               }
                             },
-                            "id": 4831,
+                            "id": 4848,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -2590,7 +2590,7 @@
                             "typeString": "uint256"
                           }
                         },
-                        "id": 4833,
+                        "id": 4850,
                         "nodeType": "ExpressionStatement",
                         "src": "352:40:16"
                       }
@@ -2600,7 +2600,7 @@
               ]
             },
             "documentation": null,
-            "id": 4837,
+            "id": 4854,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -2608,31 +2608,31 @@
             "name": "insert",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 4797,
+              "id": 4814,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4794,
+                  "id": 4811,
                   "name": "self",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4837,
+                  "scope": 4854,
                   "src": "171:23:16",
                   "stateVariable": false,
                   "storageLocation": "storage",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                    "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                     "typeString": "struct stringSet._stringSet"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 4793,
+                    "id": 4810,
                     "name": "_stringSet",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 4792,
+                    "referencedDeclaration": 4809,
                     "src": "171:10:16",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                      "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                       "typeString": "struct stringSet._stringSet"
                     }
                   },
@@ -2641,10 +2641,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 4796,
+                  "id": 4813,
                   "name": "other",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4837,
+                  "scope": 4854,
                   "src": "196:12:16",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2653,7 +2653,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 4795,
+                    "id": 4812,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "196:6:16",
@@ -2670,12 +2670,12 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 4798,
+              "id": 4815,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "217:0:16"
             },
-            "scope": 4930,
+            "scope": 4947,
             "src": "155:254:16",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -2683,7 +2683,7 @@
           },
           {
             "body": {
-              "id": 4899,
+              "id": 4916,
               "nodeType": "Block",
               "src": "477:502:16",
               "statements": [
@@ -2693,24 +2693,24 @@
                     "arguments": [
                       {
                         "argumentTypes": null,
-                        "id": 4845,
+                        "id": 4862,
                         "name": "self",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 4839,
+                        "referencedDeclaration": 4856,
                         "src": "500:4:16",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                          "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                           "typeString": "struct stringSet._stringSet storage pointer"
                         }
                       },
                       {
                         "argumentTypes": null,
-                        "id": 4846,
+                        "id": 4863,
                         "name": "other",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 4841,
+                        "referencedDeclaration": 4858,
                         "src": "506:5:16",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_memory_ptr",
@@ -2721,7 +2721,7 @@
                     "expression": {
                       "argumentTypes": [
                         {
-                          "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                          "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                           "typeString": "struct stringSet._stringSet storage pointer"
                         },
                         {
@@ -2729,18 +2729,18 @@
                           "typeString": "string memory"
                         }
                       ],
-                      "id": 4844,
+                      "id": 4861,
                       "name": "contains",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 4917,
+                      "referencedDeclaration": 4934,
                       "src": "491:8:16",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_internal_view$_t_struct$__stringSet_$4792_storage_ptr_$_t_string_memory_ptr_$returns$_t_bool_$",
+                        "typeIdentifier": "t_function_internal_view$_t_struct$__stringSet_$4809_storage_ptr_$_t_string_memory_ptr_$returns$_t_bool_$",
                         "typeString": "function (struct stringSet._stringSet storage pointer,string memory) view returns (bool)"
                       }
                     },
-                    "id": 4847,
+                    "id": 4864,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2755,25 +2755,25 @@
                     }
                   },
                   "falseBody": null,
-                  "id": 4898,
+                  "id": 4915,
                   "nodeType": "IfStatement",
                   "src": "487:486:16",
                   "trueBody": {
-                    "id": 4897,
+                    "id": 4914,
                     "nodeType": "Block",
                     "src": "514:459:16",
                     "statements": [
                       {
                         "assignments": [
-                          4849
+                          4866
                         ],
                         "declarations": [
                           {
                             "constant": false,
-                            "id": 4849,
+                            "id": 4866,
                             "name": "replaceIndex",
                             "nodeType": "VariableDeclaration",
-                            "scope": 4900,
+                            "scope": 4917,
                             "src": "528:17:16",
                             "stateVariable": false,
                             "storageLocation": "default",
@@ -2782,7 +2782,7 @@
                               "typeString": "uint256"
                             },
                             "typeName": {
-                              "id": 4848,
+                              "id": 4865,
                               "name": "uint",
                               "nodeType": "ElementaryTypeName",
                               "src": "528:4:16",
@@ -2795,46 +2795,46 @@
                             "visibility": "internal"
                           }
                         ],
-                        "id": 4854,
+                        "id": 4871,
                         "initialValue": {
                           "argumentTypes": null,
                           "baseExpression": {
                             "argumentTypes": null,
                             "expression": {
                               "argumentTypes": null,
-                              "id": 4850,
+                              "id": 4867,
                               "name": "self",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 4839,
+                              "referencedDeclaration": 4856,
                               "src": "548:4:16",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                 "typeString": "struct stringSet._stringSet storage pointer"
                               }
                             },
-                            "id": 4851,
+                            "id": 4868,
                             "isConstant": false,
                             "isLValue": true,
                             "isPure": false,
                             "lValueRequested": false,
                             "memberName": "memberIndices",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 4791,
+                            "referencedDeclaration": 4808,
                             "src": "548:18:16",
                             "typeDescriptions": {
                               "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
                               "typeString": "mapping(string memory => uint256)"
                             }
                           },
-                          "id": 4853,
+                          "id": 4870,
                           "indexExpression": {
                             "argumentTypes": null,
-                            "id": 4852,
+                            "id": 4869,
                             "name": "other",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 4841,
+                            "referencedDeclaration": 4858,
                             "src": "567:5:16",
                             "typeDescriptions": {
                               "typeIdentifier": "t_string_memory_ptr",
@@ -2857,15 +2857,15 @@
                       },
                       {
                         "assignments": [
-                          4856
+                          4873
                         ],
                         "declarations": [
                           {
                             "constant": false,
-                            "id": 4856,
+                            "id": 4873,
                             "name": "lastMember",
                             "nodeType": "VariableDeclaration",
-                            "scope": 4900,
+                            "scope": 4917,
                             "src": "587:24:16",
                             "stateVariable": false,
                             "storageLocation": "memory",
@@ -2874,7 +2874,7 @@
                               "typeString": "string"
                             },
                             "typeName": {
-                              "id": 4855,
+                              "id": 4872,
                               "name": "string",
                               "nodeType": "ElementaryTypeName",
                               "src": "587:6:16",
@@ -2887,46 +2887,46 @@
                             "visibility": "internal"
                           }
                         ],
-                        "id": 4865,
+                        "id": 4882,
                         "initialValue": {
                           "argumentTypes": null,
                           "baseExpression": {
                             "argumentTypes": null,
                             "expression": {
                               "argumentTypes": null,
-                              "id": 4857,
+                              "id": 4874,
                               "name": "self",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 4839,
+                              "referencedDeclaration": 4856,
                               "src": "614:4:16",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                 "typeString": "struct stringSet._stringSet storage pointer"
                               }
                             },
-                            "id": 4858,
+                            "id": 4875,
                             "isConstant": false,
                             "isLValue": true,
                             "isPure": false,
                             "lValueRequested": false,
                             "memberName": "members",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 4787,
+                            "referencedDeclaration": 4804,
                             "src": "614:12:16",
                             "typeDescriptions": {
                               "typeIdentifier": "t_array$_t_string_storage_$dyn_storage",
                               "typeString": "string storage ref[] storage ref"
                             }
                           },
-                          "id": 4864,
+                          "id": 4881,
                           "indexExpression": {
                             "argumentTypes": null,
                             "commonType": {
                               "typeIdentifier": "t_uint256",
                               "typeString": "uint256"
                             },
-                            "id": 4863,
+                            "id": 4880,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -2936,14 +2936,14 @@
                               "arguments": [
                                 {
                                   "argumentTypes": null,
-                                  "id": 4860,
+                                  "id": 4877,
                                   "name": "self",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 4839,
+                                  "referencedDeclaration": 4856,
                                   "src": "634:4:16",
                                   "typeDescriptions": {
-                                    "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                    "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                     "typeString": "struct stringSet._stringSet storage pointer"
                                   }
                                 }
@@ -2951,22 +2951,22 @@
                               "expression": {
                                 "argumentTypes": [
                                   {
-                                    "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                    "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                     "typeString": "struct stringSet._stringSet storage pointer"
                                   }
                                 ],
-                                "id": 4859,
+                                "id": 4876,
                                 "name": "length",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 4929,
+                                "referencedDeclaration": 4946,
                                 "src": "627:6:16",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_function_internal_view$_t_struct$__stringSet_$4792_storage_ptr_$returns$_t_uint256_$",
+                                  "typeIdentifier": "t_function_internal_view$_t_struct$__stringSet_$4809_storage_ptr_$returns$_t_uint256_$",
                                   "typeString": "function (struct stringSet._stringSet storage pointer) view returns (uint256)"
                                 }
                               },
-                              "id": 4861,
+                              "id": 4878,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": false,
@@ -2985,7 +2985,7 @@
                             "rightExpression": {
                               "argumentTypes": null,
                               "hexValue": "31",
-                              "id": 4862,
+                              "id": 4879,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -3023,7 +3023,7 @@
                       {
                         "expression": {
                           "argumentTypes": null,
-                          "id": 4874,
+                          "id": 4891,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -3034,50 +3034,50 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 4866,
+                                "id": 4883,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 4839,
+                                "referencedDeclaration": 4856,
                                 "src": "731:4:16",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                  "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                   "typeString": "struct stringSet._stringSet storage pointer"
                                 }
                               },
-                              "id": 4871,
+                              "id": 4888,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "members",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 4787,
+                              "referencedDeclaration": 4804,
                               "src": "731:12:16",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_array$_t_string_storage_$dyn_storage",
                                 "typeString": "string storage ref[] storage ref"
                               }
                             },
-                            "id": 4872,
+                            "id": 4889,
                             "indexExpression": {
                               "argumentTypes": null,
                               "commonType": {
                                 "typeIdentifier": "t_uint256",
                                 "typeString": "uint256"
                               },
-                              "id": 4870,
+                              "id": 4887,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": false,
                               "lValueRequested": false,
                               "leftExpression": {
                                 "argumentTypes": null,
-                                "id": 4868,
+                                "id": 4885,
                                 "name": "replaceIndex",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 4849,
+                                "referencedDeclaration": 4866,
                                 "src": "744:12:16",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_uint256",
@@ -3089,7 +3089,7 @@
                               "rightExpression": {
                                 "argumentTypes": null,
                                 "hexValue": "31",
-                                "id": 4869,
+                                "id": 4886,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": true,
@@ -3125,11 +3125,11 @@
                           "operator": "=",
                           "rightHandSide": {
                             "argumentTypes": null,
-                            "id": 4873,
+                            "id": 4890,
                             "name": "lastMember",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 4856,
+                            "referencedDeclaration": 4873,
                             "src": "762:10:16",
                             "typeDescriptions": {
                               "typeIdentifier": "t_string_memory_ptr",
@@ -3142,14 +3142,14 @@
                             "typeString": "string storage ref"
                           }
                         },
-                        "id": 4875,
+                        "id": 4892,
                         "nodeType": "ExpressionStatement",
                         "src": "731:41:16"
                       },
                       {
                         "expression": {
                           "argumentTypes": null,
-                          "id": 4881,
+                          "id": 4898,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -3164,32 +3164,32 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 4876,
+                                "id": 4893,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 4839,
+                                "referencedDeclaration": 4856,
                                 "src": "786:4:16",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                  "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                   "typeString": "struct stringSet._stringSet storage pointer"
                                 }
                               },
-                              "id": 4879,
+                              "id": 4896,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "members",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 4787,
+                              "referencedDeclaration": 4804,
                               "src": "786:12:16",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_array$_t_string_storage_$dyn_storage",
                                 "typeString": "string storage ref[] storage ref"
                               }
                             },
-                            "id": 4880,
+                            "id": 4897,
                             "isConstant": false,
                             "isLValue": true,
                             "isPure": false,
@@ -3208,14 +3208,14 @@
                             "typeString": "uint256"
                           }
                         },
-                        "id": 4882,
+                        "id": 4899,
                         "nodeType": "ExpressionStatement",
                         "src": "786:21:16"
                       },
                       {
                         "expression": {
                           "argumentTypes": null,
-                          "id": 4889,
+                          "id": 4906,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -3226,39 +3226,39 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 4883,
+                                "id": 4900,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 4839,
+                                "referencedDeclaration": 4856,
                                 "src": "871:4:16",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                  "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                   "typeString": "struct stringSet._stringSet storage pointer"
                                 }
                               },
-                              "id": 4886,
+                              "id": 4903,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "memberIndices",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 4791,
+                              "referencedDeclaration": 4808,
                               "src": "871:18:16",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
                                 "typeString": "mapping(string memory => uint256)"
                               }
                             },
-                            "id": 4887,
+                            "id": 4904,
                             "indexExpression": {
                               "argumentTypes": null,
-                              "id": 4885,
+                              "id": 4902,
                               "name": "lastMember",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 4856,
+                              "referencedDeclaration": 4873,
                               "src": "890:10:16",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_string_memory_ptr",
@@ -3280,11 +3280,11 @@
                           "operator": "=",
                           "rightHandSide": {
                             "argumentTypes": null,
-                            "id": 4888,
+                            "id": 4905,
                             "name": "replaceIndex",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 4849,
+                            "referencedDeclaration": 4866,
                             "src": "904:12:16",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint256",
@@ -3297,14 +3297,14 @@
                             "typeString": "uint256"
                           }
                         },
-                        "id": 4890,
+                        "id": 4907,
                         "nodeType": "ExpressionStatement",
                         "src": "871:45:16"
                       },
                       {
                         "expression": {
                           "argumentTypes": null,
-                          "id": 4895,
+                          "id": 4912,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -3319,39 +3319,39 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 4891,
+                                "id": 4908,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 4839,
+                                "referencedDeclaration": 4856,
                                 "src": "937:4:16",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                                  "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                                   "typeString": "struct stringSet._stringSet storage pointer"
                                 }
                               },
-                              "id": 4892,
+                              "id": 4909,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "memberIndices",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 4791,
+                              "referencedDeclaration": 4808,
                               "src": "937:18:16",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
                                 "typeString": "mapping(string memory => uint256)"
                               }
                             },
-                            "id": 4894,
+                            "id": 4911,
                             "indexExpression": {
                               "argumentTypes": null,
-                              "id": 4893,
+                              "id": 4910,
                               "name": "other",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 4841,
+                              "referencedDeclaration": 4858,
                               "src": "956:5:16",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_string_memory_ptr",
@@ -3374,7 +3374,7 @@
                             "typeString": "tuple()"
                           }
                         },
-                        "id": 4896,
+                        "id": 4913,
                         "nodeType": "ExpressionStatement",
                         "src": "930:32:16"
                       }
@@ -3384,7 +3384,7 @@
               ]
             },
             "documentation": null,
-            "id": 4900,
+            "id": 4917,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -3392,31 +3392,31 @@
             "name": "remove",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 4842,
+              "id": 4859,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4839,
+                  "id": 4856,
                   "name": "self",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4900,
+                  "scope": 4917,
                   "src": "431:23:16",
                   "stateVariable": false,
                   "storageLocation": "storage",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                    "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                     "typeString": "struct stringSet._stringSet"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 4838,
+                    "id": 4855,
                     "name": "_stringSet",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 4792,
+                    "referencedDeclaration": 4809,
                     "src": "431:10:16",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                      "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                       "typeString": "struct stringSet._stringSet"
                     }
                   },
@@ -3425,10 +3425,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 4841,
+                  "id": 4858,
                   "name": "other",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4900,
+                  "scope": 4917,
                   "src": "456:12:16",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -3437,7 +3437,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 4840,
+                    "id": 4857,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "456:6:16",
@@ -3454,12 +3454,12 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 4843,
+              "id": 4860,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "477:0:16"
             },
-            "scope": 4930,
+            "scope": 4947,
             "src": "415:564:16",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -3467,7 +3467,7 @@
           },
           {
             "body": {
-              "id": 4916,
+              "id": 4933,
               "nodeType": "Block",
               "src": "1069:53:16",
               "statements": [
@@ -3478,7 +3478,7 @@
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     },
-                    "id": 4914,
+                    "id": 4931,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -3489,39 +3489,39 @@
                         "argumentTypes": null,
                         "expression": {
                           "argumentTypes": null,
-                          "id": 4909,
+                          "id": 4926,
                           "name": "self",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 4902,
+                          "referencedDeclaration": 4919,
                           "src": "1086:4:16",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                            "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                             "typeString": "struct stringSet._stringSet storage pointer"
                           }
                         },
-                        "id": 4910,
+                        "id": 4927,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
                         "lValueRequested": false,
                         "memberName": "memberIndices",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 4791,
+                        "referencedDeclaration": 4808,
                         "src": "1086:18:16",
                         "typeDescriptions": {
                           "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
                           "typeString": "mapping(string memory => uint256)"
                         }
                       },
-                      "id": 4912,
+                      "id": 4929,
                       "indexExpression": {
                         "argumentTypes": null,
-                        "id": 4911,
+                        "id": 4928,
                         "name": "other",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 4904,
+                        "referencedDeclaration": 4921,
                         "src": "1105:5:16",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_memory_ptr",
@@ -3544,7 +3544,7 @@
                     "rightExpression": {
                       "argumentTypes": null,
                       "hexValue": "30",
-                      "id": 4913,
+                      "id": 4930,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -3565,15 +3565,15 @@
                       "typeString": "bool"
                     }
                   },
-                  "functionReturnParameters": 4908,
-                  "id": 4915,
+                  "functionReturnParameters": 4925,
+                  "id": 4932,
                   "nodeType": "Return",
                   "src": "1079:36:16"
                 }
               ]
             },
             "documentation": null,
-            "id": 4917,
+            "id": 4934,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -3581,31 +3581,31 @@
             "name": "contains",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 4905,
+              "id": 4922,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4902,
+                  "id": 4919,
                   "name": "self",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4917,
+                  "scope": 4934,
                   "src": "1003:23:16",
                   "stateVariable": false,
                   "storageLocation": "storage",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                    "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                     "typeString": "struct stringSet._stringSet"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 4901,
+                    "id": 4918,
                     "name": "_stringSet",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 4792,
+                    "referencedDeclaration": 4809,
                     "src": "1003:10:16",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                      "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                       "typeString": "struct stringSet._stringSet"
                     }
                   },
@@ -3614,10 +3614,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 4904,
+                  "id": 4921,
                   "name": "other",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4917,
+                  "scope": 4934,
                   "src": "1028:12:16",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -3626,7 +3626,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 4903,
+                    "id": 4920,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "1028:6:16",
@@ -3643,15 +3643,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 4908,
+              "id": 4925,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4907,
+                  "id": 4924,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4917,
+                  "scope": 4934,
                   "src": "1063:4:16",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -3660,7 +3660,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 4906,
+                    "id": 4923,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1063:4:16",
@@ -3675,7 +3675,7 @@
               ],
               "src": "1062:6:16"
             },
-            "scope": 4930,
+            "scope": 4947,
             "src": "985:137:16",
             "stateMutability": "view",
             "superFunction": null,
@@ -3683,7 +3683,7 @@
           },
           {
             "body": {
-              "id": 4928,
+              "id": 4945,
               "nodeType": "Block",
               "src": "1196:43:16",
               "statements": [
@@ -3694,32 +3694,32 @@
                       "argumentTypes": null,
                       "expression": {
                         "argumentTypes": null,
-                        "id": 4924,
+                        "id": 4941,
                         "name": "self",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 4919,
+                        "referencedDeclaration": 4936,
                         "src": "1213:4:16",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                          "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                           "typeString": "struct stringSet._stringSet storage pointer"
                         }
                       },
-                      "id": 4925,
+                      "id": 4942,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "members",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 4787,
+                      "referencedDeclaration": 4804,
                       "src": "1213:12:16",
                       "typeDescriptions": {
                         "typeIdentifier": "t_array$_t_string_storage_$dyn_storage",
                         "typeString": "string storage ref[] storage ref"
                       }
                     },
-                    "id": 4926,
+                    "id": 4943,
                     "isConstant": false,
                     "isLValue": true,
                     "isPure": false,
@@ -3733,15 +3733,15 @@
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 4923,
-                  "id": 4927,
+                  "functionReturnParameters": 4940,
+                  "id": 4944,
                   "nodeType": "Return",
                   "src": "1206:26:16"
                 }
               ]
             },
             "documentation": null,
-            "id": 4929,
+            "id": 4946,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -3749,31 +3749,31 @@
             "name": "length",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 4920,
+              "id": 4937,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4919,
+                  "id": 4936,
                   "name": "self",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4929,
+                  "scope": 4946,
                   "src": "1144:23:16",
                   "stateVariable": false,
                   "storageLocation": "storage",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                    "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                     "typeString": "struct stringSet._stringSet"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 4918,
+                    "id": 4935,
                     "name": "_stringSet",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 4792,
+                    "referencedDeclaration": 4809,
                     "src": "1144:10:16",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$__stringSet_$4792_storage_ptr",
+                      "typeIdentifier": "t_struct$__stringSet_$4809_storage_ptr",
                       "typeString": "struct stringSet._stringSet"
                     }
                   },
@@ -3785,15 +3785,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 4923,
+              "id": 4940,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4922,
+                  "id": 4939,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4929,
+                  "scope": 4946,
                   "src": "1190:4:16",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -3802,7 +3802,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 4921,
+                    "id": 4938,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "1190:4:16",
@@ -3817,14 +3817,14 @@
               ],
               "src": "1189:6:16"
             },
-            "scope": 4930,
+            "scope": 4947,
             "src": "1128:111:16",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "public"
           }
         ],
-        "scope": 4931,
+        "scope": 4948,
         "src": "27:1214:16"
       }
     ],
@@ -3836,5 +3836,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-06-13T14:40:04.605Z"
+  "updatedAt": "2018-06-18T20:10:34.679Z"
 }
