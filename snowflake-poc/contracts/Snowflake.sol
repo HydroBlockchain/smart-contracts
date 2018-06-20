@@ -25,6 +25,10 @@ contract Snowflake is Ownable {
     mapping (address => uint) public deposits;
     uint public balance;
 
+    // resolver list
+    addressSet._addressSet internal listedResolvers;
+    uint public resolverCost;
+
     // Token lookup mappings
     mapping (uint => Identity) internal tokenDirectory;
     mapping (address => uint) public ownerToToken;
@@ -133,6 +137,7 @@ contract Snowflake is Ownable {
         Identity storage identity = tokenDirectory[ownerToToken[msg.sender]];
 
         for (uint i; i < resolvers.length; i++) {
+            require(listedResolvers.contains(resolvers[i]), "The given address is not a listed resolver.");
             add ? identity.resolversFor.insert(resolvers[i]) : identity.resolversFor.remove(resolvers[i]);
         }
 
@@ -144,6 +149,7 @@ contract Snowflake is Ownable {
         require(identity.fieldsAttestedTo.contains(field), "This field has not been attested to.");
 
         for (uint i; i < resolvers.length; i++) {
+            require(listedResolvers.contains(resolvers[i]), "The given address is not a listed resolver.");
             add ?
                 identity.fields[field].resolversFor.insert(resolvers[i]) :
                 identity.fields[field].resolversFor.remove(resolvers[i]);
@@ -158,6 +164,7 @@ contract Snowflake is Ownable {
         require(identity.fields[field].entriesAttestedTo.contains(entry), "This entry has not been attested to.");
 
         for (uint i; i < resolvers.length; i++) {
+            require(listedResolvers.contains(resolvers[i]), "The given address is not a listed resolver.");
             add ?
                 identity.fields[field].entries[entry].resolversFor.insert(resolvers[i]) :
                 identity.fields[field].entries[entry].resolversFor.remove(resolvers[i]);
@@ -317,6 +324,11 @@ contract Snowflake is Ownable {
         deposits[msg.sender] = deposits[msg.sender].sub(_amount);
         deposits[_to] = deposits[_to].add(_amount);
         emit SnowflakeTransfer(msg.sender, _to, _amount);
+    }
+
+    function addResolver(address _resolver) public {
+        transferSnowflakeBalance(owner, resolverCost);
+        listedResolvers.insert(_resolver);
     }
 
     function getEmptyAddressSet() internal pure returns (addressSet._addressSet memory) {
