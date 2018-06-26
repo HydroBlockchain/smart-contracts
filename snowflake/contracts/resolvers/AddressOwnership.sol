@@ -12,22 +12,15 @@ contract Snowflake {
 contract AddressOwnership is SnowflakeResolver {
     using addressSet for addressSet._addressSet;
 
-    uint blockLag;
-    mapping (bytes32 => uint) public initiatedClaims;
+    mapping (bytes32 => uint) internal initiatedClaims;
     mapping (uint => addressSet._addressSet) internal snowflakeToOwnedAddresses;
 
     constructor () public {
-        blockLag = 20;
-    }
-
-    function setBlockLag(uint _blockLag) public onlyOwner {
-        blockLag = _blockLag;
+        snowflakeName = "Address Ownership";
+        snowflakeDescription = "Allows Snowflake holders to claim ownership over any number of Ethereum addresses.";
     }
 
     function ownedAddresses(uint tokenId) public view returns (address[]) {
-        require(
-            snowflakeToOwnedAddresses[tokenId].length() >= 1, "This token has not proved ownership over any addresses"
-        );
         return snowflakeToOwnedAddresses[tokenId].members;
     }
 
@@ -35,41 +28,39 @@ contract AddressOwnership is SnowflakeResolver {
         return snowflakeToOwnedAddresses[tokenId].contains(_address);
     }
 
-    // to claim an address, users need to send a transaction from their snowflake address that includes the address
-    // they'd like to claim, as well as a signature from that address of:
-    // keccak256(abi.encodePacked("Link Address to Snowflake", blockhash(block.number), where block.number is any of the
-    // last blockLag blocks
-
-    function initiateClaim(bytes32 sealedHash) public {
-        require(initiatedClaims[sealedHash] == 0, "This sealed signature has already been submitted.");
+    // to claim an address, users need to send a transaction from their snowflake address containing a sealed claim
+    // sealedClaims are: keccak256(abi.encodePacked("Link Address to Snowflake", <address>, <secret>)),
+    // where <address> is the address you'd like to claim, and <secret> is a SECRET bytes32 value.
+    function initiateClaim(bytes32 sealedClaim) public {
+        require(initiatedClaims[sealedClaim] == 0, "This sealed claim has already been submitted.");
 
         Snowflake snowflake = Snowflake(snowflakeAddress);
         uint tokenId = snowflake.getTokenId(msg.sender);
 
-        initiatedClaims[sealedHash] = tokenId;
+        initiatedClaims[sealedClaim] = tokenId;
     }
 
-    function finalizeClaim(address _address, uint8 v, bytes32 r, bytes32 s, bytes32 _secret) public returns (bool success) {
+    // claims are finalized by submitting the plaintext values of the claim, as well as a signature of the claim, i.e.
+    // keccak256(abi.encodePacked("Link Address to Snowflake", <address>, <secret>))
+    function finalizeClaim(address _address, uint8 v, bytes32 r, bytes32 s, bytes32 secret) public {
         Snowflake snowflake = Snowflake(snowflakeAddress);
         uint tokenId = snowflake.getTokenId(msg.sender);
 
-        uint i;
-        bool signed;
-        bytes32 claimedSealedBid = keccak256(abi.encodePacked("Link Address to Snowflake", _secret, _address));
-        signed = isSigned(_address, claimedSealedBid, v, r, s);
-        if (signed) {
-            require(initiatedClaims[claimedSealedBid] == tokenId, "No claim was initiated for this sealed signature.");
-            snowflakeToOwnedAddresses[tokenId].insert(_address);
-            return true;
-        } else {
-            return false;
-        }
+        bytes32 claimedSealedBid = keccak256(abi.encodePacked("Link Address to Snowflake", _address, secret));
+
+        require(initiatedClaims[claimedSealedBid] == tokenId, "The Snowflake did not initiate this sealed claim.");
+        require(isSigned(_address, claimedSealedBid, v, r, s), "The signature was incorrect.");
+
+        snowflakeToOwnedAddresses[tokenId].insert(_address);
+        emit AddressClaimed(tokenId, _address);
     }
 
-    function unclaimAddress(address _address) public {
+    function disownAddress(address _address) public {
         Snowflake snowflake = Snowflake(snowflakeAddress);
         uint tokenId = snowflake.getTokenId(msg.sender);
+
         snowflakeToOwnedAddresses[tokenId].remove(_address);
+        emit AddressDisowned(tokenId, _address);
     }
 
     // Checks whether the provided (v, r, s) signature was created by the private key associated with _address
@@ -97,4 +88,7 @@ contract AddressOwnership is SnowflakeResolver {
 
         return ecrecover(prefixedMessageHash, v, r, s) == _address;
     }
+
+    event AddressClaimed(uint indexed tokenId, address claimedAddress);
+    event AddressDisowned(uint indexed tokenId, address disownedAddress);
 }
