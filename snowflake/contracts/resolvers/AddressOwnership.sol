@@ -55,12 +55,12 @@ contract AddressOwnership is SnowflakeResolver {
         emit AddressClaimed(tokenId, _address);
     }
 
-    function disownAddress(address _address) public {
+    function unclaimAddress(address _address) public {
         Snowflake snowflake = Snowflake(snowflakeAddress);
         uint tokenId = snowflake.getTokenId(msg.sender);
 
         snowflakeToOwnedAddresses[tokenId].remove(_address);
-        emit AddressDisowned(tokenId, _address);
+        emit AddressUnclaimed(tokenId, _address);
     }
 
     // Checks whether the provided (v, r, s) signature was created by the private key associated with _address
@@ -90,5 +90,5 @@ contract AddressOwnership is SnowflakeResolver {
     }
 
     event AddressClaimed(uint indexed tokenId, address claimedAddress);
-    event AddressDisowned(uint indexed tokenId, address disownedAddress);
+    event AddressUnclaimed(uint indexed tokenId, address unclaimedAddress);
 }

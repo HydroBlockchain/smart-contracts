@@ -10,8 +10,8 @@ import "./libraries/stringSet.sol";
 import "./libraries/addressSet.sol";
 
 
-contract ClientRaindrop {
-    function getUserByAddress(address _address) public view returns (string userName);
+interface ClientRaindrop {
+    function getUserByAddress(address _address) external view returns (string userName);
 }
 
 
@@ -38,6 +38,7 @@ contract Snowflake is Ownable {
     address public hydroTokenAddress;
 
     stringSet._stringSet allowedNames;
+    string[6] nameOrder = ["prefix", "givenName", "middleName", "surname", "suffix", "preferredName"];
     string[3] dateOrder = ["day", "month", "year"];
 
     struct Identity {
@@ -61,11 +62,10 @@ contract Snowflake is Ownable {
 
     struct Resolver {
         uint withdrawAllowance; // optional, allows resolvers to programatically extract hydro from users
-        bytes32 resolverData; // optional, arbitrary per-resolver bytes data
     }
 
     enum AllowedSnowflakeFields { Name, DateOfBirth, Emails, PhoneNumbers, PhysicalAddresses }
-    mapping (uint8 => bool) public allowedFields;
+    mapping (uint8 => bool) internal allowedFields;
 
     constructor () public {
         // initialize allowed snowflake fields
@@ -74,12 +74,9 @@ contract Snowflake is Ownable {
         allowedFields[uint8(AllowedSnowflakeFields.PhoneNumbers)] = true;
         allowedFields[uint8(AllowedSnowflakeFields.PhysicalAddresses)] = true;
         // initialize allowed entries in name
-        allowedNames.insert("prefix");
-        allowedNames.insert("givenName");
-        allowedNames.insert("middleName");
-        allowedNames.insert("surname");
-        allowedNames.insert("suffix");
-        allowedNames.insert("preferredName");
+        for (uint i; i < nameOrder.length; i++) {
+            allowedNames.insert(nameOrder[i]);
+        }
     }
 
     // enforces that the transaction sender has a token
@@ -112,7 +109,7 @@ contract Snowflake is Ownable {
 
     // set the fee to become a resolver
     function setResolverWhitelistFee(uint fee) public onlyOwner {
-        ERC20Basic hydro = ERC20Basic(hydroTokenAddress);
+        ERC20 hydro = ERC20(hydroTokenAddress);
         require(fee <= (hydro.totalSupply() / 100 / 10), "Fee is too high.");
         resolverWhitelistFee = fee;
     }
@@ -143,7 +140,6 @@ contract Snowflake is Ownable {
         identity.owner = msg.sender;
         identity.hydroId = _hydroId;
 
-        string[] storage nameOrder = allowedNames.members;
         for (uint8 i; i < names.length; i++) {
             if (names[i] != bytes32(0x0)) {
                 identity.fields[uint8(AllowedSnowflakeFields.Name)].entries[nameOrder[i]].saltedHash = names[i];
@@ -174,11 +170,8 @@ contract Snowflake is Ownable {
     }
 
     // wrappers that allow easy access to modify resolvers
-    function addResolvers(address[] resolvers, uint[] withdrawAllowances, bytes32[] resolverData)
-        public _hasToken(msg.sender, true)
-    {
+    function addResolvers(address[] resolvers, uint[] withdrawAllowances) public _hasToken(msg.sender, true) {
         require(resolvers.length == withdrawAllowances.length, "Malformed inputs.");
-        require(resolvers.length == resolverData.length, "Malformed inputs.");
 
         Identity storage identity = tokenDirectory[ownerToToken[msg.sender]];
 
@@ -187,13 +180,14 @@ contract Snowflake is Ownable {
             require(!identity.resolversFor.contains(resolvers[i]), "This snowflake has already set this resolver.");
             identity.resolversFor.insert(resolvers[i]);
             identity.resolvers[resolvers[i]].withdrawAllowance = withdrawAllowances[i];
-            identity.resolvers[resolvers[i]].resolverData = resolverData[i];
         }
 
-        emit ResolversAdded(ownerToToken[msg.sender], resolvers, withdrawAllowances, resolverData);
+        emit ResolversAdded(ownerToToken[msg.sender], resolvers, withdrawAllowances);
     }
 
-    function changeResolverAllowances(address[] resolvers, uint[] withdrawAllowances) public _hasToken(msg.sender, true) {
+    function changeResolverAllowances(address[] resolvers, uint[] withdrawAllowances)
+        public _hasToken(msg.sender, true)
+    {
         require(resolvers.length == withdrawAllowances.length, "Malformed inputs.");
 
         Identity storage identity = tokenDirectory[ownerToToken[msg.sender]];
@@ -219,31 +213,49 @@ contract Snowflake is Ownable {
     }
 
     // modify field entries
-    function modifyFieldEntries(uint8 field, string[] entries, bytes32[] saltedHashes, bool add)
-        public _hasToken(msg.sender, true)
-    {
+    function addFieldEntries(uint8 field, string[] entries, bytes32[] saltedHashes) public {
         require(entries.length == saltedHashes.length, "Malformed inputs.");
+        for (uint i; i < entries.length; i++) {
+            addFieldEntry(field, entries[i], saltedHashes[i]);
+        }
+    }
+
+    function addFieldEntry(uint8 field, string entry, bytes32 saltedHash) public _hasToken(msg.sender, true) {
+        require(allowedFields[field], "Invalid field.");
+        if (field == uint8(AllowedSnowflakeFields.Name)) {
+            require(allowedNames.contains(entry));
+        }
+
+        Identity storage identity = tokenDirectory[ownerToToken[msg.sender]];
+        require(!identity.fields[field].entriesAttestedTo.contains(entry), "Entry already exists");
+
+        identity.fields[field].entriesAttestedTo.insert(entry);
+        identity.fields[field].entries[entry].saltedHash = saltedHash;
+        identity.fields[field].entries[entry].blockNumber = block.number;
+
+        identity.fieldsAttestedTo.insert(field);
+    }
+
+    function changeFieldEntry(uint8 field, string entry, bytes32 saltedHash) public _hasToken(msg.sender, true) {
         require(allowedFields[field], "Invalid field.");
 
         Identity storage identity = tokenDirectory[ownerToToken[msg.sender]];
+        require(identity.fields[field].entriesAttestedTo.contains(entry), "Entry does not exist");
+        require(identity.fields[field].entries[entry].saltedHash != saltedHash);
 
-        for (uint i; i < entries.length; i++) {
-            if (add) {
-                // ensure that only pre-approved name fields can be modified
-                if (field == uint8(AllowedSnowflakeFields.Name)) require(allowedNames.contains(entries[i]));
-                identity.fields[field].entriesAttestedTo.insert(entries[i]);
-                if (identity.fields[field].entries[entries[i]].saltedHash != saltedHashes[i]) {
-                    identity.fields[field].entries[entries[i]].saltedHash = saltedHashes[i];
-                    identity.fields[field].entries[entries[i]].blockNumber = block.number;
-                }
-            } else {
-                delete identity.fields[field].entries[entries[i]];
-                identity.fields[field].entriesAttestedTo.remove(entries[i]);
-            }
-        }
-        if (add) {
-            identity.fieldsAttestedTo.insert(field);
-        } else if (identity.fields[field].entriesAttestedTo.length() == 0) {
+        identity.fields[field].entries[entry].saltedHash = saltedHash;
+        identity.fields[field].entries[entry].blockNumber = block.number;
+    }
+
+    function removeFieldEntry(uint8 field, string entry) public _hasToken(msg.sender, true) {
+        require(allowedFields[field], "Invalid field.");
+
+        Identity storage identity = tokenDirectory[ownerToToken[msg.sender]];
+        require(identity.fields[field].entriesAttestedTo.contains(entry), "Entry does not exist");
+
+        identity.fields[field].entriesAttestedTo.remove(entry);
+        delete identity.fields[field].entries[entry];
+        if (identity.fields[field].entriesAttestedTo.length() == 0) {
             identity.fieldsAttestedTo.remove(field);
         }
     }
@@ -283,14 +295,13 @@ contract Snowflake is Ownable {
         );
     }
 
-    function getDetails(uint tokenId, address resolver) public view _tokenExists(tokenId) returns (
-        uint withdrawAllowance,
-        bytes32 resolverData
-    ) {
+    function getDetails(uint tokenId, address resolver) public view _tokenExists(tokenId)
+        returns (uint withdrawAllowance)
+    {
         Identity storage identity = tokenDirectory[tokenId];
         require(identity.resolversFor.contains(resolver));
 
-        return (identity.resolvers[resolver].withdrawAllowance, identity.resolvers[resolver].resolverData);
+        return identity.resolvers[resolver].withdrawAllowance;
     }
 
     function getDetails(uint tokenId, uint8 field) public view _tokenExists(tokenId) returns (
@@ -370,7 +381,7 @@ contract Snowflake is Ownable {
 
     event ResolverWhitelisted(address indexed resolver, address sponsor);
 
-    event ResolversAdded(uint indexed tokenId, address[] resolvers, uint[] withdrawAllowances, bytes32[] resolverData);
+    event ResolversAdded(uint indexed tokenId, address[] resolvers, uint[] withdrawAllowances);
     event ResolversAllowanceChanged(uint indexed tokenId, address[] resolvers, uint[] withdrawAllowances);
     event ResolversRemoved(uint indexed tokenId, address[] resolvers);
 
