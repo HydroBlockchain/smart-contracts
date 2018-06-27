@@ -5,7 +5,7 @@
 Snowflake is a hydrid on-/off-chain identity management solution. For more details, see [our whitepaper](https://github.com/hydrogen-dev/hydro-docs/tree/master/Snowflake).
 
 ## Contract Address
-Snowflake is in a beta on the [Rinkeby testnet](https://rinkeby.etherscan.io/address/0x22525411D14a661Ba825Ed56F15345400296f328).
+Snowflake is in a beta on the [Rinkeby testnet](https://rinkeby.etherscan.io/address/0x43a8f621a533ef2f070c30a1fbb0957228796387).
 
 ## Testing With Truffle
 - This folder has a suite of tests created through [Truffle](https://github.com/trufflesuite/truffle). This particular repo requires a beta version of truffle know as [darq-truffle](https://www.npmjs.com/package/darq-truffle).
