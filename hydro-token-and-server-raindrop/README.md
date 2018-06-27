@@ -18,7 +18,7 @@ Project Hydro has also created an API to interface with this smart contract:
 
 ## Testing With Truffle
 - This folder has a suite of tests created through [Truffle](https://github.com/trufflesuite/truffle)
-- To run these test:
+- To run these tests:
   - Clone this repo: `git clone https://github.com/hydrogen-dev/smart-contracts.git`
   - Navigate to the `hydro-token-and-server-raindrop` folder in your terminal
   - Make sure you have the appropriate Truffle version installed: `npm install -g truffle@4.1.3`

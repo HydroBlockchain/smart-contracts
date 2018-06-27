@@ -26,7 +26,7 @@ Notes: Arguments to `keccak256` are [tightly packed](https://solidity.readthedoc
 
 ## Testing With Truffle
 - This folder has a suite of tests created through [Truffle](https://github.com/trufflesuite/truffle)
-- To run these test:
+- To run these tests:
   - Download the code: `git clone https://github.com/hydrogen-dev/smart-contracts.git`
   - Navigate to the `raindrop-client` folder in your terminal
   - Make sure you have Truffle and [Ganache](https://github.com/trufflesuite/ganache-cli) installed: `npm install -g truffle@4.1.8 ganache-cli`

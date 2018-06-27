@@ -8,7 +8,7 @@ This repository contains the code that powers Hydro. We've completely open-sourc
 
 - [hydro-token-and-server-raindrop](./hydro-token-and-server-raindrop): Hydro Token and Server-Side Raindrop
 - [client-raindrop](./client-raindrop): Client-Side Raindrop
-- [snowflake-poc](./snowflake-poc): Identity POC
+- [snowflake](./snowflake): Identity Management
 
 ## Copyright & License
 Copyright 2018 The Hydrogen Technology Corporation under the GNU General Public License v3.0.
