@@ -41,7 +41,9 @@ contract('Clean Room', function (accounts) {
   const hashedAddresses = encrypt(Object.values(user1.physicalAddresses), user1.salt)
 
   const nameOrder = ['prefix', 'givenName', 'middleName', 'surname', 'suffix', 'preferredName']
+  const hashedNameOrder = nameOrder.map(x => { return web3.utils.soliditySha3({ t: 'string', v: x }) })
   const dateOrder = ['day', 'month', 'year']
+  const hashedDateOrder = dateOrder.map(x => { return web3.utils.soliditySha3({ t: 'string', v: x }) })
 
   const fields = {
     Name: 0,
@@ -67,7 +69,7 @@ contract('Clean Room', function (accounts) {
     })
 
     it('verify token details', async function () {
-      let tokenDetails = await instances.snowflake.getDetails.call(1)
+      let tokenDetails = await instances.snowflake.methods['getDetails(uint256)'].call(1)
       assert.equal(tokenDetails[0], user1.public)
       assert.equal(tokenDetails[1], user1.hydroID)
       assert.deepEqual(tokenDetails[2], ['0', '1'])
@@ -78,11 +80,11 @@ contract('Clean Room', function (accounts) {
     })
 
     it('verify field details', async function () {
-      // let nameDetails = await instances.snowflake.methods['getDetails(uint256,uint8)'].call(1, fields.Name)
-      // assert.deepEqual(nameDetails[0], nameOrder)
+      let nameDetails = await instances.snowflake.methods['getDetails(uint256,uint8)'].call(1, fields.Name)
+      assert.deepEqual(nameDetails, hashedNameOrder)
 
-      // let dateDetails = await instances.snowflake.methods['getDetails(uint256,uint8)'].call(1, fields.DateOfBirth)
-      // assert.deepEqual(dateDetails[0], dateOrder)
+      let dateDetails = await instances.snowflake.methods['getDetails(uint256,uint8)'].call(1, fields.DateOfBirth)
+      assert.deepEqual(dateDetails, hashedDateOrder)
     })
 
     it('verify entry details', async function () {
@@ -90,15 +92,17 @@ contract('Clean Room', function (accounts) {
       for (let i = 0; i < user1.names.length; i++) {
         nameEntryDetails = await instances.snowflake.methods['getDetails(uint256,uint8,string)']
           .call(1, fields.Name, nameOrder[i])
-        assert.equal(nameEntryDetails[0], hashedNames[i])
-        assert.equal(nameEntryDetails[1], await web3.eth.getBlockNumber())
+        assert.equal(nameEntryDetails[0], nameOrder[i])
+        assert.equal(nameEntryDetails[1], hashedNames[i])
+        assert.equal(nameEntryDetails[2], await web3.eth.getBlockNumber())
       }
       var birthEntryDetails
       for (let i = 0; i < user1.dateOfBirth.length; i++) {
         birthEntryDetails = await instances.snowflake.methods['getDetails(uint256,uint8,string)']
           .call(1, fields.DateOfBirth, dateOrder[i])
-        assert.equal(birthEntryDetails[0], hashedDateOfBirth[i])
-        assert.equal(birthEntryDetails[1], await web3.eth.getBlockNumber())
+        assert.equal(birthEntryDetails[0], dateOrder[i])
+        assert.equal(birthEntryDetails[1], hashedDateOfBirth[i])
+        assert.equal(birthEntryDetails[2], await web3.eth.getBlockNumber())
       }
     })
 
@@ -115,34 +119,37 @@ contract('Clean Room', function (accounts) {
     })
 
     it('verify updated token details', async function () {
-      let tokenDetails = await instances.snowflake.getDetails.call(1)
+      let tokenDetails = await instances.snowflake.methods['getDetails(uint256)'].call(1)
       assert.deepEqual(tokenDetails[2], ['0', '1', '2', '3', '4'])
     })
 
     it('verify new field details', async function () {
-      // let emailDetails = await instances.snowflake.methods['getDetails(uint256,uint8)'].call(1, fields.Emails)
-      // assert.deepEqual(emailDetails, Object.keys(user1.emails))
+      let emailDetails = await instances.snowflake.methods['getDetails(uint256,uint8)'].call(1, fields.Emails)
+      assert.deepEqual(emailDetails, [web3.utils.keccak256(Object.keys(user1.emails)[0])])
 
-      // let phoneDetails = await instances.snowflake.methods['getDetails(uint256,uint8)'].call(1, fields.PhoneNumbers)
-      // assert.deepEqual(phoneDetails, Object.keys(user1.phoneNumbers))
+      let phoneDetails = await instances.snowflake.methods['getDetails(uint256,uint8)'].call(1, fields.PhoneNumbers)
+      assert.deepEqual(phoneDetails, [web3.utils.keccak256(Object.keys(user1.phoneNumbers)[0])])
 
-      // let addressDetails = await instances.snowflake.methods['getDetails(uint256,uint8)']
-      //   .call(1, fields.PhysicalAddresses)
-      // assert.deepEqual(addressDetails, Object.keys(user1.physicalAddresses))
+      let addressDetails = await instances.snowflake.methods['getDetails(uint256,uint8)']
+        .call(1, fields.PhysicalAddresses)
+      assert.deepEqual(addressDetails, [web3.utils.keccak256(Object.keys(user1.physicalAddresses)[0])])
     })
 
     it('verify new entry details', async function () {
       var emailEntryDetails = await instances.snowflake.methods['getDetails(uint256,uint8,string)']
         .call(1, fields.Emails, Object.keys(user1.emails)[0])
-      assert.equal(emailEntryDetails.saltedHash, hashedEmails)
+      assert.equal(emailEntryDetails.entryName, Object.keys(user1.emails)[0])
+      assert.equal(emailEntryDetails.saltedHash, hashedEmails[0])
 
       var phoneEntryDetails = await instances.snowflake.methods['getDetails(uint256,uint8,string)']
         .call(1, fields.PhoneNumbers, Object.keys(user1.phoneNumbers)[0])
-      assert.equal(phoneEntryDetails.saltedHash, hashedPhone)
+      assert.equal(phoneEntryDetails.entryName, Object.keys(user1.phoneNumbers)[0])
+      assert.equal(phoneEntryDetails.saltedHash, hashedPhone[0])
 
       var addressEntryDetails = await instances.snowflake.methods['getDetails(uint256,uint8,string)']
         .call(1, fields.PhysicalAddresses, Object.keys(user1.physicalAddresses)[0])
-      assert.equal(addressEntryDetails.saltedHash, hashedAddresses)
+      assert.equal(addressEntryDetails.entryName, Object.keys(user1.physicalAddresses)[0])
+      assert.equal(addressEntryDetails.saltedHash, hashedAddresses[0])
     })
   })
 

@@ -90,14 +90,14 @@
     "absolutePath": "/Users/noahzinsmeister/Documents/github/smart-contracts/snowflake/contracts/libraries/uint8Set.sol",
     "exportedSymbols": {
       "uint8Set": [
-        3621
+        3628
       ]
     },
-    "id": 3622,
+    "id": 3629,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3475,
+        "id": 3482,
         "literals": [
           "solidity",
           "^",
@@ -113,23 +113,23 @@
         "contractKind": "library",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 3621,
+        "id": 3628,
         "linearizedBaseContracts": [
-          3621
+          3628
         ],
         "name": "uint8Set",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "canonicalName": "uint8Set._uint8Set",
-            "id": 3483,
+            "id": 3490,
             "members": [
               {
                 "constant": false,
-                "id": 3478,
+                "id": 3485,
                 "name": "members",
                 "nodeType": "VariableDeclaration",
-                "scope": 3483,
+                "scope": 3490,
                 "src": "77:15:11",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -139,7 +139,7 @@
                 },
                 "typeName": {
                   "baseType": {
-                    "id": 3476,
+                    "id": 3483,
                     "name": "uint8",
                     "nodeType": "ElementaryTypeName",
                     "src": "77:5:11",
@@ -148,7 +148,7 @@
                       "typeString": "uint8"
                     }
                   },
-                  "id": 3477,
+                  "id": 3484,
                   "length": null,
                   "nodeType": "ArrayTypeName",
                   "src": "77:7:11",
@@ -162,10 +162,10 @@
               },
               {
                 "constant": false,
-                "id": 3482,
+                "id": 3489,
                 "name": "memberIndices",
                 "nodeType": "VariableDeclaration",
-                "scope": 3483,
+                "scope": 3490,
                 "src": "102:36:11",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -174,9 +174,9 @@
                   "typeString": "mapping(uint8 => uint256)"
                 },
                 "typeName": {
-                  "id": 3481,
+                  "id": 3488,
                   "keyType": {
-                    "id": 3479,
+                    "id": 3486,
                     "name": "uint8",
                     "nodeType": "ElementaryTypeName",
                     "src": "110:5:11",
@@ -192,7 +192,7 @@
                     "typeString": "mapping(uint8 => uint256)"
                   },
                   "valueType": {
-                    "id": 3480,
+                    "id": 3487,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "119:4:11",
@@ -208,20 +208,20 @@
             ],
             "name": "_uint8Set",
             "nodeType": "StructDefinition",
-            "scope": 3621,
+            "scope": 3628,
             "src": "50:95:11",
             "visibility": "public"
           },
           {
             "body": {
-              "id": 3527,
+              "id": 3534,
               "nodeType": "Block",
               "src": "211:192:11",
               "statements": [
                 {
                   "condition": {
                     "argumentTypes": null,
-                    "id": 3494,
+                    "id": 3501,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -235,24 +235,24 @@
                       "arguments": [
                         {
                           "argumentTypes": null,
-                          "id": 3491,
+                          "id": 3498,
                           "name": "self",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 3485,
+                          "referencedDeclaration": 3492,
                           "src": "235:4:11",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                            "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                             "typeString": "struct uint8Set._uint8Set storage pointer"
                           }
                         },
                         {
                           "argumentTypes": null,
-                          "id": 3492,
+                          "id": 3499,
                           "name": "other",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 3487,
+                          "referencedDeclaration": 3494,
                           "src": "241:5:11",
                           "typeDescriptions": {
                             "typeIdentifier": "t_uint8",
@@ -263,7 +263,7 @@
                       "expression": {
                         "argumentTypes": [
                           {
-                            "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                            "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                             "typeString": "struct uint8Set._uint8Set storage pointer"
                           },
                           {
@@ -271,18 +271,18 @@
                             "typeString": "uint8"
                           }
                         ],
-                        "id": 3490,
+                        "id": 3497,
                         "name": "contains",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 3608,
+                        "referencedDeclaration": 3615,
                         "src": "226:8:11",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_function_internal_view$_t_struct$__uint8Set_$3483_storage_ptr_$_t_uint8_$returns$_t_bool_$",
+                          "typeIdentifier": "t_function_internal_view$_t_struct$__uint8Set_$3490_storage_ptr_$_t_uint8_$returns$_t_bool_$",
                           "typeString": "function (struct uint8Set._uint8Set storage pointer,uint8) view returns (bool)"
                         }
                       },
-                      "id": 3493,
+                      "id": 3500,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -302,11 +302,11 @@
                     }
                   },
                   "falseBody": null,
-                  "id": 3526,
+                  "id": 3533,
                   "nodeType": "IfStatement",
                   "src": "221:176:11",
                   "trueBody": {
-                    "id": 3525,
+                    "id": 3532,
                     "nodeType": "Block",
                     "src": "249:148:11",
                     "statements": [
@@ -320,7 +320,7 @@
                                 "typeIdentifier": "t_uint256",
                                 "typeString": "uint256"
                               },
-                              "id": 3504,
+                              "id": 3511,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": false,
@@ -330,14 +330,14 @@
                                 "arguments": [
                                   {
                                     "argumentTypes": null,
-                                    "id": 3497,
+                                    "id": 3504,
                                     "name": "self",
                                     "nodeType": "Identifier",
                                     "overloadedDeclarations": [],
-                                    "referencedDeclaration": 3485,
+                                    "referencedDeclaration": 3492,
                                     "src": "277:4:11",
                                     "typeDescriptions": {
-                                      "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                      "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                       "typeString": "struct uint8Set._uint8Set storage pointer"
                                     }
                                   }
@@ -345,22 +345,22 @@
                                 "expression": {
                                   "argumentTypes": [
                                     {
-                                      "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                      "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                       "typeString": "struct uint8Set._uint8Set storage pointer"
                                     }
                                   ],
-                                  "id": 3496,
+                                  "id": 3503,
                                   "name": "length",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 3620,
+                                  "referencedDeclaration": 3627,
                                   "src": "270:6:11",
                                   "typeDescriptions": {
-                                    "typeIdentifier": "t_function_internal_view$_t_struct$__uint8Set_$3483_storage_ptr_$returns$_t_uint256_$",
+                                    "typeIdentifier": "t_function_internal_view$_t_struct$__uint8Set_$3490_storage_ptr_$returns$_t_uint256_$",
                                     "typeString": "function (struct uint8Set._uint8Set storage pointer) view returns (uint256)"
                                   }
                                 },
-                                "id": 3498,
+                                "id": 3505,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": false,
@@ -382,7 +382,7 @@
                                   "typeIdentifier": "t_rational_115792089237316195423570985008687907853269984665640564039457584007913129639935_by_1",
                                   "typeString": "int_const 1157...(70 digits omitted)...9935"
                                 },
-                                "id": 3503,
+                                "id": 3510,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": true,
@@ -393,7 +393,7 @@
                                     "typeIdentifier": "t_rational_115792089237316195423570985008687907853269984665640564039457584007913129639936_by_1",
                                     "typeString": "int_const 1157...(70 digits omitted)...9936"
                                   },
-                                  "id": 3501,
+                                  "id": 3508,
                                   "isConstant": false,
                                   "isLValue": false,
                                   "isPure": true,
@@ -401,7 +401,7 @@
                                   "leftExpression": {
                                     "argumentTypes": null,
                                     "hexValue": "32",
-                                    "id": 3499,
+                                    "id": 3506,
                                     "isConstant": false,
                                     "isLValue": false,
                                     "isPure": true,
@@ -421,7 +421,7 @@
                                   "rightExpression": {
                                     "argumentTypes": null,
                                     "hexValue": "323536",
-                                    "id": 3500,
+                                    "id": 3507,
                                     "isConstant": false,
                                     "isLValue": false,
                                     "isPure": true,
@@ -447,7 +447,7 @@
                                 "rightExpression": {
                                   "argumentTypes": null,
                                   "hexValue": "31",
-                                  "id": 3502,
+                                  "id": 3509,
                                   "isConstant": false,
                                   "isLValue": false,
                                   "isPure": true,
@@ -482,18 +482,18 @@
                                 "typeString": "bool"
                               }
                             ],
-                            "id": 3495,
+                            "id": 3502,
                             "name": "assert",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 3850,
+                            "referencedDeclaration": 3857,
                             "src": "263:6:11",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_assert_pure$_t_bool_$returns$__$",
                               "typeString": "function (bool) pure"
                             }
                           },
-                          "id": 3505,
+                          "id": 3512,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -507,7 +507,7 @@
                             "typeString": "tuple()"
                           }
                         },
-                        "id": 3506,
+                        "id": 3513,
                         "nodeType": "ExpressionStatement",
                         "src": "263:31:11"
                       },
@@ -517,11 +517,11 @@
                           "arguments": [
                             {
                               "argumentTypes": null,
-                              "id": 3512,
+                              "id": 3519,
                               "name": "other",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 3487,
+                              "referencedDeclaration": 3494,
                               "src": "326:5:11",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint8",
@@ -540,32 +540,32 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 3507,
+                                "id": 3514,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 3485,
+                                "referencedDeclaration": 3492,
                                 "src": "308:4:11",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                  "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                   "typeString": "struct uint8Set._uint8Set storage pointer"
                                 }
                               },
-                              "id": 3510,
+                              "id": 3517,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "members",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 3478,
+                              "referencedDeclaration": 3485,
                               "src": "308:12:11",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_array$_t_uint8_$dyn_storage",
                                 "typeString": "uint8[] storage ref"
                               }
                             },
-                            "id": 3511,
+                            "id": 3518,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -579,7 +579,7 @@
                               "typeString": "function (uint8) returns (uint256)"
                             }
                           },
-                          "id": 3513,
+                          "id": 3520,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -593,14 +593,14 @@
                             "typeString": "uint256"
                           }
                         },
-                        "id": 3514,
+                        "id": 3521,
                         "nodeType": "ExpressionStatement",
                         "src": "308:24:11"
                       },
                       {
                         "expression": {
                           "argumentTypes": null,
-                          "id": 3523,
+                          "id": 3530,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -611,39 +611,39 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 3515,
+                                "id": 3522,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 3485,
+                                "referencedDeclaration": 3492,
                                 "src": "346:4:11",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                  "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                   "typeString": "struct uint8Set._uint8Set storage pointer"
                                 }
                               },
-                              "id": 3518,
+                              "id": 3525,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "memberIndices",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 3482,
+                              "referencedDeclaration": 3489,
                               "src": "346:18:11",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_mapping$_t_uint8_$_t_uint256_$",
                                 "typeString": "mapping(uint8 => uint256)"
                               }
                             },
-                            "id": 3519,
+                            "id": 3526,
                             "indexExpression": {
                               "argumentTypes": null,
-                              "id": 3517,
+                              "id": 3524,
                               "name": "other",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 3487,
+                              "referencedDeclaration": 3494,
                               "src": "365:5:11",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint8",
@@ -668,14 +668,14 @@
                             "arguments": [
                               {
                                 "argumentTypes": null,
-                                "id": 3521,
+                                "id": 3528,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 3485,
+                                "referencedDeclaration": 3492,
                                 "src": "381:4:11",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                  "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                   "typeString": "struct uint8Set._uint8Set storage pointer"
                                 }
                               }
@@ -683,22 +683,22 @@
                             "expression": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                  "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                   "typeString": "struct uint8Set._uint8Set storage pointer"
                                 }
                               ],
-                              "id": 3520,
+                              "id": 3527,
                               "name": "length",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 3620,
+                              "referencedDeclaration": 3627,
                               "src": "374:6:11",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_function_internal_view$_t_struct$__uint8Set_$3483_storage_ptr_$returns$_t_uint256_$",
+                                "typeIdentifier": "t_function_internal_view$_t_struct$__uint8Set_$3490_storage_ptr_$returns$_t_uint256_$",
                                 "typeString": "function (struct uint8Set._uint8Set storage pointer) view returns (uint256)"
                               }
                             },
-                            "id": 3522,
+                            "id": 3529,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -718,7 +718,7 @@
                             "typeString": "uint256"
                           }
                         },
-                        "id": 3524,
+                        "id": 3531,
                         "nodeType": "ExpressionStatement",
                         "src": "346:40:11"
                       }
@@ -728,7 +728,7 @@
               ]
             },
             "documentation": null,
-            "id": 3528,
+            "id": 3535,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -736,31 +736,31 @@
             "name": "insert",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3488,
+              "id": 3495,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3485,
+                  "id": 3492,
                   "name": "self",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3528,
+                  "scope": 3535,
                   "src": "167:22:11",
                   "stateVariable": false,
                   "storageLocation": "storage",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                    "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                     "typeString": "struct uint8Set._uint8Set"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 3484,
+                    "id": 3491,
                     "name": "_uint8Set",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 3483,
+                    "referencedDeclaration": 3490,
                     "src": "167:9:11",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                      "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                       "typeString": "struct uint8Set._uint8Set"
                     }
                   },
@@ -769,10 +769,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 3487,
+                  "id": 3494,
                   "name": "other",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3528,
+                  "scope": 3535,
                   "src": "191:11:11",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -781,7 +781,7 @@
                     "typeString": "uint8"
                   },
                   "typeName": {
-                    "id": 3486,
+                    "id": 3493,
                     "name": "uint8",
                     "nodeType": "ElementaryTypeName",
                     "src": "191:5:11",
@@ -798,12 +798,12 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 3489,
+              "id": 3496,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "211:0:11"
             },
-            "scope": 3621,
+            "scope": 3628,
             "src": "151:252:11",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -811,7 +811,7 @@
           },
           {
             "body": {
-              "id": 3590,
+              "id": 3597,
               "nodeType": "Block",
               "src": "469:494:11",
               "statements": [
@@ -821,24 +821,24 @@
                     "arguments": [
                       {
                         "argumentTypes": null,
-                        "id": 3536,
+                        "id": 3543,
                         "name": "self",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 3530,
+                        "referencedDeclaration": 3537,
                         "src": "492:4:11",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                          "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                           "typeString": "struct uint8Set._uint8Set storage pointer"
                         }
                       },
                       {
                         "argumentTypes": null,
-                        "id": 3537,
+                        "id": 3544,
                         "name": "other",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 3532,
+                        "referencedDeclaration": 3539,
                         "src": "498:5:11",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint8",
@@ -849,7 +849,7 @@
                     "expression": {
                       "argumentTypes": [
                         {
-                          "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                          "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                           "typeString": "struct uint8Set._uint8Set storage pointer"
                         },
                         {
@@ -857,18 +857,18 @@
                           "typeString": "uint8"
                         }
                       ],
-                      "id": 3535,
+                      "id": 3542,
                       "name": "contains",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 3608,
+                      "referencedDeclaration": 3615,
                       "src": "483:8:11",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_internal_view$_t_struct$__uint8Set_$3483_storage_ptr_$_t_uint8_$returns$_t_bool_$",
+                        "typeIdentifier": "t_function_internal_view$_t_struct$__uint8Set_$3490_storage_ptr_$_t_uint8_$returns$_t_bool_$",
                         "typeString": "function (struct uint8Set._uint8Set storage pointer,uint8) view returns (bool)"
                       }
                     },
-                    "id": 3538,
+                    "id": 3545,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -883,25 +883,25 @@
                     }
                   },
                   "falseBody": null,
-                  "id": 3589,
+                  "id": 3596,
                   "nodeType": "IfStatement",
                   "src": "479:478:11",
                   "trueBody": {
-                    "id": 3588,
+                    "id": 3595,
                     "nodeType": "Block",
                     "src": "506:451:11",
                     "statements": [
                       {
                         "assignments": [
-                          3540
+                          3547
                         ],
                         "declarations": [
                           {
                             "constant": false,
-                            "id": 3540,
+                            "id": 3547,
                             "name": "replaceIndex",
                             "nodeType": "VariableDeclaration",
-                            "scope": 3591,
+                            "scope": 3598,
                             "src": "520:17:11",
                             "stateVariable": false,
                             "storageLocation": "default",
@@ -910,7 +910,7 @@
                               "typeString": "uint256"
                             },
                             "typeName": {
-                              "id": 3539,
+                              "id": 3546,
                               "name": "uint",
                               "nodeType": "ElementaryTypeName",
                               "src": "520:4:11",
@@ -923,46 +923,46 @@
                             "visibility": "internal"
                           }
                         ],
-                        "id": 3545,
+                        "id": 3552,
                         "initialValue": {
                           "argumentTypes": null,
                           "baseExpression": {
                             "argumentTypes": null,
                             "expression": {
                               "argumentTypes": null,
-                              "id": 3541,
+                              "id": 3548,
                               "name": "self",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 3530,
+                              "referencedDeclaration": 3537,
                               "src": "540:4:11",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                 "typeString": "struct uint8Set._uint8Set storage pointer"
                               }
                             },
-                            "id": 3542,
+                            "id": 3549,
                             "isConstant": false,
                             "isLValue": true,
                             "isPure": false,
                             "lValueRequested": false,
                             "memberName": "memberIndices",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 3482,
+                            "referencedDeclaration": 3489,
                             "src": "540:18:11",
                             "typeDescriptions": {
                               "typeIdentifier": "t_mapping$_t_uint8_$_t_uint256_$",
                               "typeString": "mapping(uint8 => uint256)"
                             }
                           },
-                          "id": 3544,
+                          "id": 3551,
                           "indexExpression": {
                             "argumentTypes": null,
-                            "id": 3543,
+                            "id": 3550,
                             "name": "other",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 3532,
+                            "referencedDeclaration": 3539,
                             "src": "559:5:11",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint8",
@@ -985,15 +985,15 @@
                       },
                       {
                         "assignments": [
-                          3547
+                          3554
                         ],
                         "declarations": [
                           {
                             "constant": false,
-                            "id": 3547,
+                            "id": 3554,
                             "name": "lastMember",
                             "nodeType": "VariableDeclaration",
-                            "scope": 3591,
+                            "scope": 3598,
                             "src": "579:16:11",
                             "stateVariable": false,
                             "storageLocation": "default",
@@ -1002,7 +1002,7 @@
                               "typeString": "uint8"
                             },
                             "typeName": {
-                              "id": 3546,
+                              "id": 3553,
                               "name": "uint8",
                               "nodeType": "ElementaryTypeName",
                               "src": "579:5:11",
@@ -1015,46 +1015,46 @@
                             "visibility": "internal"
                           }
                         ],
-                        "id": 3556,
+                        "id": 3563,
                         "initialValue": {
                           "argumentTypes": null,
                           "baseExpression": {
                             "argumentTypes": null,
                             "expression": {
                               "argumentTypes": null,
-                              "id": 3548,
+                              "id": 3555,
                               "name": "self",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 3530,
+                              "referencedDeclaration": 3537,
                               "src": "598:4:11",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                 "typeString": "struct uint8Set._uint8Set storage pointer"
                               }
                             },
-                            "id": 3549,
+                            "id": 3556,
                             "isConstant": false,
                             "isLValue": true,
                             "isPure": false,
                             "lValueRequested": false,
                             "memberName": "members",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 3478,
+                            "referencedDeclaration": 3485,
                             "src": "598:12:11",
                             "typeDescriptions": {
                               "typeIdentifier": "t_array$_t_uint8_$dyn_storage",
                               "typeString": "uint8[] storage ref"
                             }
                           },
-                          "id": 3555,
+                          "id": 3562,
                           "indexExpression": {
                             "argumentTypes": null,
                             "commonType": {
                               "typeIdentifier": "t_uint256",
                               "typeString": "uint256"
                             },
-                            "id": 3554,
+                            "id": 3561,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -1064,14 +1064,14 @@
                               "arguments": [
                                 {
                                   "argumentTypes": null,
-                                  "id": 3551,
+                                  "id": 3558,
                                   "name": "self",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 3530,
+                                  "referencedDeclaration": 3537,
                                   "src": "618:4:11",
                                   "typeDescriptions": {
-                                    "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                    "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                     "typeString": "struct uint8Set._uint8Set storage pointer"
                                   }
                                 }
@@ -1079,22 +1079,22 @@
                               "expression": {
                                 "argumentTypes": [
                                   {
-                                    "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                    "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                     "typeString": "struct uint8Set._uint8Set storage pointer"
                                   }
                                 ],
-                                "id": 3550,
+                                "id": 3557,
                                 "name": "length",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 3620,
+                                "referencedDeclaration": 3627,
                                 "src": "611:6:11",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_function_internal_view$_t_struct$__uint8Set_$3483_storage_ptr_$returns$_t_uint256_$",
+                                  "typeIdentifier": "t_function_internal_view$_t_struct$__uint8Set_$3490_storage_ptr_$returns$_t_uint256_$",
                                   "typeString": "function (struct uint8Set._uint8Set storage pointer) view returns (uint256)"
                                 }
                               },
-                              "id": 3552,
+                              "id": 3559,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": false,
@@ -1113,7 +1113,7 @@
                             "rightExpression": {
                               "argumentTypes": null,
                               "hexValue": "31",
-                              "id": 3553,
+                              "id": 3560,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -1151,7 +1151,7 @@
                       {
                         "expression": {
                           "argumentTypes": null,
-                          "id": 3565,
+                          "id": 3572,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -1162,50 +1162,50 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 3557,
+                                "id": 3564,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 3530,
+                                "referencedDeclaration": 3537,
                                 "src": "715:4:11",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                  "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                   "typeString": "struct uint8Set._uint8Set storage pointer"
                                 }
                               },
-                              "id": 3562,
+                              "id": 3569,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "members",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 3478,
+                              "referencedDeclaration": 3485,
                               "src": "715:12:11",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_array$_t_uint8_$dyn_storage",
                                 "typeString": "uint8[] storage ref"
                               }
                             },
-                            "id": 3563,
+                            "id": 3570,
                             "indexExpression": {
                               "argumentTypes": null,
                               "commonType": {
                                 "typeIdentifier": "t_uint256",
                                 "typeString": "uint256"
                               },
-                              "id": 3561,
+                              "id": 3568,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": false,
                               "lValueRequested": false,
                               "leftExpression": {
                                 "argumentTypes": null,
-                                "id": 3559,
+                                "id": 3566,
                                 "name": "replaceIndex",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 3540,
+                                "referencedDeclaration": 3547,
                                 "src": "728:12:11",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_uint256",
@@ -1217,7 +1217,7 @@
                               "rightExpression": {
                                 "argumentTypes": null,
                                 "hexValue": "31",
-                                "id": 3560,
+                                "id": 3567,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": true,
@@ -1253,11 +1253,11 @@
                           "operator": "=",
                           "rightHandSide": {
                             "argumentTypes": null,
-                            "id": 3564,
+                            "id": 3571,
                             "name": "lastMember",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 3547,
+                            "referencedDeclaration": 3554,
                             "src": "746:10:11",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint8",
@@ -1270,14 +1270,14 @@
                             "typeString": "uint8"
                           }
                         },
-                        "id": 3566,
+                        "id": 3573,
                         "nodeType": "ExpressionStatement",
                         "src": "715:41:11"
                       },
                       {
                         "expression": {
                           "argumentTypes": null,
-                          "id": 3572,
+                          "id": 3579,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -1292,32 +1292,32 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 3567,
+                                "id": 3574,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 3530,
+                                "referencedDeclaration": 3537,
                                 "src": "770:4:11",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                  "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                   "typeString": "struct uint8Set._uint8Set storage pointer"
                                 }
                               },
-                              "id": 3570,
+                              "id": 3577,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "members",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 3478,
+                              "referencedDeclaration": 3485,
                               "src": "770:12:11",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_array$_t_uint8_$dyn_storage",
                                 "typeString": "uint8[] storage ref"
                               }
                             },
-                            "id": 3571,
+                            "id": 3578,
                             "isConstant": false,
                             "isLValue": true,
                             "isPure": false,
@@ -1336,14 +1336,14 @@
                             "typeString": "uint256"
                           }
                         },
-                        "id": 3573,
+                        "id": 3580,
                         "nodeType": "ExpressionStatement",
                         "src": "770:21:11"
                       },
                       {
                         "expression": {
                           "argumentTypes": null,
-                          "id": 3580,
+                          "id": 3587,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -1354,39 +1354,39 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 3574,
+                                "id": 3581,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 3530,
+                                "referencedDeclaration": 3537,
                                 "src": "855:4:11",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                  "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                   "typeString": "struct uint8Set._uint8Set storage pointer"
                                 }
                               },
-                              "id": 3577,
+                              "id": 3584,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "memberIndices",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 3482,
+                              "referencedDeclaration": 3489,
                               "src": "855:18:11",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_mapping$_t_uint8_$_t_uint256_$",
                                 "typeString": "mapping(uint8 => uint256)"
                               }
                             },
-                            "id": 3578,
+                            "id": 3585,
                             "indexExpression": {
                               "argumentTypes": null,
-                              "id": 3576,
+                              "id": 3583,
                               "name": "lastMember",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 3547,
+                              "referencedDeclaration": 3554,
                               "src": "874:10:11",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint8",
@@ -1408,11 +1408,11 @@
                           "operator": "=",
                           "rightHandSide": {
                             "argumentTypes": null,
-                            "id": 3579,
+                            "id": 3586,
                             "name": "replaceIndex",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 3540,
+                            "referencedDeclaration": 3547,
                             "src": "888:12:11",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint256",
@@ -1425,14 +1425,14 @@
                             "typeString": "uint256"
                           }
                         },
-                        "id": 3581,
+                        "id": 3588,
                         "nodeType": "ExpressionStatement",
                         "src": "855:45:11"
                       },
                       {
                         "expression": {
                           "argumentTypes": null,
-                          "id": 3586,
+                          "id": 3593,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -1447,39 +1447,39 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 3582,
+                                "id": 3589,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 3530,
+                                "referencedDeclaration": 3537,
                                 "src": "921:4:11",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                  "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                   "typeString": "struct uint8Set._uint8Set storage pointer"
                                 }
                               },
-                              "id": 3583,
+                              "id": 3590,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "memberIndices",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 3482,
+                              "referencedDeclaration": 3489,
                               "src": "921:18:11",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_mapping$_t_uint8_$_t_uint256_$",
                                 "typeString": "mapping(uint8 => uint256)"
                               }
                             },
-                            "id": 3585,
+                            "id": 3592,
                             "indexExpression": {
                               "argumentTypes": null,
-                              "id": 3584,
+                              "id": 3591,
                               "name": "other",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 3532,
+                              "referencedDeclaration": 3539,
                               "src": "940:5:11",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint8",
@@ -1502,7 +1502,7 @@
                             "typeString": "tuple()"
                           }
                         },
-                        "id": 3587,
+                        "id": 3594,
                         "nodeType": "ExpressionStatement",
                         "src": "914:32:11"
                       }
@@ -1512,7 +1512,7 @@
               ]
             },
             "documentation": null,
-            "id": 3591,
+            "id": 3598,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -1520,31 +1520,31 @@
             "name": "remove",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3533,
+              "id": 3540,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3530,
+                  "id": 3537,
                   "name": "self",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3591,
+                  "scope": 3598,
                   "src": "425:22:11",
                   "stateVariable": false,
                   "storageLocation": "storage",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                    "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                     "typeString": "struct uint8Set._uint8Set"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 3529,
+                    "id": 3536,
                     "name": "_uint8Set",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 3483,
+                    "referencedDeclaration": 3490,
                     "src": "425:9:11",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                      "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                       "typeString": "struct uint8Set._uint8Set"
                     }
                   },
@@ -1553,10 +1553,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 3532,
+                  "id": 3539,
                   "name": "other",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3591,
+                  "scope": 3598,
                   "src": "449:11:11",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1565,7 +1565,7 @@
                     "typeString": "uint8"
                   },
                   "typeName": {
-                    "id": 3531,
+                    "id": 3538,
                     "name": "uint8",
                     "nodeType": "ElementaryTypeName",
                     "src": "449:5:11",
@@ -1582,12 +1582,12 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 3534,
+              "id": 3541,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "469:0:11"
             },
-            "scope": 3621,
+            "scope": 3628,
             "src": "409:554:11",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -1595,7 +1595,7 @@
           },
           {
             "body": {
-              "id": 3607,
+              "id": 3614,
               "nodeType": "Block",
               "src": "1051:53:11",
               "statements": [
@@ -1606,7 +1606,7 @@
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     },
-                    "id": 3605,
+                    "id": 3612,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1617,39 +1617,39 @@
                         "argumentTypes": null,
                         "expression": {
                           "argumentTypes": null,
-                          "id": 3600,
+                          "id": 3607,
                           "name": "self",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 3593,
+                          "referencedDeclaration": 3600,
                           "src": "1068:4:11",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                            "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                             "typeString": "struct uint8Set._uint8Set storage pointer"
                           }
                         },
-                        "id": 3601,
+                        "id": 3608,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
                         "lValueRequested": false,
                         "memberName": "memberIndices",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 3482,
+                        "referencedDeclaration": 3489,
                         "src": "1068:18:11",
                         "typeDescriptions": {
                           "typeIdentifier": "t_mapping$_t_uint8_$_t_uint256_$",
                           "typeString": "mapping(uint8 => uint256)"
                         }
                       },
-                      "id": 3603,
+                      "id": 3610,
                       "indexExpression": {
                         "argumentTypes": null,
-                        "id": 3602,
+                        "id": 3609,
                         "name": "other",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 3595,
+                        "referencedDeclaration": 3602,
                         "src": "1087:5:11",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint8",
@@ -1672,7 +1672,7 @@
                     "rightExpression": {
                       "argumentTypes": null,
                       "hexValue": "30",
-                      "id": 3604,
+                      "id": 3611,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -1693,15 +1693,15 @@
                       "typeString": "bool"
                     }
                   },
-                  "functionReturnParameters": 3599,
-                  "id": 3606,
+                  "functionReturnParameters": 3606,
+                  "id": 3613,
                   "nodeType": "Return",
                   "src": "1061:36:11"
                 }
               ]
             },
             "documentation": null,
-            "id": 3608,
+            "id": 3615,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -1709,31 +1709,31 @@
             "name": "contains",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3596,
+              "id": 3603,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3593,
+                  "id": 3600,
                   "name": "self",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3608,
+                  "scope": 3615,
                   "src": "987:22:11",
                   "stateVariable": false,
                   "storageLocation": "storage",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                    "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                     "typeString": "struct uint8Set._uint8Set"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 3592,
+                    "id": 3599,
                     "name": "_uint8Set",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 3483,
+                    "referencedDeclaration": 3490,
                     "src": "987:9:11",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                      "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                       "typeString": "struct uint8Set._uint8Set"
                     }
                   },
@@ -1742,10 +1742,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 3595,
+                  "id": 3602,
                   "name": "other",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3608,
+                  "scope": 3615,
                   "src": "1011:11:11",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1754,7 +1754,7 @@
                     "typeString": "uint8"
                   },
                   "typeName": {
-                    "id": 3594,
+                    "id": 3601,
                     "name": "uint8",
                     "nodeType": "ElementaryTypeName",
                     "src": "1011:5:11",
@@ -1771,15 +1771,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 3599,
+              "id": 3606,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3598,
+                  "id": 3605,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3608,
+                  "scope": 3615,
                   "src": "1045:4:11",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1788,7 +1788,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 3597,
+                    "id": 3604,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1045:4:11",
@@ -1803,7 +1803,7 @@
               ],
               "src": "1044:6:11"
             },
-            "scope": 3621,
+            "scope": 3628,
             "src": "969:135:11",
             "stateMutability": "view",
             "superFunction": null,
@@ -1811,7 +1811,7 @@
           },
           {
             "body": {
-              "id": 3619,
+              "id": 3626,
               "nodeType": "Block",
               "src": "1177:43:11",
               "statements": [
@@ -1822,32 +1822,32 @@
                       "argumentTypes": null,
                       "expression": {
                         "argumentTypes": null,
-                        "id": 3615,
+                        "id": 3622,
                         "name": "self",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 3610,
+                        "referencedDeclaration": 3617,
                         "src": "1194:4:11",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                          "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                           "typeString": "struct uint8Set._uint8Set storage pointer"
                         }
                       },
-                      "id": 3616,
+                      "id": 3623,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "members",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 3478,
+                      "referencedDeclaration": 3485,
                       "src": "1194:12:11",
                       "typeDescriptions": {
                         "typeIdentifier": "t_array$_t_uint8_$dyn_storage",
                         "typeString": "uint8[] storage ref"
                       }
                     },
-                    "id": 3617,
+                    "id": 3624,
                     "isConstant": false,
                     "isLValue": true,
                     "isPure": false,
@@ -1861,15 +1861,15 @@
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 3614,
-                  "id": 3618,
+                  "functionReturnParameters": 3621,
+                  "id": 3625,
                   "nodeType": "Return",
                   "src": "1187:26:11"
                 }
               ]
             },
             "documentation": null,
-            "id": 3620,
+            "id": 3627,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -1877,31 +1877,31 @@
             "name": "length",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3611,
+              "id": 3618,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3610,
+                  "id": 3617,
                   "name": "self",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3620,
+                  "scope": 3627,
                   "src": "1126:22:11",
                   "stateVariable": false,
                   "storageLocation": "storage",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                    "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                     "typeString": "struct uint8Set._uint8Set"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 3609,
+                    "id": 3616,
                     "name": "_uint8Set",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 3483,
+                    "referencedDeclaration": 3490,
                     "src": "1126:9:11",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                      "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                       "typeString": "struct uint8Set._uint8Set"
                     }
                   },
@@ -1913,15 +1913,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 3614,
+              "id": 3621,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3613,
+                  "id": 3620,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3620,
+                  "scope": 3627,
                   "src": "1171:4:11",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1930,7 +1930,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 3612,
+                    "id": 3619,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "1171:4:11",
@@ -1945,14 +1945,14 @@
               ],
               "src": "1170:6:11"
             },
-            "scope": 3621,
+            "scope": 3628,
             "src": "1110:110:11",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "public"
           }
         ],
-        "scope": 3622,
+        "scope": 3629,
         "src": "27:1195:11"
       }
     ],
@@ -1962,14 +1962,14 @@
     "absolutePath": "/Users/noahzinsmeister/Documents/github/smart-contracts/snowflake/contracts/libraries/uint8Set.sol",
     "exportedSymbols": {
       "uint8Set": [
-        3621
+        3628
       ]
     },
-    "id": 3622,
+    "id": 3629,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3475,
+        "id": 3482,
         "literals": [
           "solidity",
           "^",
@@ -1985,23 +1985,23 @@
         "contractKind": "library",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 3621,
+        "id": 3628,
         "linearizedBaseContracts": [
-          3621
+          3628
         ],
         "name": "uint8Set",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "canonicalName": "uint8Set._uint8Set",
-            "id": 3483,
+            "id": 3490,
             "members": [
               {
                 "constant": false,
-                "id": 3478,
+                "id": 3485,
                 "name": "members",
                 "nodeType": "VariableDeclaration",
-                "scope": 3483,
+                "scope": 3490,
                 "src": "77:15:11",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -2011,7 +2011,7 @@
                 },
                 "typeName": {
                   "baseType": {
-                    "id": 3476,
+                    "id": 3483,
                     "name": "uint8",
                     "nodeType": "ElementaryTypeName",
                     "src": "77:5:11",
@@ -2020,7 +2020,7 @@
                       "typeString": "uint8"
                     }
                   },
-                  "id": 3477,
+                  "id": 3484,
                   "length": null,
                   "nodeType": "ArrayTypeName",
                   "src": "77:7:11",
@@ -2034,10 +2034,10 @@
               },
               {
                 "constant": false,
-                "id": 3482,
+                "id": 3489,
                 "name": "memberIndices",
                 "nodeType": "VariableDeclaration",
-                "scope": 3483,
+                "scope": 3490,
                 "src": "102:36:11",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -2046,9 +2046,9 @@
                   "typeString": "mapping(uint8 => uint256)"
                 },
                 "typeName": {
-                  "id": 3481,
+                  "id": 3488,
                   "keyType": {
-                    "id": 3479,
+                    "id": 3486,
                     "name": "uint8",
                     "nodeType": "ElementaryTypeName",
                     "src": "110:5:11",
@@ -2064,7 +2064,7 @@
                     "typeString": "mapping(uint8 => uint256)"
                   },
                   "valueType": {
-                    "id": 3480,
+                    "id": 3487,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "119:4:11",
@@ -2080,20 +2080,20 @@
             ],
             "name": "_uint8Set",
             "nodeType": "StructDefinition",
-            "scope": 3621,
+            "scope": 3628,
             "src": "50:95:11",
             "visibility": "public"
           },
           {
             "body": {
-              "id": 3527,
+              "id": 3534,
               "nodeType": "Block",
               "src": "211:192:11",
               "statements": [
                 {
                   "condition": {
                     "argumentTypes": null,
-                    "id": 3494,
+                    "id": 3501,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2107,24 +2107,24 @@
                       "arguments": [
                         {
                           "argumentTypes": null,
-                          "id": 3491,
+                          "id": 3498,
                           "name": "self",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 3485,
+                          "referencedDeclaration": 3492,
                           "src": "235:4:11",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                            "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                             "typeString": "struct uint8Set._uint8Set storage pointer"
                           }
                         },
                         {
                           "argumentTypes": null,
-                          "id": 3492,
+                          "id": 3499,
                           "name": "other",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 3487,
+                          "referencedDeclaration": 3494,
                           "src": "241:5:11",
                           "typeDescriptions": {
                             "typeIdentifier": "t_uint8",
@@ -2135,7 +2135,7 @@
                       "expression": {
                         "argumentTypes": [
                           {
-                            "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                            "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                             "typeString": "struct uint8Set._uint8Set storage pointer"
                           },
                           {
@@ -2143,18 +2143,18 @@
                             "typeString": "uint8"
                           }
                         ],
-                        "id": 3490,
+                        "id": 3497,
                         "name": "contains",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 3608,
+                        "referencedDeclaration": 3615,
                         "src": "226:8:11",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_function_internal_view$_t_struct$__uint8Set_$3483_storage_ptr_$_t_uint8_$returns$_t_bool_$",
+                          "typeIdentifier": "t_function_internal_view$_t_struct$__uint8Set_$3490_storage_ptr_$_t_uint8_$returns$_t_bool_$",
                           "typeString": "function (struct uint8Set._uint8Set storage pointer,uint8) view returns (bool)"
                         }
                       },
-                      "id": 3493,
+                      "id": 3500,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -2174,11 +2174,11 @@
                     }
                   },
                   "falseBody": null,
-                  "id": 3526,
+                  "id": 3533,
                   "nodeType": "IfStatement",
                   "src": "221:176:11",
                   "trueBody": {
-                    "id": 3525,
+                    "id": 3532,
                     "nodeType": "Block",
                     "src": "249:148:11",
                     "statements": [
@@ -2192,7 +2192,7 @@
                                 "typeIdentifier": "t_uint256",
                                 "typeString": "uint256"
                               },
-                              "id": 3504,
+                              "id": 3511,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": false,
@@ -2202,14 +2202,14 @@
                                 "arguments": [
                                   {
                                     "argumentTypes": null,
-                                    "id": 3497,
+                                    "id": 3504,
                                     "name": "self",
                                     "nodeType": "Identifier",
                                     "overloadedDeclarations": [],
-                                    "referencedDeclaration": 3485,
+                                    "referencedDeclaration": 3492,
                                     "src": "277:4:11",
                                     "typeDescriptions": {
-                                      "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                      "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                       "typeString": "struct uint8Set._uint8Set storage pointer"
                                     }
                                   }
@@ -2217,22 +2217,22 @@
                                 "expression": {
                                   "argumentTypes": [
                                     {
-                                      "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                      "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                       "typeString": "struct uint8Set._uint8Set storage pointer"
                                     }
                                   ],
-                                  "id": 3496,
+                                  "id": 3503,
                                   "name": "length",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 3620,
+                                  "referencedDeclaration": 3627,
                                   "src": "270:6:11",
                                   "typeDescriptions": {
-                                    "typeIdentifier": "t_function_internal_view$_t_struct$__uint8Set_$3483_storage_ptr_$returns$_t_uint256_$",
+                                    "typeIdentifier": "t_function_internal_view$_t_struct$__uint8Set_$3490_storage_ptr_$returns$_t_uint256_$",
                                     "typeString": "function (struct uint8Set._uint8Set storage pointer) view returns (uint256)"
                                   }
                                 },
-                                "id": 3498,
+                                "id": 3505,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": false,
@@ -2254,7 +2254,7 @@
                                   "typeIdentifier": "t_rational_115792089237316195423570985008687907853269984665640564039457584007913129639935_by_1",
                                   "typeString": "int_const 1157...(70 digits omitted)...9935"
                                 },
-                                "id": 3503,
+                                "id": 3510,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": true,
@@ -2265,7 +2265,7 @@
                                     "typeIdentifier": "t_rational_115792089237316195423570985008687907853269984665640564039457584007913129639936_by_1",
                                     "typeString": "int_const 1157...(70 digits omitted)...9936"
                                   },
-                                  "id": 3501,
+                                  "id": 3508,
                                   "isConstant": false,
                                   "isLValue": false,
                                   "isPure": true,
@@ -2273,7 +2273,7 @@
                                   "leftExpression": {
                                     "argumentTypes": null,
                                     "hexValue": "32",
-                                    "id": 3499,
+                                    "id": 3506,
                                     "isConstant": false,
                                     "isLValue": false,
                                     "isPure": true,
@@ -2293,7 +2293,7 @@
                                   "rightExpression": {
                                     "argumentTypes": null,
                                     "hexValue": "323536",
-                                    "id": 3500,
+                                    "id": 3507,
                                     "isConstant": false,
                                     "isLValue": false,
                                     "isPure": true,
@@ -2319,7 +2319,7 @@
                                 "rightExpression": {
                                   "argumentTypes": null,
                                   "hexValue": "31",
-                                  "id": 3502,
+                                  "id": 3509,
                                   "isConstant": false,
                                   "isLValue": false,
                                   "isPure": true,
@@ -2354,18 +2354,18 @@
                                 "typeString": "bool"
                               }
                             ],
-                            "id": 3495,
+                            "id": 3502,
                             "name": "assert",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 3850,
+                            "referencedDeclaration": 3857,
                             "src": "263:6:11",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_assert_pure$_t_bool_$returns$__$",
                               "typeString": "function (bool) pure"
                             }
                           },
-                          "id": 3505,
+                          "id": 3512,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -2379,7 +2379,7 @@
                             "typeString": "tuple()"
                           }
                         },
-                        "id": 3506,
+                        "id": 3513,
                         "nodeType": "ExpressionStatement",
                         "src": "263:31:11"
                       },
@@ -2389,11 +2389,11 @@
                           "arguments": [
                             {
                               "argumentTypes": null,
-                              "id": 3512,
+                              "id": 3519,
                               "name": "other",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 3487,
+                              "referencedDeclaration": 3494,
                               "src": "326:5:11",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint8",
@@ -2412,32 +2412,32 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 3507,
+                                "id": 3514,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 3485,
+                                "referencedDeclaration": 3492,
                                 "src": "308:4:11",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                  "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                   "typeString": "struct uint8Set._uint8Set storage pointer"
                                 }
                               },
-                              "id": 3510,
+                              "id": 3517,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "members",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 3478,
+                              "referencedDeclaration": 3485,
                               "src": "308:12:11",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_array$_t_uint8_$dyn_storage",
                                 "typeString": "uint8[] storage ref"
                               }
                             },
-                            "id": 3511,
+                            "id": 3518,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -2451,7 +2451,7 @@
                               "typeString": "function (uint8) returns (uint256)"
                             }
                           },
-                          "id": 3513,
+                          "id": 3520,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -2465,14 +2465,14 @@
                             "typeString": "uint256"
                           }
                         },
-                        "id": 3514,
+                        "id": 3521,
                         "nodeType": "ExpressionStatement",
                         "src": "308:24:11"
                       },
                       {
                         "expression": {
                           "argumentTypes": null,
-                          "id": 3523,
+                          "id": 3530,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -2483,39 +2483,39 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 3515,
+                                "id": 3522,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 3485,
+                                "referencedDeclaration": 3492,
                                 "src": "346:4:11",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                  "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                   "typeString": "struct uint8Set._uint8Set storage pointer"
                                 }
                               },
-                              "id": 3518,
+                              "id": 3525,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "memberIndices",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 3482,
+                              "referencedDeclaration": 3489,
                               "src": "346:18:11",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_mapping$_t_uint8_$_t_uint256_$",
                                 "typeString": "mapping(uint8 => uint256)"
                               }
                             },
-                            "id": 3519,
+                            "id": 3526,
                             "indexExpression": {
                               "argumentTypes": null,
-                              "id": 3517,
+                              "id": 3524,
                               "name": "other",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 3487,
+                              "referencedDeclaration": 3494,
                               "src": "365:5:11",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint8",
@@ -2540,14 +2540,14 @@
                             "arguments": [
                               {
                                 "argumentTypes": null,
-                                "id": 3521,
+                                "id": 3528,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 3485,
+                                "referencedDeclaration": 3492,
                                 "src": "381:4:11",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                  "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                   "typeString": "struct uint8Set._uint8Set storage pointer"
                                 }
                               }
@@ -2555,22 +2555,22 @@
                             "expression": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                  "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                   "typeString": "struct uint8Set._uint8Set storage pointer"
                                 }
                               ],
-                              "id": 3520,
+                              "id": 3527,
                               "name": "length",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 3620,
+                              "referencedDeclaration": 3627,
                               "src": "374:6:11",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_function_internal_view$_t_struct$__uint8Set_$3483_storage_ptr_$returns$_t_uint256_$",
+                                "typeIdentifier": "t_function_internal_view$_t_struct$__uint8Set_$3490_storage_ptr_$returns$_t_uint256_$",
                                 "typeString": "function (struct uint8Set._uint8Set storage pointer) view returns (uint256)"
                               }
                             },
-                            "id": 3522,
+                            "id": 3529,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -2590,7 +2590,7 @@
                             "typeString": "uint256"
                           }
                         },
-                        "id": 3524,
+                        "id": 3531,
                         "nodeType": "ExpressionStatement",
                         "src": "346:40:11"
                       }
@@ -2600,7 +2600,7 @@
               ]
             },
             "documentation": null,
-            "id": 3528,
+            "id": 3535,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -2608,31 +2608,31 @@
             "name": "insert",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3488,
+              "id": 3495,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3485,
+                  "id": 3492,
                   "name": "self",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3528,
+                  "scope": 3535,
                   "src": "167:22:11",
                   "stateVariable": false,
                   "storageLocation": "storage",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                    "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                     "typeString": "struct uint8Set._uint8Set"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 3484,
+                    "id": 3491,
                     "name": "_uint8Set",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 3483,
+                    "referencedDeclaration": 3490,
                     "src": "167:9:11",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                      "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                       "typeString": "struct uint8Set._uint8Set"
                     }
                   },
@@ -2641,10 +2641,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 3487,
+                  "id": 3494,
                   "name": "other",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3528,
+                  "scope": 3535,
                   "src": "191:11:11",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2653,7 +2653,7 @@
                     "typeString": "uint8"
                   },
                   "typeName": {
-                    "id": 3486,
+                    "id": 3493,
                     "name": "uint8",
                     "nodeType": "ElementaryTypeName",
                     "src": "191:5:11",
@@ -2670,12 +2670,12 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 3489,
+              "id": 3496,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "211:0:11"
             },
-            "scope": 3621,
+            "scope": 3628,
             "src": "151:252:11",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -2683,7 +2683,7 @@
           },
           {
             "body": {
-              "id": 3590,
+              "id": 3597,
               "nodeType": "Block",
               "src": "469:494:11",
               "statements": [
@@ -2693,24 +2693,24 @@
                     "arguments": [
                       {
                         "argumentTypes": null,
-                        "id": 3536,
+                        "id": 3543,
                         "name": "self",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 3530,
+                        "referencedDeclaration": 3537,
                         "src": "492:4:11",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                          "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                           "typeString": "struct uint8Set._uint8Set storage pointer"
                         }
                       },
                       {
                         "argumentTypes": null,
-                        "id": 3537,
+                        "id": 3544,
                         "name": "other",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 3532,
+                        "referencedDeclaration": 3539,
                         "src": "498:5:11",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint8",
@@ -2721,7 +2721,7 @@
                     "expression": {
                       "argumentTypes": [
                         {
-                          "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                          "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                           "typeString": "struct uint8Set._uint8Set storage pointer"
                         },
                         {
@@ -2729,18 +2729,18 @@
                           "typeString": "uint8"
                         }
                       ],
-                      "id": 3535,
+                      "id": 3542,
                       "name": "contains",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 3608,
+                      "referencedDeclaration": 3615,
                       "src": "483:8:11",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_internal_view$_t_struct$__uint8Set_$3483_storage_ptr_$_t_uint8_$returns$_t_bool_$",
+                        "typeIdentifier": "t_function_internal_view$_t_struct$__uint8Set_$3490_storage_ptr_$_t_uint8_$returns$_t_bool_$",
                         "typeString": "function (struct uint8Set._uint8Set storage pointer,uint8) view returns (bool)"
                       }
                     },
-                    "id": 3538,
+                    "id": 3545,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2755,25 +2755,25 @@
                     }
                   },
                   "falseBody": null,
-                  "id": 3589,
+                  "id": 3596,
                   "nodeType": "IfStatement",
                   "src": "479:478:11",
                   "trueBody": {
-                    "id": 3588,
+                    "id": 3595,
                     "nodeType": "Block",
                     "src": "506:451:11",
                     "statements": [
                       {
                         "assignments": [
-                          3540
+                          3547
                         ],
                         "declarations": [
                           {
                             "constant": false,
-                            "id": 3540,
+                            "id": 3547,
                             "name": "replaceIndex",
                             "nodeType": "VariableDeclaration",
-                            "scope": 3591,
+                            "scope": 3598,
                             "src": "520:17:11",
                             "stateVariable": false,
                             "storageLocation": "default",
@@ -2782,7 +2782,7 @@
                               "typeString": "uint256"
                             },
                             "typeName": {
-                              "id": 3539,
+                              "id": 3546,
                               "name": "uint",
                               "nodeType": "ElementaryTypeName",
                               "src": "520:4:11",
@@ -2795,46 +2795,46 @@
                             "visibility": "internal"
                           }
                         ],
-                        "id": 3545,
+                        "id": 3552,
                         "initialValue": {
                           "argumentTypes": null,
                           "baseExpression": {
                             "argumentTypes": null,
                             "expression": {
                               "argumentTypes": null,
-                              "id": 3541,
+                              "id": 3548,
                               "name": "self",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 3530,
+                              "referencedDeclaration": 3537,
                               "src": "540:4:11",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                 "typeString": "struct uint8Set._uint8Set storage pointer"
                               }
                             },
-                            "id": 3542,
+                            "id": 3549,
                             "isConstant": false,
                             "isLValue": true,
                             "isPure": false,
                             "lValueRequested": false,
                             "memberName": "memberIndices",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 3482,
+                            "referencedDeclaration": 3489,
                             "src": "540:18:11",
                             "typeDescriptions": {
                               "typeIdentifier": "t_mapping$_t_uint8_$_t_uint256_$",
                               "typeString": "mapping(uint8 => uint256)"
                             }
                           },
-                          "id": 3544,
+                          "id": 3551,
                           "indexExpression": {
                             "argumentTypes": null,
-                            "id": 3543,
+                            "id": 3550,
                             "name": "other",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 3532,
+                            "referencedDeclaration": 3539,
                             "src": "559:5:11",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint8",
@@ -2857,15 +2857,15 @@
                       },
                       {
                         "assignments": [
-                          3547
+                          3554
                         ],
                         "declarations": [
                           {
                             "constant": false,
-                            "id": 3547,
+                            "id": 3554,
                             "name": "lastMember",
                             "nodeType": "VariableDeclaration",
-                            "scope": 3591,
+                            "scope": 3598,
                             "src": "579:16:11",
                             "stateVariable": false,
                             "storageLocation": "default",
@@ -2874,7 +2874,7 @@
                               "typeString": "uint8"
                             },
                             "typeName": {
-                              "id": 3546,
+                              "id": 3553,
                               "name": "uint8",
                               "nodeType": "ElementaryTypeName",
                               "src": "579:5:11",
@@ -2887,46 +2887,46 @@
                             "visibility": "internal"
                           }
                         ],
-                        "id": 3556,
+                        "id": 3563,
                         "initialValue": {
                           "argumentTypes": null,
                           "baseExpression": {
                             "argumentTypes": null,
                             "expression": {
                               "argumentTypes": null,
-                              "id": 3548,
+                              "id": 3555,
                               "name": "self",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 3530,
+                              "referencedDeclaration": 3537,
                               "src": "598:4:11",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                 "typeString": "struct uint8Set._uint8Set storage pointer"
                               }
                             },
-                            "id": 3549,
+                            "id": 3556,
                             "isConstant": false,
                             "isLValue": true,
                             "isPure": false,
                             "lValueRequested": false,
                             "memberName": "members",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 3478,
+                            "referencedDeclaration": 3485,
                             "src": "598:12:11",
                             "typeDescriptions": {
                               "typeIdentifier": "t_array$_t_uint8_$dyn_storage",
                               "typeString": "uint8[] storage ref"
                             }
                           },
-                          "id": 3555,
+                          "id": 3562,
                           "indexExpression": {
                             "argumentTypes": null,
                             "commonType": {
                               "typeIdentifier": "t_uint256",
                               "typeString": "uint256"
                             },
-                            "id": 3554,
+                            "id": 3561,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -2936,14 +2936,14 @@
                               "arguments": [
                                 {
                                   "argumentTypes": null,
-                                  "id": 3551,
+                                  "id": 3558,
                                   "name": "self",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 3530,
+                                  "referencedDeclaration": 3537,
                                   "src": "618:4:11",
                                   "typeDescriptions": {
-                                    "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                    "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                     "typeString": "struct uint8Set._uint8Set storage pointer"
                                   }
                                 }
@@ -2951,22 +2951,22 @@
                               "expression": {
                                 "argumentTypes": [
                                   {
-                                    "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                    "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                     "typeString": "struct uint8Set._uint8Set storage pointer"
                                   }
                                 ],
-                                "id": 3550,
+                                "id": 3557,
                                 "name": "length",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 3620,
+                                "referencedDeclaration": 3627,
                                 "src": "611:6:11",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_function_internal_view$_t_struct$__uint8Set_$3483_storage_ptr_$returns$_t_uint256_$",
+                                  "typeIdentifier": "t_function_internal_view$_t_struct$__uint8Set_$3490_storage_ptr_$returns$_t_uint256_$",
                                   "typeString": "function (struct uint8Set._uint8Set storage pointer) view returns (uint256)"
                                 }
                               },
-                              "id": 3552,
+                              "id": 3559,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": false,
@@ -2985,7 +2985,7 @@
                             "rightExpression": {
                               "argumentTypes": null,
                               "hexValue": "31",
-                              "id": 3553,
+                              "id": 3560,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -3023,7 +3023,7 @@
                       {
                         "expression": {
                           "argumentTypes": null,
-                          "id": 3565,
+                          "id": 3572,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -3034,50 +3034,50 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 3557,
+                                "id": 3564,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 3530,
+                                "referencedDeclaration": 3537,
                                 "src": "715:4:11",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                  "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                   "typeString": "struct uint8Set._uint8Set storage pointer"
                                 }
                               },
-                              "id": 3562,
+                              "id": 3569,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "members",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 3478,
+                              "referencedDeclaration": 3485,
                               "src": "715:12:11",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_array$_t_uint8_$dyn_storage",
                                 "typeString": "uint8[] storage ref"
                               }
                             },
-                            "id": 3563,
+                            "id": 3570,
                             "indexExpression": {
                               "argumentTypes": null,
                               "commonType": {
                                 "typeIdentifier": "t_uint256",
                                 "typeString": "uint256"
                               },
-                              "id": 3561,
+                              "id": 3568,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": false,
                               "lValueRequested": false,
                               "leftExpression": {
                                 "argumentTypes": null,
-                                "id": 3559,
+                                "id": 3566,
                                 "name": "replaceIndex",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 3540,
+                                "referencedDeclaration": 3547,
                                 "src": "728:12:11",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_uint256",
@@ -3089,7 +3089,7 @@
                               "rightExpression": {
                                 "argumentTypes": null,
                                 "hexValue": "31",
-                                "id": 3560,
+                                "id": 3567,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": true,
@@ -3125,11 +3125,11 @@
                           "operator": "=",
                           "rightHandSide": {
                             "argumentTypes": null,
-                            "id": 3564,
+                            "id": 3571,
                             "name": "lastMember",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 3547,
+                            "referencedDeclaration": 3554,
                             "src": "746:10:11",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint8",
@@ -3142,14 +3142,14 @@
                             "typeString": "uint8"
                           }
                         },
-                        "id": 3566,
+                        "id": 3573,
                         "nodeType": "ExpressionStatement",
                         "src": "715:41:11"
                       },
                       {
                         "expression": {
                           "argumentTypes": null,
-                          "id": 3572,
+                          "id": 3579,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -3164,32 +3164,32 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 3567,
+                                "id": 3574,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 3530,
+                                "referencedDeclaration": 3537,
                                 "src": "770:4:11",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                  "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                   "typeString": "struct uint8Set._uint8Set storage pointer"
                                 }
                               },
-                              "id": 3570,
+                              "id": 3577,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "members",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 3478,
+                              "referencedDeclaration": 3485,
                               "src": "770:12:11",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_array$_t_uint8_$dyn_storage",
                                 "typeString": "uint8[] storage ref"
                               }
                             },
-                            "id": 3571,
+                            "id": 3578,
                             "isConstant": false,
                             "isLValue": true,
                             "isPure": false,
@@ -3208,14 +3208,14 @@
                             "typeString": "uint256"
                           }
                         },
-                        "id": 3573,
+                        "id": 3580,
                         "nodeType": "ExpressionStatement",
                         "src": "770:21:11"
                       },
                       {
                         "expression": {
                           "argumentTypes": null,
-                          "id": 3580,
+                          "id": 3587,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -3226,39 +3226,39 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 3574,
+                                "id": 3581,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 3530,
+                                "referencedDeclaration": 3537,
                                 "src": "855:4:11",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                  "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                   "typeString": "struct uint8Set._uint8Set storage pointer"
                                 }
                               },
-                              "id": 3577,
+                              "id": 3584,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "memberIndices",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 3482,
+                              "referencedDeclaration": 3489,
                               "src": "855:18:11",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_mapping$_t_uint8_$_t_uint256_$",
                                 "typeString": "mapping(uint8 => uint256)"
                               }
                             },
-                            "id": 3578,
+                            "id": 3585,
                             "indexExpression": {
                               "argumentTypes": null,
-                              "id": 3576,
+                              "id": 3583,
                               "name": "lastMember",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 3547,
+                              "referencedDeclaration": 3554,
                               "src": "874:10:11",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint8",
@@ -3280,11 +3280,11 @@
                           "operator": "=",
                           "rightHandSide": {
                             "argumentTypes": null,
-                            "id": 3579,
+                            "id": 3586,
                             "name": "replaceIndex",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 3540,
+                            "referencedDeclaration": 3547,
                             "src": "888:12:11",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint256",
@@ -3297,14 +3297,14 @@
                             "typeString": "uint256"
                           }
                         },
-                        "id": 3581,
+                        "id": 3588,
                         "nodeType": "ExpressionStatement",
                         "src": "855:45:11"
                       },
                       {
                         "expression": {
                           "argumentTypes": null,
-                          "id": 3586,
+                          "id": 3593,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -3319,39 +3319,39 @@
                               "argumentTypes": null,
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 3582,
+                                "id": 3589,
                                 "name": "self",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 3530,
+                                "referencedDeclaration": 3537,
                                 "src": "921:4:11",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                                  "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                                   "typeString": "struct uint8Set._uint8Set storage pointer"
                                 }
                               },
-                              "id": 3583,
+                              "id": 3590,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "memberIndices",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 3482,
+                              "referencedDeclaration": 3489,
                               "src": "921:18:11",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_mapping$_t_uint8_$_t_uint256_$",
                                 "typeString": "mapping(uint8 => uint256)"
                               }
                             },
-                            "id": 3585,
+                            "id": 3592,
                             "indexExpression": {
                               "argumentTypes": null,
-                              "id": 3584,
+                              "id": 3591,
                               "name": "other",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 3532,
+                              "referencedDeclaration": 3539,
                               "src": "940:5:11",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint8",
@@ -3374,7 +3374,7 @@
                             "typeString": "tuple()"
                           }
                         },
-                        "id": 3587,
+                        "id": 3594,
                         "nodeType": "ExpressionStatement",
                         "src": "914:32:11"
                       }
@@ -3384,7 +3384,7 @@
               ]
             },
             "documentation": null,
-            "id": 3591,
+            "id": 3598,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -3392,31 +3392,31 @@
             "name": "remove",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3533,
+              "id": 3540,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3530,
+                  "id": 3537,
                   "name": "self",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3591,
+                  "scope": 3598,
                   "src": "425:22:11",
                   "stateVariable": false,
                   "storageLocation": "storage",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                    "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                     "typeString": "struct uint8Set._uint8Set"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 3529,
+                    "id": 3536,
                     "name": "_uint8Set",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 3483,
+                    "referencedDeclaration": 3490,
                     "src": "425:9:11",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                      "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                       "typeString": "struct uint8Set._uint8Set"
                     }
                   },
@@ -3425,10 +3425,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 3532,
+                  "id": 3539,
                   "name": "other",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3591,
+                  "scope": 3598,
                   "src": "449:11:11",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -3437,7 +3437,7 @@
                     "typeString": "uint8"
                   },
                   "typeName": {
-                    "id": 3531,
+                    "id": 3538,
                     "name": "uint8",
                     "nodeType": "ElementaryTypeName",
                     "src": "449:5:11",
@@ -3454,12 +3454,12 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 3534,
+              "id": 3541,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "469:0:11"
             },
-            "scope": 3621,
+            "scope": 3628,
             "src": "409:554:11",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -3467,7 +3467,7 @@
           },
           {
             "body": {
-              "id": 3607,
+              "id": 3614,
               "nodeType": "Block",
               "src": "1051:53:11",
               "statements": [
@@ -3478,7 +3478,7 @@
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     },
-                    "id": 3605,
+                    "id": 3612,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -3489,39 +3489,39 @@
                         "argumentTypes": null,
                         "expression": {
                           "argumentTypes": null,
-                          "id": 3600,
+                          "id": 3607,
                           "name": "self",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 3593,
+                          "referencedDeclaration": 3600,
                           "src": "1068:4:11",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                            "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                             "typeString": "struct uint8Set._uint8Set storage pointer"
                           }
                         },
-                        "id": 3601,
+                        "id": 3608,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
                         "lValueRequested": false,
                         "memberName": "memberIndices",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 3482,
+                        "referencedDeclaration": 3489,
                         "src": "1068:18:11",
                         "typeDescriptions": {
                           "typeIdentifier": "t_mapping$_t_uint8_$_t_uint256_$",
                           "typeString": "mapping(uint8 => uint256)"
                         }
                       },
-                      "id": 3603,
+                      "id": 3610,
                       "indexExpression": {
                         "argumentTypes": null,
-                        "id": 3602,
+                        "id": 3609,
                         "name": "other",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 3595,
+                        "referencedDeclaration": 3602,
                         "src": "1087:5:11",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint8",
@@ -3544,7 +3544,7 @@
                     "rightExpression": {
                       "argumentTypes": null,
                       "hexValue": "30",
-                      "id": 3604,
+                      "id": 3611,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -3565,15 +3565,15 @@
                       "typeString": "bool"
                     }
                   },
-                  "functionReturnParameters": 3599,
-                  "id": 3606,
+                  "functionReturnParameters": 3606,
+                  "id": 3613,
                   "nodeType": "Return",
                   "src": "1061:36:11"
                 }
               ]
             },
             "documentation": null,
-            "id": 3608,
+            "id": 3615,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -3581,31 +3581,31 @@
             "name": "contains",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3596,
+              "id": 3603,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3593,
+                  "id": 3600,
                   "name": "self",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3608,
+                  "scope": 3615,
                   "src": "987:22:11",
                   "stateVariable": false,
                   "storageLocation": "storage",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                    "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                     "typeString": "struct uint8Set._uint8Set"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 3592,
+                    "id": 3599,
                     "name": "_uint8Set",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 3483,
+                    "referencedDeclaration": 3490,
                     "src": "987:9:11",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                      "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                       "typeString": "struct uint8Set._uint8Set"
                     }
                   },
@@ -3614,10 +3614,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 3595,
+                  "id": 3602,
                   "name": "other",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3608,
+                  "scope": 3615,
                   "src": "1011:11:11",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -3626,7 +3626,7 @@
                     "typeString": "uint8"
                   },
                   "typeName": {
-                    "id": 3594,
+                    "id": 3601,
                     "name": "uint8",
                     "nodeType": "ElementaryTypeName",
                     "src": "1011:5:11",
@@ -3643,15 +3643,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 3599,
+              "id": 3606,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3598,
+                  "id": 3605,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3608,
+                  "scope": 3615,
                   "src": "1045:4:11",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -3660,7 +3660,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 3597,
+                    "id": 3604,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1045:4:11",
@@ -3675,7 +3675,7 @@
               ],
               "src": "1044:6:11"
             },
-            "scope": 3621,
+            "scope": 3628,
             "src": "969:135:11",
             "stateMutability": "view",
             "superFunction": null,
@@ -3683,7 +3683,7 @@
           },
           {
             "body": {
-              "id": 3619,
+              "id": 3626,
               "nodeType": "Block",
               "src": "1177:43:11",
               "statements": [
@@ -3694,32 +3694,32 @@
                       "argumentTypes": null,
                       "expression": {
                         "argumentTypes": null,
-                        "id": 3615,
+                        "id": 3622,
                         "name": "self",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 3610,
+                        "referencedDeclaration": 3617,
                         "src": "1194:4:11",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                          "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                           "typeString": "struct uint8Set._uint8Set storage pointer"
                         }
                       },
-                      "id": 3616,
+                      "id": 3623,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "members",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 3478,
+                      "referencedDeclaration": 3485,
                       "src": "1194:12:11",
                       "typeDescriptions": {
                         "typeIdentifier": "t_array$_t_uint8_$dyn_storage",
                         "typeString": "uint8[] storage ref"
                       }
                     },
-                    "id": 3617,
+                    "id": 3624,
                     "isConstant": false,
                     "isLValue": true,
                     "isPure": false,
@@ -3733,15 +3733,15 @@
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 3614,
-                  "id": 3618,
+                  "functionReturnParameters": 3621,
+                  "id": 3625,
                   "nodeType": "Return",
                   "src": "1187:26:11"
                 }
               ]
             },
             "documentation": null,
-            "id": 3620,
+            "id": 3627,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -3749,31 +3749,31 @@
             "name": "length",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3611,
+              "id": 3618,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3610,
+                  "id": 3617,
                   "name": "self",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3620,
+                  "scope": 3627,
                   "src": "1126:22:11",
                   "stateVariable": false,
                   "storageLocation": "storage",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                    "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                     "typeString": "struct uint8Set._uint8Set"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 3609,
+                    "id": 3616,
                     "name": "_uint8Set",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 3483,
+                    "referencedDeclaration": 3490,
                     "src": "1126:9:11",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$__uint8Set_$3483_storage_ptr",
+                      "typeIdentifier": "t_struct$__uint8Set_$3490_storage_ptr",
                       "typeString": "struct uint8Set._uint8Set"
                     }
                   },
@@ -3785,15 +3785,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 3614,
+              "id": 3621,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3613,
+                  "id": 3620,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3620,
+                  "scope": 3627,
                   "src": "1171:4:11",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -3802,7 +3802,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 3612,
+                    "id": 3619,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "1171:4:11",
@@ -3817,14 +3817,14 @@
               ],
               "src": "1170:6:11"
             },
-            "scope": 3621,
+            "scope": 3628,
             "src": "1110:110:11",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "public"
           }
         ],
-        "scope": 3622,
+        "scope": 3629,
         "src": "27:1195:11"
       }
     ],
@@ -3838,10 +3838,10 @@
     "4": {
       "events": {},
       "links": {},
-      "address": "0x055a181fbd6a3a62019628be5f271933ef9f566c",
-      "transactionHash": "0xcffd48cfec535d47e7a9cdd2d039c871a107b4ae497a1dbb3d9bfad63d0ea209"
+      "address": "0x9e7404dd04eddd44c62c949094d446ba7590c362",
+      "transactionHash": "0xcf282be529c493743a0a4033f40ea125bb73de3c49d8017737dc81328a3528dc"
     }
   },
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-06-26T20:50:46.586Z"
+  "updatedAt": "2018-06-27T18:31:46.390Z"
 }
