@@ -4,9 +4,9 @@ import "../zeppelin/ownership/Ownable.sol";
 
 
 contract SnowflakeResolver is Ownable {
-    string snowflakeName;
-    string snowflakeDescription;
-    address snowflakeAddress;
+    string public snowflakeName;
+    string public snowflakeDescription;
+    address public snowflakeAddress;
 
     function setSnowflakeAddress(address _address) public onlyOwner {
         snowflakeAddress = _address;

@@ -6,6 +6,7 @@ import "../libraries/addressSet.sol";
 
 contract Snowflake {
     function getTokenId(address _address) public view returns (uint tokenId);
+    function hasToken(address _address) public view returns (bool);
 }
 
 
@@ -20,8 +21,30 @@ contract AddressOwnership is SnowflakeResolver {
         snowflakeDescription = "Allows Snowflake holders to claim ownership over any number of Ethereum addresses.";
     }
 
+    // get list of all of a snowflake's owned addresses. does not throw for invalid inputs, just returns []
+    function ownedAddresses(address _address) public view returns (address[]) {
+        Snowflake snowflake = Snowflake(snowflakeAddress);
+        if (snowflake.hasToken(_address)) {
+            uint tokenId = snowflake.getTokenId(_address);
+            return ownedAddresses(tokenId);
+        } else {
+            return new address[](0);
+        }
+    }
+
     function ownedAddresses(uint tokenId) public view returns (address[]) {
         return snowflakeToOwnedAddresses[tokenId].members;
+    }
+
+    // queries the list of all of a snowflake's owned addresses. does not throw for invalid inputs. just returns false
+    function ownsAddress(address owner, address owned) public view returns (bool) {
+        Snowflake snowflake = Snowflake(snowflakeAddress);
+        if (snowflake.hasToken(owner)) {
+            uint tokenId = snowflake.getTokenId(owner);
+            return ownsAddress(tokenId, owned);
+        } else {
+            return false;
+        }
     }
 
     function ownsAddress(uint tokenId, address _address) public view returns (bool) {
@@ -52,15 +75,17 @@ contract AddressOwnership is SnowflakeResolver {
         require(isSigned(_address, claimedSealedBid, v, r, s), "The signature was incorrect.");
 
         snowflakeToOwnedAddresses[tokenId].insert(_address);
-        emit AddressClaimed(tokenId, _address);
+        emit AddressClaimed(tokenId, msg.sender, _address);
     }
 
     function unclaimAddress(address _address) public {
         Snowflake snowflake = Snowflake(snowflakeAddress);
         uint tokenId = snowflake.getTokenId(msg.sender);
 
-        snowflakeToOwnedAddresses[tokenId].remove(_address);
-        emit AddressUnclaimed(tokenId, _address);
+        if (snowflakeToOwnedAddresses[tokenId].contains(_address)) {
+            snowflakeToOwnedAddresses[tokenId].remove(_address);
+            emit AddressUnclaimed(tokenId, msg.sender, _address);
+        }
     }
 
     // Checks whether the provided (v, r, s) signature was created by the private key associated with _address
@@ -89,6 +114,6 @@ contract AddressOwnership is SnowflakeResolver {
         return ecrecover(prefixedMessageHash, v, r, s) == _address;
     }
 
-    event AddressClaimed(uint indexed tokenId, address claimedAddress);
-    event AddressUnclaimed(uint indexed tokenId, address unclaimedAddress);
+    event AddressClaimed(uint indexed tokenId, address indexed ownerAddress, address claimedAddress);
+    event AddressUnclaimed(uint indexed tokenId, address indexed ownerAddress, address unclaimedAddress);
 }
