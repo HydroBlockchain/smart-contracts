@@ -4,7 +4,6 @@ import "./zeppelin/ownership/Ownable.sol";
 import "./zeppelin/token/ERC20/ERC20.sol";
 import "./zeppelin/math/SafeMath.sol";
 
-import "./libraries/uint8Set.sol";
 import "./libraries/addressSet.sol";
 import "./libraries/bytes32Set.sol";
 
@@ -16,37 +15,34 @@ interface ClientRaindrop {
 
 contract Snowflake is Ownable {
     using SafeMath for uint;
-    using uint8Set for uint8Set._uint8Set;
     using addressSet for addressSet._addressSet;
     using bytes32Set for bytes32Set._bytes32Set;
 
     // hydro token wrapper variable
     mapping (address => uint) public deposits;
 
-    // token lookup mappings
-    uint public nextTokenId = 1;
-    mapping (uint => Identity) internal tokenDirectory;
-    mapping (address => uint) public ownerToToken;
+    // token lookup mappings -- accessible only by wrapper functions
+    mapping (string => Identity) internal tokenDirectory;
+    mapping (address => string) internal ownerToToken;
 
     // admin/contract variables
     address public clientRaindropAddress;
     address public hydroTokenAddress;
 
-    addressSet._addressSet internal resolverWhitelist;
+    addressSet._addressSet resolverWhitelist;
     uint public resolverWhitelistFee;
 
     // name and date of birth restriction variables
-    string[6] nameOrder = ["prefix", "givenName", "middleName", "surname", "suffix", "preferredName"];
+    string[6] public nameOrder = ["prefix", "givenName", "middleName", "surname", "suffix", "preferredName"];
     bytes32Set._bytes32Set allowedNames;
-    string[3] dateOrder = ["day", "month", "year"];
+    string[3] public dateOrder = ["day", "month", "year"];
     bytes32Set._bytes32Set allowedDates;
 
     // identity structures
     struct Identity {
         address owner;
-        string hydroId;
-        mapping (uint8 => SnowflakeField) fields; // mapping of AllowedSnowflakeFields to SnowflakeFields
-        uint8Set._uint8Set fieldsAttestedTo;
+        mapping (bytes32 => SnowflakeField) fields; // mapping of AllowedSnowflakeFields to SnowflakeFields
+        bytes32Set._bytes32Set fieldsAttestedTo; // required, field names that the user has attested to
         mapping(address => Resolver) resolvers;
         addressSet._addressSet resolversFor; // optional, set of third-party resolvers
     }
@@ -67,52 +63,46 @@ contract Snowflake is Ownable {
     }
 
     // field restriction variables
-    enum AllowedSnowflakeFields { Name, DateOfBirth, Emails, PhoneNumbers, PhysicalAddresses }
-    mapping (uint8 => bool) internal allowedFields;
+    string[5] public fieldOrder = ["Name", "DateOfBirth", "Emails", "PhoneNumbers", "PhysicalAddresses"];
+    bytes32Set._bytes32Set allowedFields;
 
     constructor () public {
         // initialize allowed snowflake fields
-        allowedFields[uint8(AllowedSnowflakeFields.Name)] = true;
-        allowedFields[uint8(AllowedSnowflakeFields.Emails)] = true;
-        allowedFields[uint8(AllowedSnowflakeFields.PhoneNumbers)] = true;
-        allowedFields[uint8(AllowedSnowflakeFields.PhysicalAddresses)] = true;
+        for (uint i; i < fieldOrder.length; i++) {
+            allowedFields.insert(keccak256(abi.encodePacked(fieldOrder[i])));
+        }
 
         // initialize allowed name entries
-        for (uint i; i < nameOrder.length; i++) {
-            allowedNames.insert(keccak256(abi.encodePacked(nameOrder[i])));
+        for (uint j; j < nameOrder.length; j++) {
+            allowedNames.insert(keccak256(abi.encodePacked(nameOrder[j])));
         }
 
         // initialize allowed date entries
-        for (uint j; j < dateOrder.length; j++) {
-            allowedDates.insert(keccak256(abi.encodePacked(dateOrder[j])));
+        for (uint k; k < dateOrder.length; k++) {
+            allowedDates.insert(keccak256(abi.encodePacked(dateOrder[k])));
         }
     }
 
-    // enforces that the transaction sender has a token
+    // enforces that the given (cased) hydroId has a token
+    modifier _tokenExists(string hydroId) {
+        require(tokenDirectory[hydroId].owner != address(0), "This token has not yet been minted.");
+        _;
+    }
+
+    // checks whether the given address has a token (does not throw)
+    function hasToken(address _address) public view returns (bool) {
+        return tokenDirectory[ownerToToken[_address]].owner == _address;
+    }
+
+    // enforces that a particular address has a token
     modifier _hasToken(address _address, bool check) {
         require(hasToken(_address) == check, "The transaction sender has not minted a Snowflake.");
         _;
     }
 
-    // checks whether the given address has a token
-    function hasToken(address _address) public view returns (bool) {
-        return ownerToToken[_address] != 0;
-    }
-
-    // enforces that the given tokenId exists
-    modifier _tokenExists(uint tokenId) {
-        require(tokenExists(tokenId), "This token has not yet been minted.");
-        _;
-    }
-
-    // checks whether the given tokenId exists
-    function tokenExists(uint tokenId) public view returns (bool) {
-        return tokenDirectory[tokenId].owner != address(0);
-    }
-    
-    // wrapper to ownerToToken that throws if the address doesn't own a token
-    function getTokenId(address _address) public view returns (uint tokenId) {
-        require(hasToken(_address));
+    // gets the hydro id for a particular address (throws if the address does not have a hydroId)
+    function getHydroId(address _address) public view returns (string hydroId) {
+        require(hasToken(_address), "The address does not have a hydroId");
         return ownerToToken[_address];
     }
 
@@ -130,6 +120,10 @@ contract Snowflake is Ownable {
         emit ResolverWhitelisted(resolver, msg.sender);
     }
 
+    function isWhitelisted(address resolver) public view returns(bool) {
+        return resolverWhitelist.contains(resolver);
+    }
+
     // set the raindrop and hydro token addresses
     function setAddresses(address clientRaindrop, address hydroToken) public onlyOwner {
         clientRaindropAddress = clientRaindrop;
@@ -137,19 +131,16 @@ contract Snowflake is Ownable {
     }
 
     // token minter
-    function mintIdentityToken(bytes32[6] names, bytes32[3] dateOfBirth) public _hasToken(msg.sender, false)
-        returns(uint tokenId)
-    {
+    function mintIdentityToken(bytes32[6] names, bytes32[3] dateOfBirth) public _hasToken(msg.sender, false) {
         ClientRaindrop clientRaindrop = ClientRaindrop(clientRaindropAddress);
         string memory _hydroId = clientRaindrop.getUserByAddress(msg.sender);
 
-        uint newTokenId = nextTokenId++;
-        Identity storage identity = tokenDirectory[newTokenId];
+        Identity storage identity = tokenDirectory[_hydroId];
 
         identity.owner = msg.sender;
-        identity.hydroId = _hydroId;
 
-        SnowflakeField storage nameField = identity.fields[uint8(AllowedSnowflakeFields.Name)];
+        bytes32 nameFieldIndex = allowedFields.members[0];
+        SnowflakeField storage nameField = identity.fields[nameFieldIndex];
         for (uint i; i < names.length; i++) {
             if (names[i] == bytes32(0x0)) {
                 continue;
@@ -159,10 +150,11 @@ contract Snowflake is Ownable {
             nameField.entries[allowedNames.members[i]].blockNumber = block.number;
             nameField.entriesAttestedTo.insert(allowedNames.members[i]);
             // putting this here creates some unnecessary checks, but it catches the case when all elements are 0x0
-            identity.fieldsAttestedTo.insert(uint8(AllowedSnowflakeFields.Name));
+            identity.fieldsAttestedTo.insert(nameFieldIndex);
         }
 
-        SnowflakeField storage dateField = identity.fields[uint8(AllowedSnowflakeFields.DateOfBirth)];
+        bytes32 dateFieldIndex = allowedFields.members[1];
+        SnowflakeField storage dateField = identity.fields[dateFieldIndex];
         for (uint j; j < dateOfBirth.length; j++) {
             if (dateOfBirth[j] == bytes32(0x0)) {
                 continue;
@@ -172,12 +164,12 @@ contract Snowflake is Ownable {
             dateField.entries[allowedDates.members[j]].blockNumber = block.number;
             dateField.entriesAttestedTo.insert(allowedDates.members[j]);
             // putting this here creates some unnecessary checks, but it catches the case when all elements are 0x0
-            identity.fieldsAttestedTo.insert(uint8(AllowedSnowflakeFields.DateOfBirth));
+            identity.fieldsAttestedTo.insert(dateFieldIndex);
         }
 
-        ownerToToken[msg.sender] = newTokenId;
-        emit SnowflakeMinted(newTokenId, msg.sender);
-        return newTokenId;
+        ownerToToken[msg.sender] = _hydroId;
+
+        emit SnowflakeMinted(_hydroId, msg.sender);
     }
 
     // wrappers that allow easy access to modify resolvers
@@ -224,111 +216,90 @@ contract Snowflake is Ownable {
     }
 
     // add/remove field entries
-    function addFieldEntry(uint8 field, string entry, bytes32 saltedHash) public _hasToken(msg.sender, true) {
-        require(allowedFields[field], "Invalid field.");
-
+    function addFieldEntry(string field, string entry, bytes32 saltedHash) public _hasToken(msg.sender, true) {
+        bytes32 fieldLookup = keccak256(abi.encodePacked(field));
         bytes32 entryLookup = keccak256(abi.encodePacked(entry));
-        if (field == uint8(AllowedSnowflakeFields.Name)) {
-            require(allowedNames.contains(entryLookup));
-        }
+
+        require(allowedFields.contains(fieldLookup), "Invalid field.");
+        if (fieldLookup == allowedNames.members[0]) require(allowedNames.contains(entryLookup), "Invalid entry.");
+        if (fieldLookup == allowedNames.members[1]) require(allowedDates.contains(entryLookup), "Invalid entry.");
 
         Identity storage identity = tokenDirectory[ownerToToken[msg.sender]];
-        require(!identity.fields[field].entriesAttestedTo.contains(entryLookup), "Entry already exists");
+        require(!identity.fields[fieldLookup].entriesAttestedTo.contains(entryLookup), "Entry already exists");
 
-        identity.fields[field].entriesAttestedTo.insert(entryLookup);
-        identity.fields[field].entries[entryLookup].entryName = entry;
-        identity.fields[field].entries[entryLookup].saltedHash = saltedHash;
-        identity.fields[field].entries[entryLookup].blockNumber = block.number;
+        identity.fields[fieldLookup].entriesAttestedTo.insert(entryLookup);
+        identity.fields[fieldLookup].entries[entryLookup].entryName = entry;
+        identity.fields[fieldLookup].entries[entryLookup].saltedHash = saltedHash;
+        identity.fields[fieldLookup].entries[entryLookup].blockNumber = block.number;
 
-        identity.fieldsAttestedTo.insert(field);
+        identity.fieldsAttestedTo.insert(fieldLookup);
     }
 
-    function removeFieldEntry(uint8 field, string entry) public _hasToken(msg.sender, true) {
-        require(allowedFields[field], "Invalid field.");
-
+    function removeFieldEntry(string field, string entry) public _hasToken(msg.sender, true) {
+        bytes32 fieldLookup = keccak256(abi.encodePacked(field));
         bytes32 entryLookup = keccak256(abi.encodePacked(entry));
 
         Identity storage identity = tokenDirectory[ownerToToken[msg.sender]];
-        require(identity.fields[field].entriesAttestedTo.contains(entryLookup), "Entry does not exist");
+        require(identity.fields[fieldLookup].entriesAttestedTo.contains(entryLookup), "Entry does not exist");
 
-        identity.fields[field].entriesAttestedTo.remove(entryLookup);
-        delete identity.fields[field].entries[entryLookup];
-        if (identity.fields[field].entriesAttestedTo.length() == 0) {
-            identity.fieldsAttestedTo.remove(field);
+        identity.fields[fieldLookup].entriesAttestedTo.remove(entryLookup);
+        delete identity.fields[fieldLookup].entries[entryLookup];
+        if (identity.fields[fieldLookup].entriesAttestedTo.length() == 0) {
+            identity.fieldsAttestedTo.remove(fieldLookup);
         }
     }
 
     // check resolver membership
-    function hasResolver(uint tokenId, address resolver) public view _tokenExists(tokenId) returns (bool) {
-        Identity storage identity = tokenDirectory[tokenId];
+    function hasResolver(string hydroId, address resolver) public view _tokenExists(hydroId) returns (bool) {
+        Identity storage identity = tokenDirectory[hydroId];
         return identity.resolversFor.contains(resolver);
     }
 
-    // functions to check attestations
-    function hasAttested(uint tokenId, uint8 field) public view _tokenExists(tokenId) returns (bool) {
-        require(allowedFields[field], "Invalid field.");
-        Identity storage identity = tokenDirectory[tokenId];
-        return identity.fieldsAttestedTo.contains(field);
-    }
-
-    function hasAttested(uint tokenId, uint8 field, string entry) public view _tokenExists(tokenId) returns (bool) {
-        require(allowedFields[field], "Invalid field.");
-        Identity storage identity = tokenDirectory[tokenId];
-        bytes32 entryLookup = keccak256(abi.encodePacked(entry));
-        return identity.fields[field].entriesAttestedTo.contains(entryLookup);
-    }
-
     // functions to read token values
-    function getDetails(uint tokenId) public view _tokenExists(tokenId) returns (
+    function getDetails(string hydroId) public view _tokenExists(hydroId) returns (
         address owner,
-        string hydroId,
-        uint8[] fieldsAttestedTo,
+        bytes32[] fieldsAttestedTo,
         address[] resolversFor
     ) {
-        Identity storage identity = tokenDirectory[tokenId];
+        Identity storage identity = tokenDirectory[hydroId];
         return (
             identity.owner,
-            identity.hydroId,
             identity.fieldsAttestedTo.members,
             identity.resolversFor.members
         );
     }
 
-    function getDetails(uint tokenId, address resolver) public view _tokenExists(tokenId)
+    function getDetails(string hydroId, address resolver) public view _tokenExists(hydroId)
         returns (uint withdrawAllowance)
     {
-        Identity storage identity = tokenDirectory[tokenId];
+        Identity storage identity = tokenDirectory[hydroId];
         require(identity.resolversFor.contains(resolver));
 
         return identity.resolvers[resolver].withdrawAllowance;
     }
 
-    function getDetails(uint tokenId, uint8 field) public view _tokenExists(tokenId)
+    function getDetails(string hydroId, string field) public view _tokenExists(hydroId)
         returns (bytes32[] entriesAttestedTo)
     {
-        Identity storage identity = tokenDirectory[tokenId];
-        require(identity.fieldsAttestedTo.contains(field));
+        Identity storage identity = tokenDirectory[hydroId];
+        bytes32 fieldLookup = keccak256(abi.encodePacked(field));
+        require(identity.fieldsAttestedTo.contains(fieldLookup));
 
-        return identity.fields[field].entriesAttestedTo.members;
+        return identity.fields[fieldLookup].entriesAttestedTo.members;
     }
 
-    function getDetails(uint tokenId, uint8 field, string entry) public view
+    function getDetails(string hydroId, string field, bytes32 entryLookup) public view _tokenExists(hydroId)
         returns (string entryName, bytes32 saltedHash, uint blockNumber)
     {
-        return getDetails(tokenId, field, keccak256(abi.encodePacked(entry)));
-    }
-
-    function getDetails(uint tokenId, uint8 field, bytes32 entryLookup) public view _tokenExists(tokenId)
-        returns (string entryName, bytes32 saltedHash, uint blockNumber)
-    {
-        Identity storage identity = tokenDirectory[tokenId];
-        require(identity.fieldsAttestedTo.contains(field));
-        require(identity.fields[field].entriesAttestedTo.contains(entryLookup));
+        Identity storage identity = tokenDirectory[hydroId];
+        bytes32 fieldLookup = keccak256(abi.encodePacked(field));
+        require(identity.fieldsAttestedTo.contains(fieldLookup));
+        require(identity.fields[fieldLookup].entriesAttestedTo.contains(entryLookup));
 
         return (
-            identity.fields[field].entries[entryLookup].entryName,
-            identity.fields[field].entries[entryLookup].saltedHash,
-            identity.fields[field].entries[entryLookup].blockNumber
+            identity.fields[fieldLookup].entries[entryLookup].entryName,
+            identity.fields[fieldLookup].entries[entryLookup].saltedHash,
+            identity.fields[fieldLookup].entries[entryLookup].blockNumber
         );
     }
 
@@ -385,13 +356,13 @@ contract Snowflake is Ownable {
     event SnowflakeTransfer(address indexed from, address indexed to, uint amount);
     event SnowflakeWithdraw(address indexed depositor, uint amount);
 
-    event SnowflakeMinted(uint tokenId, address minter);
+    event SnowflakeMinted(string hydroId, address minter);
 
     event ResolverWhitelisted(address indexed resolver, address sponsor);
 
-    event ResolversAdded(uint indexed tokenId, address[] resolvers, uint[] withdrawAllowances);
-    event ResolversAllowanceChanged(uint indexed tokenId, address[] resolvers, uint[] withdrawAllowances);
-    event ResolversRemoved(uint indexed tokenId, address[] resolvers);
+    event ResolversAdded(string indexed hydroId, address[] resolvers, uint[] withdrawAllowances);
+    event ResolversAllowanceChanged(string indexed hydroId, address[] resolvers, uint[] withdrawAllowances);
+    event ResolversRemoved(string indexed hydroId, address[] resolvers);
 
-    event InsufficientAllowance(uint indexed tokenId, address resolver, uint currentAllowance, uint requestedWithdraw);
+    event InsufficientAllowance(string indexed hydroId, address resolver, uint currentAllowance, uint requestedWithdraw);
 }

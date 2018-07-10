@@ -9,8 +9,8 @@ module.exports = {
       host: 'localhost',
       port: 8545,
       network_id: 4,
-      gas: gas,
-      gasPrice: gasPrice
+      gas: 7000000,
+      gasPrice: Web3.utils.toWei('1', 'gwei')
     },
     mainIPC: {
       host: 'localhost',
@@ -22,7 +22,8 @@ module.exports = {
     ganache: {
       host: 'localhost',
       port: 8555,
-      network_id: '*'
+      network_id: '*',
+      gas: 7000000
     }
   },
   solc: {

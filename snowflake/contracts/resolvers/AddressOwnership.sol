@@ -5,16 +5,16 @@ import "../libraries/addressSet.sol";
 
 
 contract Snowflake {
-    function getTokenId(address _address) public view returns (uint tokenId);
     function hasToken(address _address) public view returns (bool);
+    function getHydroId(address _address) public view returns (string hydroId);
 }
 
 
 contract AddressOwnership is SnowflakeResolver {
     using addressSet for addressSet._addressSet;
 
-    mapping (bytes32 => uint) internal initiatedClaims;
-    mapping (uint => addressSet._addressSet) internal snowflakeToOwnedAddresses;
+    mapping (bytes32 => string) internal initiatedClaims;
+    mapping (string => addressSet._addressSet) internal snowflakeToOwnedAddresses;
 
     constructor () public {
         snowflakeName = "Address Ownership";
@@ -22,69 +22,56 @@ contract AddressOwnership is SnowflakeResolver {
     }
 
     // get list of all of a snowflake's owned addresses. does not throw for invalid inputs, just returns []
-    function ownedAddresses(address _address) public view returns (address[]) {
-        Snowflake snowflake = Snowflake(snowflakeAddress);
-        if (snowflake.hasToken(_address)) {
-            uint tokenId = snowflake.getTokenId(_address);
-            return ownedAddresses(tokenId);
-        } else {
-            return new address[](0);
-        }
+    function ownedAddresses(string hydroId) public view returns (address[]) {
+        return snowflakeToOwnedAddresses[hydroId].members;
     }
 
-    function ownedAddresses(uint tokenId) public view returns (address[]) {
-        return snowflakeToOwnedAddresses[tokenId].members;
-    }
-
-    // queries the list of all of a snowflake's owned addresses. does not throw for invalid inputs. just returns false
-    function ownsAddress(address owner, address owned) public view returns (bool) {
-        Snowflake snowflake = Snowflake(snowflakeAddress);
-        if (snowflake.hasToken(owner)) {
-            uint tokenId = snowflake.getTokenId(owner);
-            return ownsAddress(tokenId, owned);
-        } else {
-            return false;
-        }
-    }
-
-    function ownsAddress(uint tokenId, address _address) public view returns (bool) {
-        return snowflakeToOwnedAddresses[tokenId].contains(_address);
+    // queries the list of all of a snowflake's owned addresses. does not throw for invalid inputs, just returns false
+    function ownsAddress(string hydroId, address owned) public view returns (bool) {
+        return snowflakeToOwnedAddresses[hydroId].contains(owned);
     }
 
     // to claim an address, users need to send a transaction from their snowflake address containing a sealed claim
     // sealedClaims are: keccak256(abi.encodePacked("Link Address to Snowflake", <address>, <secret>)),
     // where <address> is the address you'd like to claim, and <secret> is a SECRET bytes32 value.
     function initiateClaim(bytes32 sealedClaim) public {
-        require(initiatedClaims[sealedClaim] == 0, "This sealed claim has already been submitted.");
+        require(bytes(initiatedClaims[sealedClaim]).length == 0, "This sealed claim has already been submitted.");
 
         Snowflake snowflake = Snowflake(snowflakeAddress);
-        uint tokenId = snowflake.getTokenId(msg.sender);
+        string memory hydroId = snowflake.getHydroId(msg.sender);
 
-        initiatedClaims[sealedClaim] = tokenId;
+        initiatedClaims[sealedClaim] = hydroId;
+
+        // on first interaction, add the sending/snowflake address to the registry
+        snowflakeToOwnedAddresses[hydroId].insert(msg.sender);
     }
 
     // claims are finalized by submitting the plaintext values of the claim, as well as a signature of the claim, i.e.
     // keccak256(abi.encodePacked("Link Address to Snowflake", <address>, <secret>))
     function finalizeClaim(address _address, uint8 v, bytes32 r, bytes32 s, bytes32 secret) public {
         Snowflake snowflake = Snowflake(snowflakeAddress);
-        uint tokenId = snowflake.getTokenId(msg.sender);
+        string memory hydroId = snowflake.getHydroId(msg.sender);
 
         bytes32 claimedSealedBid = keccak256(abi.encodePacked("Link Address to Snowflake", _address, secret));
 
-        require(initiatedClaims[claimedSealedBid] == tokenId, "The Snowflake did not initiate this sealed claim.");
+        require(
+            keccak256(abi.encodePacked(initiatedClaims[claimedSealedBid])) == keccak256(abi.encodePacked(hydroId)),
+            "The sending Snowflake did not initiate this claim."
+        );
         require(isSigned(_address, claimedSealedBid, v, r, s), "The signature was incorrect.");
 
-        snowflakeToOwnedAddresses[tokenId].insert(_address);
-        emit AddressClaimed(tokenId, msg.sender, _address);
+        snowflakeToOwnedAddresses[hydroId].insert(_address);
+        emit AddressClaimed(msg.sender, hydroId, _address);
     }
 
     function unclaimAddress(address _address) public {
+        require(msg.sender != _address, "Cannot unclaim your own address.");
         Snowflake snowflake = Snowflake(snowflakeAddress);
-        uint tokenId = snowflake.getTokenId(msg.sender);
+        string memory hydroId = snowflake.getHydroId(msg.sender);
 
-        if (snowflakeToOwnedAddresses[tokenId].contains(_address)) {
-            snowflakeToOwnedAddresses[tokenId].remove(_address);
-            emit AddressUnclaimed(tokenId, msg.sender, _address);
+        if (snowflakeToOwnedAddresses[hydroId].contains(_address)) {
+            snowflakeToOwnedAddresses[hydroId].remove(_address);
+            emit AddressUnclaimed(msg.sender, hydroId, _address);
         }
     }
 
@@ -114,6 +101,6 @@ contract AddressOwnership is SnowflakeResolver {
         return ecrecover(prefixedMessageHash, v, r, s) == _address;
     }
 
-    event AddressClaimed(uint indexed tokenId, address indexed ownerAddress, address claimedAddress);
-    event AddressUnclaimed(uint indexed tokenId, address indexed ownerAddress, address unclaimedAddress);
+    event AddressClaimed(address indexed ownerAddress, string hydroId, address claimedAddress);
+    event AddressUnclaimed(address indexed ownerAddress, string hydroId, address unclaimedAddress);
 }
