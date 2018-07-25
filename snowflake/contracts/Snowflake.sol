@@ -100,7 +100,7 @@ contract Snowflake is Ownable {
         _;
     }
 
-    // gets the hydro id for a particular address (throws if the address does not have a hydroId)
+    // gets the token id (hydroid) for an address (throws if address doesn't have a hydroId or doesn't have a snowflake)
     function getHydroId(address _address) public view returns (string hydroId) {
         require(hasToken(_address), "The address does not have a hydroId");
         return ownerToToken[_address];
@@ -115,13 +115,19 @@ contract Snowflake is Ownable {
 
     // allows whitelisting of resolvers
     function whitelistResolver(address resolver) public {
-        transferSnowflakeBalance(owner, resolverWhitelistFee);
+        if (resolverWhitelistFee > 0) {
+            transferSnowflakeBalance(owner, resolverWhitelistFee);
+        }
         resolverWhitelist.insert(resolver);
         emit ResolverWhitelisted(resolver, msg.sender);
     }
 
     function isWhitelisted(address resolver) public view returns(bool) {
         return resolverWhitelist.contains(resolver);
+    }
+
+    function getWhitelistedResolvers() public view returns(address[]) {
+        return resolverWhitelist.members;
     }
 
     // set the raindrop and hydro token addresses
