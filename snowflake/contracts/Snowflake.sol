@@ -25,6 +25,7 @@ contract Snowflake is Ownable {
     // lookup mappings -- accessible only by wrapper functions
     mapping (string => Identity) internal directory;
     mapping (address => string) internal addressDirectory;
+    mapping (bytes32 => string) internal initiatedAddressClaims;
 
     // admin/contract variables
     address public clientRaindropAddress;
@@ -41,7 +42,7 @@ contract Snowflake is Ownable {
         mapping(address => uint) resolverAllowances;
     }
 
-    // checks whether the given address is associated with a token (does not throw)
+    // checks whether the given address is owned by a token (does not throw)
     function hasToken(address _address) public view returns (bool) {
         return bytes(addressDirectory[_address]).length != 0;
     }
@@ -69,7 +70,7 @@ contract Snowflake is Ownable {
     // TODO add additional requirements to become a resolver here?
     function whitelistResolver(address resolver) public _hasToken(msg.sender, true) {
         if (resolverWhitelistFee > 0) {
-            _withdraw(addressDirectory[msg.sender], owner, resolverWhitelistFee);
+            require(_withdraw(addressDirectory[msg.sender], owner, resolverWhitelistFee));
         }
         resolverWhitelist.insert(resolver);
         emit ResolverWhitelisted(resolver, msg.sender);
@@ -100,7 +101,7 @@ contract Snowflake is Ownable {
         ClientRaindrop clientRaindrop = ClientRaindrop(clientRaindropAddress);
         require(
             clientRaindrop.isSigned(
-                _address, keccak256(abi.encodePacked("Create Snowflake")), v, r, s
+                _address, keccak256(abi.encodePacked("Create Snowflake", _address)), v, r, s
             ),
             "Permission denied."
         );
@@ -167,7 +168,7 @@ contract Snowflake is Ownable {
     function getDetails(string hydroId) public view returns (
         address owner,
         address[] resolvers,
-        address[] associatedAddresses
+        address[] ownedAddresses
     ) {
         Identity storage identity = directory[hydroId];
         return (
@@ -208,6 +209,10 @@ contract Snowflake is Ownable {
         emit SnowflakeDeposit(addressDirectory[sender], amount);
     }
 
+    function snowflakeBalance(string hydroId) public view returns (uint) {
+        return deposits[hydroId];
+    }
+
     // transfer snowflake balance to another Snowflake holder (throws if unsuccessful)
     function transferSnowflakeBalance(string hydroIdTo, uint amount) public _hasToken(msg.sender, true) {
         require(directory[hydroIdTo].owner != address(0), "Must transfer to an HydroID with a Snowflake");
@@ -222,7 +227,7 @@ contract Snowflake is Ownable {
 
     // withdraw Snowflake balance to an external address
     function withdrawSnowflakeBalanceTo(address to, uint amount) public _hasToken(msg.sender, true) {
-        _withdraw(addressDirectory[msg.sender], to, amount);
+        require(_withdraw(addressDirectory[msg.sender], to, amount));
     }
 
     // allows resolvers to withdraw to an external address from snowflakes that have approved them
@@ -235,7 +240,12 @@ contract Snowflake is Ownable {
             emit InsufficientAllowance(hydroIdFrom, msg.sender, identity.resolverAllowances[msg.sender], amount);
             return false;
         } else {
-            return _withdraw(hydroIdFrom, to, amount);
+            if (_withdraw(hydroIdFrom, to, amount)) {
+                identity.resolverAllowances[msg.sender] = identity.resolverAllowances[msg.sender].sub(amount);
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
@@ -256,16 +266,16 @@ contract Snowflake is Ownable {
 
     // address ownership functions
     // to claim an address, users need to send a transaction from their snowflake address containing a sealed claim
-    // sealedClaims are: keccak256(abi.encodePacked("Link Address to Snowflake", <address>, <secret>, <hydroId>)),
+    // sealedClaims are: keccak256(abi.encodePacked(<address>, <secret>, <hydroId>)),
     // where <address> is the address you'd like to claim, and <secret> is a SECRET bytes32 value.
-    mapping (bytes32 => string) internal initiatedClaims;
-
     function initiateClaimFor(string hydroId, bytes32 sealedClaim, uint8 v, bytes32 r, bytes32 s) public {
         require(directory[hydroId].owner != address(0), "Must initiate claim for a HydroID with a Snowflake");
 
         ClientRaindrop clientRaindrop = ClientRaindrop(clientRaindropAddress);
         require(
-            clientRaindrop.isSigned(directory[hydroId].owner, keccak256(abi.encodePacked(sealedClaim)), v, r, s),
+            clientRaindrop.isSigned(
+                directory[hydroId].owner, keccak256(abi.encodePacked("Initiate Claim", sealedClaim)), v, r, s
+            ),
             "Permission denied."
         );
 
@@ -277,41 +287,49 @@ contract Snowflake is Ownable {
     }
 
     function _initiateClaim(string hydroId, bytes32 sealedClaim) internal {
-        require(bytes(initiatedClaims[sealedClaim]).length == 0, "This sealed claim has already been submitted.");
-        initiatedClaims[sealedClaim] = hydroId;
+        require(bytes(initiatedAddressClaims[sealedClaim]).length == 0, "This sealed claim has been submitted.");
+        initiatedAddressClaims[sealedClaim] = hydroId;
     }
 
     function finalizeClaim(bytes32 secret, string hydroId) public {
-        bytes32 possibleSealedClaim = keccak256(
-            abi.encodePacked("Link Address to Snowflake", msg.sender, secret, hydroId)
+        bytes32 possibleSealedClaim = keccak256(abi.encodePacked(msg.sender, secret, hydroId));
+        require(
+            bytes(initiatedAddressClaims[possibleSealedClaim]).length != 0, "This sealed claim hasn't been submitted."
         );
-        require(bytes(initiatedClaims[possibleSealedClaim]).length != 0, "This sealed claim has not been submitted.");
+
+        // ensure that the claim wasn't stolen by another HydroID during initialization
+        require(
+            keccak256(abi.encodePacked(initiatedAddressClaims[possibleSealedClaim])) ==
+            keccak256(abi.encodePacked(hydroId))
+        );
 
         directory[hydroId].addresses.insert(msg.sender);
+        addressDirectory[msg.sender] = hydroId;
+
         emit AddressClaimed(msg.sender, hydroId);
     }
 
     function unclaim(address _address) public _hasToken(msg.sender, true) {
-        directory[addressDirectory[msg.sender]].addresses.remove(msg.sender);
+        directory[addressDirectory[msg.sender]].addresses.remove(_address);
         emit AddressUnclaimed(_address, addressDirectory[msg.sender]);
     }
 
     // events
-    event SnowflakeMinted(string indexed hydroId);
+    event SnowflakeMinted(string hydroId);
 
     event ResolverWhitelisted(address indexed resolver, address sponsor);
 
-    event ResolverAdded(string indexed hydroId, address resolver, uint withdrawAllowance);
-    event ResolverAllowanceChanged(string indexed hydroId, address resolver, uint withdrawAllowance);
-    event ResolverRemoved(string indexed hydroId, address resolver);
+    event ResolverAdded(string hydroId, address resolver, uint withdrawAllowance);
+    event ResolverAllowanceChanged(string hydroId, address resolver, uint withdrawAllowance);
+    event ResolverRemoved(string hydroId, address resolver);
 
-    event SnowflakeDeposit(string indexed hydroId, uint amount);
-    event SnowflakeTransfer(string indexed hydroIdFrom, string indexed hydroIdTo, uint amount);
+    event SnowflakeDeposit(string hydroId, uint amount);
+    event SnowflakeTransfer(string hydroIdFrom, string hydroIdTo, uint amount);
     event SnowflakeWithdraw(address indexed hydroId, uint amount);
     event InsufficientAllowance(
-        string indexed hydroId, address indexed resolver, uint currentAllowance, uint requestedWithdraw
+        string hydroId, address indexed resolver, uint currentAllowance, uint requestedWithdraw
     );
 
-    event AddressClaimed(address indexed _address, string indexed hydroId);
-    event AddressUnclaimed(address indexed _address, string indexed hydroId);
+    event AddressClaimed(address indexed _address, string hydroId);
+    event AddressUnclaimed(address indexed _address, string hydroId);
 }

@@ -34,7 +34,11 @@ module.exports.sign = (messageHash, user, method) => {
 
 module.exports.initialize = async (ownerAddress, raindropUsers) => {
   var instances = {}
+
   instances.token = await HydroToken.new({ from: ownerAddress })
+  for (let i = 0; i < raindropUsers.length; i++) {
+    await instances.token.transfer(raindropUsers[i].public, 1000 * 1e18, { from: ownerAddress })
+  }
 
   instances.raindrop = await ClientRaindrop.new({ from: ownerAddress })
   await instances.raindrop.setHydroTokenAddress(instances.token.address, { from: ownerAddress })

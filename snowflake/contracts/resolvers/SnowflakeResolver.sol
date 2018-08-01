@@ -11,8 +11,9 @@ contract SnowflakeResolver is Ownable {
         snowflakeAddress = _address;
     }
 
-    function onSignUp(string, uint) public view returns (bool) {
-        require(msg.sender == snowflakeAddress);
-        return true;
-    }
+    // function called every time a user sets your contract as a resolver
+    // it's *highly* recommended that this function include:
+    // require(msg.sender == snowflakeAddress);
+    // returning false will disallow users from setting your contract as a resolver
+    function onSignUp(string hydroId, uint allowance) public returns (bool);
 }
