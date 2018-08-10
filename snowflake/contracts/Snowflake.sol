@@ -70,7 +70,7 @@ contract Snowflake is Ownable {
     // TODO add additional requirements to become a resolver here?
     function whitelistResolver(address resolver) public _hasToken(msg.sender, true) {
         if (resolverWhitelistFee > 0) {
-            require(_withdraw(addressDirectory[msg.sender], owner, resolverWhitelistFee));
+            require(_withdraw(addressDirectory[msg.sender], owner, resolverWhitelistFee), "Fee was not paid.");
         }
         resolverWhitelist.insert(resolver);
         emit ResolverWhitelisted(resolver, msg.sender);
@@ -132,9 +132,12 @@ contract Snowflake is Ownable {
             require(resolverWhitelist.contains(resolvers[i]), "The given resolver is not on the whitelist.");
             require(!identity.resolvers.contains(resolvers[i]), "Snowflake has already set this resolver.");
             SnowflakeResolver snowflakeResolver = SnowflakeResolver(resolvers[i]);
-            require(snowflakeResolver.onSignUp(addressDirectory[msg.sender], withdrawAllowances[i]));
             identity.resolvers.insert(resolvers[i]);
             identity.resolverAllowances[resolvers[i]] = withdrawAllowances[i];
+            require(
+                snowflakeResolver.onSignUp(addressDirectory[msg.sender], withdrawAllowances[i]),
+                "Sign up failure."
+            );
             emit ResolverAdded(addressDirectory[msg.sender], resolvers[i], withdrawAllowances[i]);
         }
     }
@@ -216,7 +219,7 @@ contract Snowflake is Ownable {
     // transfer snowflake balance to another Snowflake holder (throws if unsuccessful)
     function transferSnowflakeBalance(string hydroIdTo, uint amount) public _hasToken(msg.sender, true) {
         require(directory[hydroIdTo].owner != address(0), "Must transfer to an HydroID with a Snowflake");
-        require(amount > 0);
+        require(amount > 0, "Amount cannot be 0.");
 
         string storage hydroIdFrom = addressDirectory[msg.sender];
         require(deposits[hydroIdFrom] >= amount, "Your balance is too low to transfer this amount.");
@@ -227,7 +230,7 @@ contract Snowflake is Ownable {
 
     // withdraw Snowflake balance to an external address
     function withdrawSnowflakeBalanceTo(address to, uint amount) public _hasToken(msg.sender, true) {
-        require(_withdraw(addressDirectory[msg.sender], to, amount));
+        require(_withdraw(addressDirectory[msg.sender], to, amount), "Transfer was unsuccessful.");
     }
 
     // allows resolvers to withdraw to an external address from snowflakes that have approved them
@@ -250,8 +253,8 @@ contract Snowflake is Ownable {
     }
 
     function _withdraw(string hydroIdFrom, address to, uint amount) internal returns (bool) {
-        require(to != address(this));
-        require(amount > 0);
+        require(to != address(this), "Cannot transfer to the Snowflake smart contract itself.");
+        require(amount > 0, "Amount cannot be 0.");
 
         require(deposits[hydroIdFrom] >= amount, "Cannot withdraw more than the current deposit balance.");
         deposits[hydroIdFrom] = deposits[hydroIdFrom].sub(amount);
@@ -300,7 +303,8 @@ contract Snowflake is Ownable {
         // ensure that the claim wasn't stolen by another HydroID during initialization
         require(
             keccak256(abi.encodePacked(initiatedAddressClaims[possibleSealedClaim])) ==
-            keccak256(abi.encodePacked(hydroId))
+            keccak256(abi.encodePacked(hydroId)),
+            "Invalid signature."
         );
 
         directory[hydroId].addresses.insert(msg.sender);
@@ -311,6 +315,7 @@ contract Snowflake is Ownable {
 
     function unclaim(address _address) public _hasToken(msg.sender, true) {
         directory[addressDirectory[msg.sender]].addresses.remove(_address);
+        delete addressDirectory[_address];
         emit AddressUnclaimed(_address, addressDirectory[msg.sender]);
     }
 

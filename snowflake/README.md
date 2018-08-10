@@ -5,7 +5,9 @@
 Snowflake is a hydrid on-/off-chain identity management solution. For more details, see [our whitepaper](https://github.com/hydrogen-dev/hydro-docs/tree/master/Snowflake).
 
 ## Contract Address
-[Rinkeby](https://rinkeby.etherscan.io/address/0xda004e0097a9853260bc527eea7a4ef991204e20)
+[Snowflake on Rinkeby](https://rinkeby.etherscan.io/address/0xda004e0097a9853260bc527eea7a4ef991204e20)
+
+[Status Resolver on Rinkeby](https://rinkeby.etherscan.io/address/0x1784b4ffc7c507a1110947848f6d32c6122e0bdd)
 
 
 ## Testing With Truffle
