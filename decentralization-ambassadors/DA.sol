@@ -160,18 +160,23 @@ contract DecentralizationAmbassadors is Ownable {
 
         Voting voting = Voting(votingAddress);
         voting.initiateNomination(_ambassador);
+
+        emit InitiateNomination(_ambassador);
     }
 
     function finalizeNominationVoting(bool _decision, address _ambassador) public {
         require(msg.sender == votingAddress);
         if (_decision) {
           ambassadors.insert(_ambassador);
+          emit FinalizeNomination(_ambassador);
         }
     }
 
     function ownerAddAmbassador(address _ambassador) public onlyOwner {
         require(ambassadors.members.length < 10);
         ambassadors.insert(_ambassador);
+
+        emit FinalizeNomination(_ambassador);
     }
 
     function initiateAmbassadorRemoval(address _ambassador) public {
@@ -179,13 +184,21 @@ contract DecentralizationAmbassadors is Ownable {
 
         Voting voting = Voting(votingAddress);
         voting.initiateRemoval(_ambassador);
+
+        emit InitiateRemoval(msg.sender);
     }
 
     function finalizeRemovalVoting(bool _decision, address _ambassador) public {
         require(msg.sender == votingAddress);
         if (_decision) {
           ambassadors.remove(_ambassador);
+          emit FinalizeRemoval(_ambassador);
         }
+    }
+
+    function selfRemoval() public onlyDA {
+        ambassadors.remove(msg.sender);
+        emit FinalizeRemoval(msg.sender);
     }
 
     function recieveHydro() public onlyDA {
@@ -197,8 +210,15 @@ contract DecentralizationAmbassadors is Ownable {
         if (daLastPayoutBlock + payoutBlockNumber < block.number){
             if (hydro.transfer(msg.sender, payoutHydroAmount)) {
                 lastPayout[msg.sender] = daLastPayoutBlock + payoutBlockNumber;
+                emit Payout(msg.sender, payoutHydroAmount);
             }
         }
     }
+
+    event InitiateNomination(address _nominee);
+    event FinalizeNomination(address _nominee);
+    event InitiateRemoval(address _ambassador);
+    event FinalizeRemoval(address _ambassador);
+    event Payout(address _ambassador, uint _amount);
 
 }
