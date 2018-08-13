@@ -314,6 +314,7 @@ contract Snowflake is Ownable {
     }
 
     function unclaim(address _address) public _hasToken(msg.sender, true) {
+        require(_address != directory[addressDirectory[msg.sender]].owner, "Cannot unclaim owner address.");
         directory[addressDirectory[msg.sender]].addresses.remove(_address);
         delete addressDirectory[_address];
         emit AddressUnclaimed(_address, addressDirectory[msg.sender]);
