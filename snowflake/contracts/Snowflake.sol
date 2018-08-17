@@ -7,7 +7,10 @@ import "./zeppelin/math/SafeMath.sol";
 import "./libraries/addressSet.sol";
 
 contract SnowflakeResolver {
+    function callOnSignUp() public returns (bool);
     function onSignUp(string hydroId, uint allowance) public returns (bool);
+    function callOnRemoval() public returns (bool);
+    function onRemoval(string hydroId) public returns(bool);
 }
 
 contract ClientRaindrop {
@@ -134,10 +137,12 @@ contract Snowflake is Ownable {
             SnowflakeResolver snowflakeResolver = SnowflakeResolver(resolvers[i]);
             identity.resolvers.insert(resolvers[i]);
             identity.resolverAllowances[resolvers[i]] = withdrawAllowances[i];
-            require(
-                snowflakeResolver.onSignUp(addressDirectory[msg.sender], withdrawAllowances[i]),
-                "Sign up failure."
-            );
+            if (snowflakeResolver.callOnSignUp()) {
+                require(
+                    snowflakeResolver.onSignUp(addressDirectory[msg.sender], withdrawAllowances[i]),
+                    "Sign up failure."
+                );
+            }
             emit ResolverAdded(addressDirectory[msg.sender], resolvers[i], withdrawAllowances[i]);
         }
     }
@@ -156,13 +161,22 @@ contract Snowflake is Ownable {
         }
     }
 
-    function removeResolvers(address[] resolvers) public _hasToken(msg.sender, true) {
+    function removeResolvers(address[] resolvers, bool force) public _hasToken(msg.sender, true) {
         Identity storage identity = directory[addressDirectory[msg.sender]];
 
         for (uint i; i < resolvers.length; i++) {
             require(identity.resolvers.contains(resolvers[i]), "Snowflake has not set this resolver.");
             identity.resolvers.remove(resolvers[i]);
             delete identity.resolverAllowances[resolvers[i]];
+            if (!force) {
+                SnowflakeResolver snowflakeResolver = SnowflakeResolver(resolvers[i]);
+                if (snowflakeResolver.callOnRemoval()) {
+                    require(
+                        snowflakeResolver.onRemoval(addressDirectory[msg.sender]),
+                        "Removal failure."
+                    );
+                }
+            }
             emit ResolverRemoved(addressDirectory[msg.sender], resolvers[i]);
         }
     }
@@ -200,16 +214,26 @@ contract Snowflake is Ownable {
     }
 
     // allow contract to receive HYDRO tokens
-    function receiveApproval(address sender, uint amount, address _tokenAddress, bytes) public _hasToken(sender, true) {
+    function receiveApproval(address sender, uint amount, address _tokenAddress, bytes _bytes) public {
         require(msg.sender == _tokenAddress, "Malformed inputs.");
         require(_tokenAddress == hydroTokenAddress, "Sender is not the HYDRO token smart contract.");
+
+        address recipient;
+        if (_bytes.length == 20) {
+            assembly {
+                recipient := div(mload(add(add(_bytes, 0x20), 0)), 0x1000000000000000000000000)
+            }
+        } else {
+            recipient = sender;
+        }
+        require(hasToken(sender), "Invalid token recipient");
 
         ERC20 hydro = ERC20(_tokenAddress);
         require(hydro.transferFrom(sender, address(this), amount), "Unable to transfer token ownership.");
 
-        deposits[addressDirectory[sender]] = deposits[addressDirectory[sender]].add(amount);
+        deposits[addressDirectory[recipient]] = deposits[addressDirectory[recipient]].add(amount);
 
-        emit SnowflakeDeposit(addressDirectory[sender], amount);
+        emit SnowflakeDeposit(addressDirectory[recipient], sender, amount);
     }
 
     function snowflakeBalance(string hydroId) public view returns (uint) {
@@ -313,11 +337,15 @@ contract Snowflake is Ownable {
         emit AddressClaimed(msg.sender, hydroId);
     }
 
-    function unclaim(address _address) public _hasToken(msg.sender, true) {
-        require(_address != directory[addressDirectory[msg.sender]].owner, "Cannot unclaim owner address.");
-        directory[addressDirectory[msg.sender]].addresses.remove(_address);
-        delete addressDirectory[_address];
-        emit AddressUnclaimed(_address, addressDirectory[msg.sender]);
+    function unclaim(address[] addresses) public _hasToken(msg.sender, true) {
+        require(addresses.length < 10, "Malformed inputs.");
+
+        for (uint i; i < addresses.length; i++) {        
+            require(addresses[i] != directory[addressDirectory[msg.sender]].owner, "Cannot unclaim owner address.");
+            directory[addressDirectory[msg.sender]].addresses.remove(addresses[i]);
+            delete addressDirectory[addresses[i]];
+            emit AddressUnclaimed(addresses[i], addressDirectory[msg.sender]);
+        }
     }
 
     // events
@@ -329,7 +357,7 @@ contract Snowflake is Ownable {
     event ResolverAllowanceChanged(string hydroId, address resolver, uint withdrawAllowance);
     event ResolverRemoved(string hydroId, address resolver);
 
-    event SnowflakeDeposit(string hydroId, uint amount);
+    event SnowflakeDeposit(string hydroId, address from, uint amount);
     event SnowflakeTransfer(string hydroIdFrom, string hydroIdTo, uint amount);
     event SnowflakeWithdraw(address indexed hydroId, uint amount);
     event InsufficientAllowance(
