@@ -1,18 +1,24 @@
 pragma solidity ^0.4.24;
+pragma experimental ABIEncoderV2;
 
 import "./SnowflakeResolver.sol";
 import "../libraries/bytes32Set.sol";
 import "../libraries/addressSet.sol";
+import "../libraries/stringSet.sol";
 
 contract Snowflake {
-    function tokenExists(uint _tokenId) public view returns(bool);
+  function getHydroId(address _address) public view returns (string hydroId);
 }
 
 contract HydroKYC is SnowflakeResolver {
-  using bytes32Set for bytes32Set._bytes32Set;
   using addressSet for addressSet._addressSet;
+  using stringSet for stringSet._stringSet;
+  using bytes32Set for bytes32Set._bytes32Set;
 
   bytes32Set._bytes32Set internal KYCStandards;
+  mapping(bytes32 => string) KYCStandardsStrings;
+
+  stringSet._stringSet internal members;
 
   struct KYCSet {
     passedKYC[] passedStandards;
@@ -25,71 +31,123 @@ contract HydroKYC is SnowflakeResolver {
     addressSet._addressSet attesters;
   }
 
-  mapping (uint => KYCSet) internal usersToKYC;
+  mapping (string => KYCSet) internal usersToKYC;
 
-  function addKYCStandard(bytes32 _standard) public {
-    require(!KYCStandards.contains(_standard), "This standard is already added.");
-    KYCStandards.insert(_standard);
+  constructor () public {
+    snowflakeName = "Hydro KYC";
+    snowflakeDescription = "A KYC dApp for Snowflake owners.";
+    snowflakeAddress = 0xDa004e0097a9853260bc527EeA7A4EF991204e20;
   }
 
-  function attestToUsersKYC(bytes32 _standard, uint _id) public {
-    Snowflake snowflake = Snowflake(snowflakeAddress);
-    require(snowflake.tokenExists(_id), "This snowflake id does not exist.");
-    require(KYCStandards.contains(_standard), "This standard does not currently exist in the smart contract.");
+  // implement signup function
+  function onSignUp(string hydroId, uint allowance) public returns (bool) {
+    require(msg.sender == snowflakeAddress, "Did not originate from Snowflake.");
+
+    if (members.contains(hydroId)) {
+      return false;
+    }
+    members.insert(hydroId);
+    return true;
+  }
+
+  function addKYCStandard(string _standard) public {
+    bytes32 bytes32Standard = keccak256(abi.encodePacked(_standard));
+
+    require(!KYCStandards.contains(bytes32Standard), "This standard is already added.");
+    KYCStandards.insert(bytes32Standard);
+    KYCStandardsStrings[bytes32Standard] = _standard;
+  }
+
+  function attestToUsersKYC(string _standard, string _hydroId) public {
+    require(members.contains(_hydroId));
+
+    bytes32 bytes32Standard = keccak256(abi.encodePacked(_standard));
+    require(KYCStandards.contains(bytes32Standard), "This standard does not currently exist in the smart contract.");
     uint membersId;
-    if (usersToKYC[_id].standardLookup[_standard] > 0){
-      membersId = usersToKYC[_id].standardLookup[_standard];
 
-      require(!usersToKYC[_id].passedStandards[membersId - 1].attesters.contains(msg.sender), "This address has already attested this user/standard combination.");
+    if (usersToKYC[_hydroId].standardLookup[bytes32Standard] > 0){
+      membersId = usersToKYC[_hydroId].standardLookup[bytes32Standard];
 
-      usersToKYC[_id].passedStandards[membersId - 1].attesters.insert(msg.sender);
-      usersToKYC[_id].passedStandards[membersId - 1].attestersToBlockNumber[msg.sender] = block.number;
+      require(!usersToKYC[_hydroId].passedStandards[membersId - 1].attesters.contains(msg.sender), "This address has already attested this user/standard combination.");
+
+      usersToKYC[_hydroId].passedStandards[membersId - 1].attesters.insert(msg.sender);
+      usersToKYC[_hydroId].passedStandards[membersId - 1].attestersToBlockNumber[msg.sender] = block.number;
     } else {
       passedKYC memory kyc;
-      membersId = usersToKYC[_id].passedStandards.push(kyc);
-      usersToKYC[_id].passedStandards[membersId - 1].attesters.insert(msg.sender);
-      usersToKYC[_id].passedStandards[membersId - 1].standard = _standard;
-      usersToKYC[_id].passedStandards[membersId - 1].attestersToBlockNumber[msg.sender] = block.number;
-      usersToKYC[_id].standardLookup[_standard] = membersId;
+      membersId = usersToKYC[_hydroId].passedStandards.push(kyc);
+      usersToKYC[_hydroId].passedStandards[membersId - 1].attesters.insert(msg.sender);
+      usersToKYC[_hydroId].passedStandards[membersId - 1].standard = bytes32Standard;
+      usersToKYC[_hydroId].passedStandards[membersId - 1].attestersToBlockNumber[msg.sender] = block.number;
+      usersToKYC[_hydroId].standardLookup[bytes32Standard] = membersId;
     }
   }
 
-  function getAttestationsToUser(bytes32 _standard, uint _id) public view returns(address[]) {
-    Snowflake snowflake = Snowflake(snowflakeAddress);
-    require(snowflake.tokenExists(_id), "This snowflake id does not exist.");
-    require(KYCStandards.contains(_standard), "This standard does not currently exist in the smart contract.");
-    require(usersToKYC[_id].standardLookup[_standard] > 0, "This standard is not passed by this user.");
+  function removeUserKYC(string _standard, string _hydroId) public {
+    require(members.contains(_hydroId));
 
-    uint membersId = usersToKYC[_id].standardLookup[_standard];
-    return usersToKYC[_id].passedStandards[membersId - 1].attesters.members;
+    bytes32 bytes32Standard = keccak256(abi.encodePacked(_standard));
+
+    uint membersId = usersToKYC[_hydroId].standardLookup[bytes32Standard];
+    usersToKYC[_hydroId].passedStandards[membersId - 1].attesters.remove(msg.sender);
   }
 
-  function getAttestationCountToUser(bytes32 _standard, uint _id) public view returns(uint) {
-    Snowflake snowflake = Snowflake(snowflakeAddress);
-    require(snowflake.tokenExists(_id), "This snowflake id does not exist.");
-    require(KYCStandards.contains(_standard), "This standard does not currently exist in the smart contract.");
-    require(usersToKYC[_id].standardLookup[_standard] > 0, "This standard is not passed by this user.");
-
-    uint membersId = usersToKYC[_id].standardLookup[_standard];
-    return usersToKYC[_id].passedStandards[membersId - 1].attesters.members.length;
+  function getAllStandards() public view returns(bytes32[]) {
+    return KYCStandards.members;
   }
 
-  function getTimeOfAttestation(bytes32 _standard, uint _id, address _attester) public view returns(uint) {
-    Snowflake snowflake = Snowflake(snowflakeAddress);
-    require(snowflake.tokenExists(_id), "This snowflake id does not exist.");
-    require(KYCStandards.contains(_standard), "This standard does not currently exist in the smart contract.");
-    require(usersToKYC[_id].standardLookup[_standard] > 0, "This standard is not passed by this user.");
+  function getPassedStandards(string _hydroId) public view returns(bytes32[]) {
+    require(members.contains(_hydroId));
 
-    uint membersId = usersToKYC[_id].standardLookup[_standard];
+    uint passedStandardsCount = usersToKYC[_hydroId].passedStandards.length;
 
-    require(usersToKYC[_id].passedStandards[membersId - 1].attesters.contains(_attester), "The given address has not attested to this standard.");
+    bytes32[] memory passedStandards = new bytes32[](passedStandardsCount);
+    for (uint i = 0; i < passedStandardsCount; i++) {
+        passedStandards[i] = usersToKYC[_hydroId].passedStandards[i].standard;
+    }
 
-    return usersToKYC[_id].passedStandards[membersId - 1].attestersToBlockNumber[_attester];
+    return passedStandards;
   }
 
-  function getEmptyAddressSet() internal pure returns (addressSet._addressSet memory) {
-    addressSet._addressSet memory empty;
-    return empty;
+  function getStandardString(bytes32 _standard) public view returns(string) {
+    require(KYCStandards.contains(_standard));
+
+    return KYCStandardsStrings[_standard];
+  }
+
+  function getAttestationsToUser(string _standard, string _hydroId) public view returns(address[]) {
+    require(members.contains(_hydroId));
+
+    bytes32 bytes32Standard = keccak256(abi.encodePacked(_standard));
+    require(KYCStandards.contains(bytes32Standard), "This standard does not currently exist in the smart contract.");
+    require(usersToKYC[_hydroId].standardLookup[bytes32Standard] > 0, "This standard is not passed by this user.");
+
+    uint membersId = usersToKYC[_hydroId].standardLookup[bytes32Standard];
+    return usersToKYC[_hydroId].passedStandards[membersId - 1].attesters.members;
+  }
+
+  function getAttestationCountToUser(string _standard, string _hydroId) public view returns(uint) {
+    require(members.contains(_hydroId));
+
+    bytes32 bytes32Standard = keccak256(abi.encodePacked(_standard));
+    require(KYCStandards.contains(bytes32Standard), "This standard does not currently exist in the smart contract.");
+    require(usersToKYC[_hydroId].standardLookup[bytes32Standard] > 0, "This standard is not passed by this user.");
+
+    uint membersId = usersToKYC[_hydroId].standardLookup[bytes32Standard];
+    return usersToKYC[_hydroId].passedStandards[membersId - 1].attesters.members.length;
+  }
+
+  function getTimeOfAttestation(string _standard, string _hydroId, address _attester) public view returns(uint) {
+    require(members.contains(_hydroId));
+
+    bytes32 bytes32Standard = keccak256(abi.encodePacked(_standard));
+    require(KYCStandards.contains(bytes32Standard), "This standard does not currently exist in the smart contract.");
+    require(usersToKYC[_hydroId].standardLookup[bytes32Standard] > 0, "This standard is not passed by this user.");
+
+    uint membersId = usersToKYC[_hydroId].standardLookup[bytes32Standard];
+
+    require(usersToKYC[_hydroId].passedStandards[membersId - 1].attesters.contains(_attester), "The given address has not attested to this standard.");
+
+    return usersToKYC[_hydroId].passedStandards[membersId - 1].attestersToBlockNumber[_attester];
   }
 
 }
