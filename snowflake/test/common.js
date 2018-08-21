@@ -48,7 +48,7 @@ module.exports.initialize = async (ownerAddress, raindropUsers) => {
 
   instances.snowflake = await Snowflake.new({ from: ownerAddress })
   let receipt = await web3.eth.getTransactionReceipt(instances.snowflake.transactionHash)
-  assert.isAtMost(receipt.cumulativeGasUsed, 6500000)
+  assert.isAtMost(receipt.cumulativeGasUsed, 5500000)
 
   await instances.snowflake.setAddresses(instances.raindrop.address, instances.token.address)
 
