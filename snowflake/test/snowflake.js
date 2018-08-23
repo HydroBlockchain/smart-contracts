@@ -33,7 +33,7 @@ contract('Clean Room', function (accounts) {
       assert.equal(hasToken, false)
 
       instances.snowflake.getHydroId.call(user1.public)
-        .then(() => { assert.fail('', '', 'application should have been rejected') })
+        .then(() => { throw Error('application should have been rejected') })
         .catch(error => { assert.include(error.message, 'revert', 'unexpected error') })
 
       let permission = await common.sign(web3.utils.soliditySha3('Create Snowflake', user1.public), user1, 'unprefixed')
@@ -101,7 +101,7 @@ contract('Clean Room', function (accounts) {
       await instances.snowflake.addResolvers([instances.dummyResolver.address], [1 * 1e18], { from: user1.public })
 
       hasResolver = await instances.snowflake.hasResolver(user1.hydroID, instances.dummyResolver.address)
-      assert.isTrue(hasResolver, 'Resolver doesn\t exist after being added.')
+      assert.isTrue(hasResolver, 'Resolver does not exist after being added.')
     })
 
     it('can change Resolver balances', async () => {
@@ -111,7 +111,7 @@ contract('Clean Room', function (accounts) {
       await instances.snowflake.changeResolverAllowances([instances.dummyResolver.address], [100 * 1e18], { from: user1.public })
 
       allowance = await instances.snowflake.getResolverAllowance(user1.hydroID, instances.dummyResolver.address)
-      assert.equal(allowance.toString(), 100 * 1e18, 'Resolver doesn\t have an allowance.')
+      assert.equal(allowance.toString(), 100 * 1e18, 'Resolver does not have an allowance.')
     })
   })
 
@@ -122,36 +122,42 @@ contract('Clean Room', function (accounts) {
       assert.equal(snowflakeBalance, 110 * 1e18, 'Incorrect balance')
     })
 
+    it('can deposit HYDRO on behalf of', async () => {
+      await instances.token.approveAndCall(instances.snowflake.address, 1 * 1e18, user2.public, { from: user1.public })
+      let snowflakeBalance = await instances.snowflake.snowflakeBalance(user2.hydroID)
+      assert.equal(snowflakeBalance, 1 * 1e18, 'Incorrect balance')
+    })
+
     it('can withdraw HYDRO', async () => {
       await instances.snowflake.withdrawSnowflakeBalanceTo(user1.public, 10 * 1e18, { from: user1.public })
       let snowflakeBalance = await instances.snowflake.snowflakeBalance(user1.hydroID)
-      assert.equal(snowflakeBalance, 100 * 1e18, 'Incorrect balance')
+      assert.equal(snowflakeBalance.toNumber(), 100 * 1e18, 'Incorrect balance')
     })
 
     it('can transfer HYDRO', async () => {
       await instances.snowflake.transferSnowflakeBalance(user2.hydroID, 50 * 1e18, { from: user1.public })
       let snowflakeBalance1 = await instances.snowflake.snowflakeBalance(user1.hydroID)
       let snowflakeBalance2 = await instances.snowflake.snowflakeBalance(user2.hydroID)
-      assert.equal(snowflakeBalance1, 50 * 1e18, 'Incorrect balance')
-      assert.equal(snowflakeBalance2, 50 * 1e18, 'Incorrect balance')
+      assert.equal(snowflakeBalance1.toNumber(), 50 * 1e18, 'Incorrect balance')
+      assert.equal(snowflakeBalance2.toNumber(), 51 * 1e18, 'Incorrect balance')
     })
 
     it('resolver can extract HYDRO', async () => {
-      await instances.dummyResolver.withdrawFrom(user1.hydroID, 101 * 1e18, { from: owner.public })
-        .then(() => { assert.fail('', '', 'withdraw should have been rejected') })
+      await instances.dummyResolver.withdrawFrom(user1.hydroID, 51 * 1e18, { from: owner.public })
+        .then(() => { throw Error('withdraw should have been rejected') })
         .catch(error => { assert.include(error.message, 'revert', 'unexpected error') })
 
       await instances.dummyResolver.withdrawFrom(user1.hydroID, 50 * 1e18, { from: owner.public })
 
       let snowflakeBalance = await instances.snowflake.snowflakeBalance(user1.hydroID)
-      assert.equal(snowflakeBalance, 0, 'Incorrect balance')
+      assert.equal(snowflakeBalance.toNumber(), 0, 'Incorrect balance')
 
       let allowance = await instances.snowflake.getResolverAllowance(user1.hydroID, instances.dummyResolver.address)
       assert.equal(allowance.toString(), 50 * 1e18, 'Incorrect allowance')
     })
 
     it('can remove resolvers', async () => {
-      await instances.snowflake.removeResolvers([instances.dummyResolver.address], { from: user1.public })
+      await instances.snowflake.removeResolvers([instances.dummyResolver.address], false, { from: user1.public })
     })
   })
 

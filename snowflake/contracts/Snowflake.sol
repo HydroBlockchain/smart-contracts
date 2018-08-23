@@ -6,16 +6,16 @@ import "./zeppelin/math/SafeMath.sol";
 
 import "./libraries/addressSet.sol";
 
-contract SnowflakeResolver {
-    function callOnSignUp() public returns (bool);
-    function onSignUp(string hydroId, uint allowance) public returns (bool);
-    function callOnRemoval() public returns (bool);
-    function onRemoval(string hydroId) public returns(bool);
+interface SnowflakeResolver {
+    function callOnSignUp() external returns (bool);
+    function onSignUp(string hydroId, uint allowance) external returns (bool);
+    function callOnRemoval() external returns (bool);
+    function onRemoval(string hydroId) external returns(bool);
 }
 
-contract ClientRaindrop {
+interface ClientRaindrop {
     function getUserByAddress(address _address) external view returns (string userName);
-    function isSigned(address _address, bytes32 messageHash, uint8 v, bytes32 r, bytes32 s) public pure returns (bool);
+    function isSigned(address _address, bytes32 messageHash, uint8 v, bytes32 r, bytes32 s) external pure returns (bool);
 }
 
 contract Snowflake is Ownable {
@@ -127,7 +127,7 @@ contract Snowflake is Ownable {
 
     // wrappers that enable modifying resolvers
     function addResolvers(address[] resolvers, uint[] withdrawAllowances) public _hasToken(msg.sender, true) {
-        require(resolvers.length == withdrawAllowances.length && resolvers.length < 10, "Malformed inputs.");
+        require(resolvers.length == withdrawAllowances.length, "Malformed inputs.");
 
         Identity storage identity = directory[addressDirectory[msg.sender]];
 
@@ -150,7 +150,7 @@ contract Snowflake is Ownable {
     function changeResolverAllowances(address[] resolvers, uint[] withdrawAllowances)
         public _hasToken(msg.sender, true)
     {
-        require(resolvers.length == withdrawAllowances.length && resolvers.length < 10, "Malformed inputs.");
+        require(resolvers.length == withdrawAllowances.length, "Malformed inputs.");
 
         Identity storage identity = directory[addressDirectory[msg.sender]];
 
@@ -185,13 +185,15 @@ contract Snowflake is Ownable {
     function getDetails(string hydroId) public view returns (
         address owner,
         address[] resolvers,
-        address[] ownedAddresses
+        address[] ownedAddresses,
+        uint256 balance
     ) {
         Identity storage identity = directory[hydroId];
         return (
             identity.owner,
             identity.resolvers.members,
-            identity.addresses.members
+            identity.addresses.members,
+            deposits[hydroId]
         );
     }
 
@@ -338,9 +340,7 @@ contract Snowflake is Ownable {
     }
 
     function unclaim(address[] addresses) public _hasToken(msg.sender, true) {
-        require(addresses.length < 10, "Malformed inputs.");
-
-        for (uint i; i < addresses.length; i++) {        
+        for (uint i; i < addresses.length; i++) {
             require(addresses[i] != directory[addressDirectory[msg.sender]].owner, "Cannot unclaim owner address.");
             directory[addressDirectory[msg.sender]].addresses.remove(addresses[i]);
             delete addressDirectory[addresses[i]];
