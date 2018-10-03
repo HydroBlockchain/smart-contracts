@@ -35,11 +35,11 @@ contract HydroKYC is SnowflakeResolver {
 
     mapping (string => KYCSet) internal usersToKYC;
 
-    constructor () public {
-        snowflakeName = "Hydro KYC";
-        snowflakeDescription = "A KYC dApp for Snowflake owners.";
-        snowflakeAddress = 0xDa004e0097a9853260bc527EeA7A4EF991204e20;
-    }
+  constructor () public {
+    snowflakeName = "Hydro KYC";
+    snowflakeDescription = "A KYC dApp for Snowflake owners.";
+    snowflakeAddress = 0x920b3eD908F5E63DC859C0D61cA2a270f0663e58;
+  }
 
     // implement signup function
     function onSignUp(string hydroId, uint) public returns (bool) {
