@@ -1,4 +1,4 @@
-const Web3 = require('web3') // web3@1.0.0-beta.34
+const Web3 = require('web3')
 
 var gas = 5.5 * 1e6
 
@@ -26,6 +26,7 @@ module.exports = {
   },
   solc: {
     optimizer: {
+      version: '0.4.24',
       enabled: true,
       runs: 200
     }

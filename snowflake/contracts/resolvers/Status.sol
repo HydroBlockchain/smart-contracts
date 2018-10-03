@@ -18,6 +18,7 @@ contract Status is SnowflakeResolver {
     constructor () public {
         snowflakeName = "Status";
         snowflakeDescription = "Set your status.";
+        callOnSignUp = true;
     }
 
     // implement signup function

@@ -34,10 +34,13 @@ module.exports.sign = (messageHash, user, method) => {
 
 module.exports.initialize = async (ownerAddress, raindropUsers) => {
   var instances = {}
-
   instances.token = await HydroToken.new({ from: ownerAddress })
   for (let i = 0; i < raindropUsers.length; i++) {
-    await instances.token.transfer(raindropUsers[i].public, 1000 * 1e18, { from: ownerAddress })
+    await instances.token.transfer(
+      raindropUsers[i].public,
+      web3.utils.toBN(1000).mul(web3.utils.toBN(1e18)),
+      { from: ownerAddress }
+    )
   }
 
   instances.raindrop = await ClientRaindrop.new({ from: ownerAddress })
@@ -48,7 +51,7 @@ module.exports.initialize = async (ownerAddress, raindropUsers) => {
 
   instances.snowflake = await Snowflake.new({ from: ownerAddress })
   let receipt = await web3.eth.getTransactionReceipt(instances.snowflake.transactionHash)
-  assert.isAtMost(receipt.cumulativeGasUsed, 5500000)
+  assert.isAtMost(receipt.cumulativeGasUsed, 6000000)
 
   await instances.snowflake.setAddresses(instances.raindrop.address, instances.token.address)
 

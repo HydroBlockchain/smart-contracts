@@ -14,11 +14,11 @@ Snowflake is a hydrid on-/off-chain identity management solution. For more detai
 - This folder has a suite of tests created through [Truffle](https://github.com/trufflesuite/truffle).
 - To run these tests:
   - Download the code: `git clone https://github.com/hydrogen-dev/smart-contracts.git`
-  - Navigate to the `snowflake` folder in your terminal
-  - Make sure you have darq-truffle and [Ganache](https://github.com/trufflesuite/ganache-cli) installed: `npm install -g truffle@4.1.13 ganache-cli`
-  - Install web3 and ethereumjs-util: `npm install web3@1.0.0-beta.34 ethereumjs-util`
-  - Spin up a development blockchain: `ganache-cli --seed hydro --port 8555`
-  - Run the test suite: `truffle test --network ganache`
+  - Navigate to `smart-contracts/snowflake`
+  - Run `npm install`
+  - Build dependencies with `npm run build`
+  - Spin up a development blockchain: `npm run chain`
+  - In another terminal tab, run the test suite: `npm test`
 
 ## Copyright & License
 Copyright 2018 The Hydrogen Technology Corporation under the GNU General Public License v3.0.
