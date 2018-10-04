@@ -1,6 +1,6 @@
 const Web3 = require('web3')
 
-var gas = 5.5 * 1e6
+var gas = 6 * 1e6
 
 module.exports = {
   networks: {
@@ -8,6 +8,7 @@ module.exports = {
       host: 'localhost',
       port: 8545,
       network_id: 4,
+      timeoutBlocks: 200,
       gas: gas,
       gasPrice: Web3.utils.toWei('2', 'gwei')
     },
@@ -15,6 +16,7 @@ module.exports = {
       host: 'localhost',
       port: 8545,
       network_id: 1,
+      timeoutBlocks: 200,
       gas: gas,
       gasPrice: Web3.utils.toWei('10', 'gwei')
     },

@@ -35,6 +35,10 @@ contract Snowflake is Ownable {
     // hydro token wrapper variable
     mapping (string => uint) internal deposits;
 
+    // signature variables
+    uint signatureTimeout;
+    mapping (bytes32 => bool) signatureLog;
+
     // lookup mappings -- accessible only by wrapper functions
     mapping (string => Identity) internal directory;
     mapping (address => string) internal addressDirectory;
@@ -45,6 +49,10 @@ contract Snowflake is Ownable {
     address public hydroTokenAddress;
 
     addressSet._addressSet resolverWhitelist;
+
+    constructor() public {
+        setSignatureTimeout(7200);
+    }
 
     // identity structures
     struct Identity {
@@ -74,7 +82,7 @@ contract Snowflake is Ownable {
     // allows whitelisting of resolvers
     function whitelistResolver(address resolver) public {
         resolverWhitelist.insert(resolver);
-        emit ResolverWhitelisted(resolver, msg.sender);
+        emit ResolverWhitelisted(resolver);
     }
 
     function isWhitelisted(address resolver) public view returns(bool) {
@@ -83,6 +91,13 @@ contract Snowflake is Ownable {
 
     function getWhitelistedResolvers() public view returns(address[]) {
         return resolverWhitelist.members;
+    }
+
+    // set the signature timeout
+    function setSignatureTimeout(uint newTimeout) public {
+        require(newTimeout >= 1800, "Timeout must be at least 30 minutes.");
+        require(newTimeout <= 604800, "Timeout must be less than a week.");
+        signatureTimeout = newTimeout;
     }
 
     // set the raindrop and hydro token addresses
@@ -129,16 +144,18 @@ contract Snowflake is Ownable {
     }
 
     function addResolversDelegated(
-        string hydroId, address[] resolvers, uint[] withdrawAllowances, uint8 v, bytes32 r, bytes32 s
+        string hydroId, address[] resolvers, uint[] withdrawAllowances, uint8 v, bytes32 r, bytes32 s, uint timestamp
     ) public
     {
         require(directory[hydroId].owner != address(0), "Must initiate claim for a HydroID with a Snowflake");
-
+        // solium-disable-next-line security/no-block-members
+        require(timestamp.add(signatureTimeout) > block.timestamp, "Message was signed too long ago.");
+    
         ClientRaindrop clientRaindrop = ClientRaindrop(clientRaindropAddress);
         require(
             clientRaindrop.isSigned(
                 directory[hydroId].owner,
-                keccak256(abi.encodePacked("Add Resolvers", resolvers, withdrawAllowances)),
+                keccak256(abi.encodePacked("Add Resolvers", resolvers, withdrawAllowances, timestamp)),
                 v, r, s
             ),
             "Permission denied."
@@ -161,25 +178,48 @@ contract Snowflake is Ownable {
             identity.resolverAllowances[resolvers[i]] = withdrawAllowances[i];
             if (snowflakeResolver.callOnSignUp()) {
                 require(
-                    snowflakeResolver.onSignUp(addressDirectory[msg.sender], withdrawAllowances[i]),
+                    snowflakeResolver.onSignUp(hydroId, withdrawAllowances[i]),
                     "Sign up failure."
                 );
             }
-            emit ResolverAdded(addressDirectory[msg.sender], resolvers[i], withdrawAllowances[i]);
+            emit ResolverAdded(hydroId, resolvers[i], withdrawAllowances[i]);
         }
     }
 
-    function changeResolverAllowances(address[] resolvers, uint[] withdrawAllowances)
+    function changeResolverAllowances(address[] resolvers, uint[] withdrawAllowances) 
         public _hasToken(msg.sender, true)
     {
+        _changeResolverAllowances(addressDirectory[msg.sender], resolvers, withdrawAllowances);
+    }
+
+    function changeResolverAllowancesDelegated(
+        string hydroId, address[] resolvers, uint[] withdrawAllowances, uint8 v, bytes32 r, bytes32 s, uint timestamp
+    ) public
+    {
+        require(directory[hydroId].owner != address(0), "Must initiate claim for a HydroID with a Snowflake");
+
+        bytes32 _hash = keccak256(
+            abi.encodePacked("Change Resolver Allowances", resolvers, withdrawAllowances, timestamp)
+        );
+
+        require(signatureLog[_hash] == false, "Signature was already submitted");
+        signatureLog[_hash] = true;
+
+        ClientRaindrop clientRaindrop = ClientRaindrop(clientRaindropAddress);
+        require(clientRaindrop.isSigned(directory[hydroId].owner, _hash, v, r, s), "Permission denied.");
+
+        _changeResolverAllowances(hydroId, resolvers, withdrawAllowances);
+    }
+
+    function _changeResolverAllowances(string hydroId, address[] resolvers, uint[] withdrawAllowances) public {
         require(resolvers.length == withdrawAllowances.length, "Malformed inputs.");
 
-        Identity storage identity = directory[addressDirectory[msg.sender]];
+        Identity storage identity = directory[hydroId];
 
         for (uint i; i < resolvers.length; i++) {
             require(identity.resolvers.contains(resolvers[i]), "Snowflake has not set this resolver.");
             identity.resolverAllowances[resolvers[i]] = withdrawAllowances[i];
-            emit ResolverAllowanceChanged(addressDirectory[msg.sender], resolvers[i], withdrawAllowances[i]);
+            emit ResolverAllowanceChanged(hydroId, resolvers[i], withdrawAllowances[i]);
         }
     }
 
@@ -399,7 +439,7 @@ contract Snowflake is Ownable {
     // events
     event SnowflakeMinted(string hydroId);
 
-    event ResolverWhitelisted(address indexed resolver, address sponsor);
+    event ResolverWhitelisted(address indexed resolver);
 
     event ResolverAdded(string hydroId, address resolver, uint withdrawAllowance);
     event ResolverAllowanceChanged(string hydroId, address resolver, uint withdrawAllowance);

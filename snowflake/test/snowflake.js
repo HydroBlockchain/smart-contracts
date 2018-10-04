@@ -121,11 +121,13 @@ contract('Clean Room', function (accounts) {
       var hasResolver = await instances.snowflake.hasResolver(users[1].hydroId, instances.TestingResolver.address)
       assert.isFalse(hasResolver, 'Resolver exists without having been added.')
 
-      const allowance = web3.utils.toBN(1e18)
+      const allowance = web3.utils.toBN(1e18).mul(web3.utils.toBN(2))
+      const timestamp = Math.round(new Date() / 1000)
       const permissionString = await web3.utils.soliditySha3(
         'Add Resolvers',
         {t: 'address[]', v: [instances.TestingResolver.address]},
-        {t: 'uint[]', v: [allowance]}
+        {t: 'uint[]', v: [allowance]},
+        timestamp
       )
       const permission = await common.sign(permissionString, users[1], 'unprefixed')
 
@@ -136,6 +138,7 @@ contract('Clean Room', function (accounts) {
         permission.v,
         permission.r,
         permission.s,
+        timestamp,
         { from: owner.public }
       )
 
@@ -149,10 +152,38 @@ contract('Clean Room', function (accounts) {
         [instances.TestingResolver.address], [newAllowance], { from: users[0].public }
       )
 
-      const oldAllowance = await instances.snowflake.getResolverAllowance(
+      const setAllowance = await instances.snowflake.getResolverAllowance(
         users[0].hydroId, instances.TestingResolver.address
       )
-      assert.isTrue(newAllowance.eq(oldAllowance), 'Resolver has an incorrect allowance.')
+      assert.isTrue(newAllowance.eq(setAllowance), 'Resolver has an incorrect allowance.')
+    })
+
+    it('second user can change resolver allowances delegated', async () => {
+      const newAllowance = web3.utils.toBN(1e18)
+      const timestamp = Math.round(new Date() / 1000)
+      const permissionString = await web3.utils.soliditySha3(
+        'Change Resolver Allowances',
+        {t: 'address[]', v: [instances.TestingResolver.address]},
+        {t: 'uint[]', v: [newAllowance]},
+        timestamp
+      )
+      const permission = await common.sign(permissionString, users[1], 'unprefixed')
+
+      await instances.snowflake.changeResolverAllowancesDelegated(
+        users[1].hydroId,
+        [instances.TestingResolver.address],
+        [newAllowance],
+        permission.v,
+        permission.r,
+        permission.s,
+        timestamp,
+        { from: owner.public }
+      )
+
+      const setAllowance = await instances.snowflake.getResolverAllowance(
+        users[1].hydroId, instances.TestingResolver.address
+      )
+      assert.isTrue(newAllowance.eq(setAllowance), 'Resolver has an incorrect allowance.')
     })
   })
 

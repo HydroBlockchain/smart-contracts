@@ -4,6 +4,7 @@ import "./SnowflakeResolver.sol";
 
 
 contract Snowflake {
+    function whitelistResolver(address resolver) external;
     function withdrawFrom(string hydroIdFrom, address to, uint amount) public returns (bool);
     function getHydroId(address _address) public view returns (string hydroId);
 }
@@ -15,10 +16,15 @@ contract Status is SnowflakeResolver {
     uint signUpFee = 1000000000000000000;
     string firstStatus = "My first status 😎";
 
-    constructor () public {
+    constructor (address snowflakeAddress) public {
         snowflakeName = "Status";
         snowflakeDescription = "Set your status.";
+        setSnowflakeAddress(snowflakeAddress);
+
         callOnSignUp = true;
+
+        Snowflake snowflake = Snowflake(snowflakeAddress);
+        snowflake.whitelistResolver(address(this));
     }
 
     // implement signup function
