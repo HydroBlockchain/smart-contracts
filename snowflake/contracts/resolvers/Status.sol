@@ -22,11 +22,10 @@ contract Status is SnowflakeResolver {
     }
 
     // implement signup function
-    function onSignUp(string hydroId, uint allowance) public returns (bool) {
-        require(msg.sender == snowflakeAddress, "Did not originate from Snowflake.");
-        require(allowance == signUpFee, "Must set an allowance of 1.");
+    function onSignUp(string hydroId, uint allowance) public senderIsSnowflake() returns (bool) {
+        require(allowance >= signUpFee, "Must set an allowance of at least 1.");
         Snowflake snowflake = Snowflake(snowflakeAddress);
-        require(snowflake.withdrawFrom(hydroId, owner, signUpFee), "Could not charge fee.");
+        snowflake.withdrawFrom(hydroId, owner, signUpFee);
         statuses[hydroId] = firstStatus;
         emit StatusUpdated(hydroId, firstStatus);
         return true;
