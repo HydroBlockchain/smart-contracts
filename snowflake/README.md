@@ -9,14 +9,13 @@ Snowflake is a hydrid on-/off-chain identity management solution. For more detai
 
 [Status Resolver on Rinkeby](https://rinkeby.etherscan.io/address/0x9f4f18494a7622970d8cbf5b5447880aba6e701f)
 
-
 ## Testing With Truffle
 - This folder has a suite of tests created through [Truffle](https://github.com/trufflesuite/truffle).
 - To run these tests:
   - Download the code: `git clone https://github.com/hydrogen-dev/smart-contracts.git`
   - Navigate to `smart-contracts/snowflake`
   - Run `npm install`
-  - Build dependencies with `npm run build`
+  - Build dependencies with `npm run buidl`
   - Spin up a development blockchain: `npm run chain`
   - In another terminal tab, run the test suite: `npm test`
 
