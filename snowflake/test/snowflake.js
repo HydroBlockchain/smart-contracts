@@ -4,6 +4,20 @@ const web3 = new Web3(Web3.givenProvider || 'http://localhost:8555')
 const TestingResolver = artifacts.require('./_testing/TestingResolver.sol')
 const TestingVia = artifacts.require('./_testing/TestingVia.sol')
 
+function timeTravel (seconds) {
+  return new Promise((resolve, reject) => {
+    web3.currentProvider.send({
+      jsonrpc: '2.0',
+      method: 'evm_increaseTime',
+      params: [seconds],
+      id: new Date().getTime()
+    }, (err, result) => {
+      if (err) { return reject(err) }
+      return resolve(result)
+    })
+  })
+}
+
 contract('Clean Room', function (accounts) {
   const owner = {
     public: accounts[0]
@@ -144,6 +158,21 @@ contract('Clean Room', function (accounts) {
 
       hasResolver = await instances.snowflake.hasResolver(users[1].hydroId, instances.TestingResolver.address)
       assert.isTrue(hasResolver, 'Resolver does not exist after being added.')
+
+      // after time traveling, signature is denied for the right reason
+      timeTravel(7201)
+      await instances.snowflake.addResolversDelegated(
+        users[1].hydroId,
+        [instances.TestingResolver.address],
+        [allowance],
+        permission.v,
+        permission.r,
+        permission.s,
+        timestamp,
+        { from: owner.public }
+      )
+        .then(() => { throw Error('should have been rejected') })
+        .catch(error => { assert.include(error.message, 'Message was signed too long ago', 'wrong rejection reason') })
     })
 
     it('first user can change resolver allowance', async () => {
@@ -184,6 +213,20 @@ contract('Clean Room', function (accounts) {
         users[1].hydroId, instances.TestingResolver.address
       )
       assert.isTrue(newAllowance.eq(setAllowance), 'Resolver has an incorrect allowance.')
+
+      // the same signature doesn't work twice
+      await instances.snowflake.changeResolverAllowancesDelegated(
+        users[1].hydroId,
+        [instances.TestingResolver.address],
+        [newAllowance],
+        permission.v,
+        permission.r,
+        permission.s,
+        timestamp,
+        { from: owner.public }
+      )
+        .then(() => { throw Error('should have been rejected') })
+        .catch(error => { assert.include(error.message, 'Signature was already submitted', 'wrong rejection reason') })
     })
   })
 
