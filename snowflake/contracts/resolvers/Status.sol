@@ -5,7 +5,7 @@ import "./SnowflakeResolver.sol";
 
 contract Snowflake {
     function whitelistResolver(address resolver) external;
-    function withdrawFrom(string hydroIdFrom, address to, uint amount) public returns (bool);
+    function withdrawSnowflakeBalanceFrom(string hydroIdFrom, address to, uint amount) public returns (bool);
     function getHydroId(address _address) public view returns (string hydroId);
 }
 
@@ -31,7 +31,7 @@ contract Status is SnowflakeResolver {
     function onSignUp(string hydroId, uint allowance) public senderIsSnowflake() returns (bool) {
         require(allowance >= signUpFee, "Must set an allowance of at least 1.");
         Snowflake snowflake = Snowflake(snowflakeAddress);
-        snowflake.withdrawFrom(hydroId, owner, signUpFee);
+        snowflake.withdrawSnowflakeBalanceFrom(hydroId, owner, signUpFee);
         statuses[hydroId] = firstStatus;
         emit StatusUpdated(hydroId, firstStatus);
         return true;
