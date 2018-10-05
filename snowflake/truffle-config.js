@@ -1,6 +1,6 @@
 const Web3 = require('web3')
 
-var gas = 6 * 1e6
+var gas = 6.5 * 1e6
 
 module.exports = {
   networks: {
@@ -10,7 +10,8 @@ module.exports = {
       network_id: 4,
       timeoutBlocks: 200,
       gas: gas,
-      gasPrice: Web3.utils.toWei('2', 'gwei')
+      gasPrice: Web3.utils.toWei('2', 'gwei'),
+      skipDryRun: true
     },
     mainIPC: {
       host: 'localhost',
@@ -18,7 +19,8 @@ module.exports = {
       network_id: 1,
       timeoutBlocks: 200,
       gas: gas,
-      gasPrice: Web3.utils.toWei('10', 'gwei')
+      gasPrice: Web3.utils.toWei('8', 'gwei'),
+      skipDryRun: true
     },
     ganache: {
       host: 'localhost',
@@ -28,7 +30,7 @@ module.exports = {
   },
   solc: {
     optimizer: {
-      version: '0.4.24',
+      version: '0.4.25',
       enabled: true,
       runs: 200
     }

@@ -211,7 +211,7 @@ contract Snowflake is Ownable {
         _changeResolverAllowances(hydroId, resolvers, withdrawAllowances);
     }
 
-    function _changeResolverAllowances(string hydroId, address[] resolvers, uint[] withdrawAllowances) public {
+    function _changeResolverAllowances(string hydroId, address[] resolvers, uint[] withdrawAllowances) internal {
         require(resolvers.length == withdrawAllowances.length, "Malformed inputs.");
 
         Identity storage identity = directory[hydroId];
