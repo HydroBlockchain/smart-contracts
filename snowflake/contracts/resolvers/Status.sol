@@ -3,10 +3,10 @@ pragma solidity ^0.4.24;
 import "./SnowflakeResolver.sol";
 
 
-contract Snowflake {
+interface Snowflake {
     function whitelistResolver(address resolver) external;
-    function withdrawSnowflakeBalanceFrom(string hydroIdFrom, address to, uint amount) public returns (bool);
-    function getHydroId(address _address) public view returns (string hydroId);
+    function withdrawSnowflakeBalanceFrom(string hydroIdFrom, address to, uint amount) external;
+    function getHydroId(address _address) external returns (string hydroId);
 }
 
 
@@ -29,7 +29,7 @@ contract Status is SnowflakeResolver {
 
     // implement signup function
     function onSignUp(string hydroId, uint allowance) public senderIsSnowflake() returns (bool) {
-        require(allowance >= signUpFee, "Must set an allowance of at least 1.");
+        require(allowance >= signUpFee, "Must set an allowance of at least 1 HYDRO.");
         Snowflake snowflake = Snowflake(snowflakeAddress);
         snowflake.withdrawSnowflakeBalanceFrom(hydroId, owner, signUpFee);
         statuses[hydroId] = firstStatus;
