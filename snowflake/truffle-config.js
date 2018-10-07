@@ -28,11 +28,15 @@ module.exports = {
       network_id: '*'
     }
   },
-  solc: {
-    optimizer: {
+  compilers: {
+    solc: {
       version: '0.4.25',
-      enabled: true,
-      runs: 200
+      settings: {
+        optimizer: {
+          enabled: true,
+          runs: 200
+        }
+      }
     }
   }
 }

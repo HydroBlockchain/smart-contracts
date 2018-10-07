@@ -6,7 +6,7 @@
     "test": "npx truffle test --network ganache",
     "build": "npm run buidl",
     "buidl": "rm -rf build/ && npx truffle compile",
-    "chain": "npx ganache-cli --seed hydro --port 8555"
+    "chain": "npx ganache-cli --seed hydro --port 8555 -l 0x7A1200"
   },
   "keywords": [],
   "author": "",
