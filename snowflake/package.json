@@ -1,0 +1,28 @@
+{
+  "name": "snowflake",
+  "version": "1.0.0",
+  "description": "Hydro Snowflake identity protocol",
+  "scripts": {
+    "test": "npx truffle test --network ganache",
+    "build": "npm run buidl",
+    "buidl": "rm -rf build/ && npx truffle compile",
+    "chain": "npx ganache-cli --seed hydro --port 8555 -l 0x7A1200"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-standard": "^3.1.0"
+  },
+  "dependencies": {
+    "ethereumjs-util": "^5.2.0",
+    "ganache-cli": "^6.1.8",
+    "truffle": "^5.0.0-beta.1",
+    "web3": "^1.0.0-beta.34"
+  }
+}

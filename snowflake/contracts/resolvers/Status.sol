@@ -3,9 +3,10 @@ pragma solidity ^0.4.24;
 import "./SnowflakeResolver.sol";
 
 
-contract Snowflake {
-    function withdrawFrom(string hydroIdFrom, address to, uint amount) public returns (bool);
-    function getHydroId(address _address) public view returns (string hydroId);
+interface Snowflake {
+    function whitelistResolver(address resolver) external;
+    function withdrawSnowflakeBalanceFrom(string hydroIdFrom, address to, uint amount) external;
+    function getHydroId(address _address) external returns (string hydroId);
 }
 
 
@@ -15,17 +16,22 @@ contract Status is SnowflakeResolver {
     uint signUpFee = 1000000000000000000;
     string firstStatus = "My first status 😎";
 
-    constructor () public {
+    constructor (address snowflakeAddress) public {
         snowflakeName = "Status";
         snowflakeDescription = "Set your status.";
+        setSnowflakeAddress(snowflakeAddress);
+
+        callOnSignUp = true;
+
+        Snowflake snowflake = Snowflake(snowflakeAddress);
+        snowflake.whitelistResolver(address(this));
     }
 
     // implement signup function
-    function onSignUp(string hydroId, uint allowance) public returns (bool) {
-        require(msg.sender == snowflakeAddress, "Did not originate from Snowflake.");
-        require(allowance == signUpFee, "Must set an allowance of 1.");
+    function onSignUp(string hydroId, uint allowance) public senderIsSnowflake() returns (bool) {
+        require(allowance >= signUpFee, "Must set an allowance of at least 1 HYDRO.");
         Snowflake snowflake = Snowflake(snowflakeAddress);
-        require(snowflake.withdrawFrom(hydroId, owner, signUpFee), "Could not charge fee.");
+        snowflake.withdrawSnowflakeBalanceFrom(hydroId, owner, signUpFee);
         statuses[hydroId] = firstStatus;
         emit StatusUpdated(hydroId, firstStatus);
         return true;

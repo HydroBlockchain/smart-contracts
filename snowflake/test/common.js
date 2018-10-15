@@ -1,4 +1,4 @@
-const Web3 = require('web3') // 1.0.0-beta.34
+const Web3 = require('web3')
 const ethUtil = require('ethereumjs-util')
 const web3 = new Web3(Web3.givenProvider || 'http://localhost:8555')
 
@@ -34,21 +34,24 @@ module.exports.sign = (messageHash, user, method) => {
 
 module.exports.initialize = async (ownerAddress, raindropUsers) => {
   var instances = {}
-
   instances.token = await HydroToken.new({ from: ownerAddress })
   for (let i = 0; i < raindropUsers.length; i++) {
-    await instances.token.transfer(raindropUsers[i].public, 1000 * 1e18, { from: ownerAddress })
+    await instances.token.transfer(
+      raindropUsers[i].public,
+      web3.utils.toBN(1000).mul(web3.utils.toBN(1e18)),
+      { from: ownerAddress }
+    )
   }
 
   instances.raindrop = await ClientRaindrop.new({ from: ownerAddress })
   await instances.raindrop.setHydroTokenAddress(instances.token.address, { from: ownerAddress })
   for (let i = 0; i < raindropUsers.length; i++) {
-    await instances.raindrop.signUpUser(raindropUsers[i].hydroID, { from: raindropUsers[i].public })
+    await instances.raindrop.signUpUser(raindropUsers[i].hydroId, { from: raindropUsers[i].public })
   }
 
   instances.snowflake = await Snowflake.new({ from: ownerAddress })
   let receipt = await web3.eth.getTransactionReceipt(instances.snowflake.transactionHash)
-  assert.isAtMost(receipt.cumulativeGasUsed, 5500000)
+  assert.isAtMost(receipt.cumulativeGasUsed, 6500000)
 
   await instances.snowflake.setAddresses(instances.raindrop.address, instances.token.address)
 

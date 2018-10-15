@@ -1,19 +1,21 @@
-const snowflake = artifacts.require('./Snowflake.sol')
-const status = artifacts.require('./resolvers/Status.sol')
+const Snowflake = artifacts.require('./Snowflake.sol')
+const Status = artifacts.require('./resolvers/Status.sol')
 
 const SafeMath = artifacts.require('./libraries/SafeMath.sol')
 const addressSet = artifacts.require('./libraries/addressSet.sol')
 
-module.exports = function (deployer) {
-  // // deploy libraries
-  deployer.deploy(SafeMath)
-  deployer.deploy(addressSet)
+module.exports = async function (deployer) {
+  // deploy libraries
+  await deployer.deploy(SafeMath)
+  await deployer.deploy(addressSet)
 
   // deploy snowflake
-  deployer.link(SafeMath, snowflake)
-  deployer.link(addressSet, snowflake)
-  deployer.deploy(snowflake)
+  await deployer.link(SafeMath, Snowflake)
+  await deployer.link(addressSet, Snowflake)
+  await deployer.deploy(Snowflake)
+
+  const snowflake = await Snowflake.deployed()
 
   // deploy status
-  deployer.deploy(status)
+  await deployer.deploy(Status, snowflake.address)
 }

@@ -1,10 +1,13 @@
 pragma solidity ^0.4.24;
 
 import "./zeppelin/ownership/Ownable.sol";
-import "./zeppelin/token/ERC20/ERC20.sol";
 import "./zeppelin/math/SafeMath.sol";
-
 import "./libraries/addressSet.sol";
+
+interface ERC20 {
+    function transfer(address to, uint256 value) external returns (bool);
+    function transferFrom(address from, address to, uint256 value) external returns (bool);
+}
 
 interface SnowflakeResolver {
     function callOnSignUp() external returns (bool);
@@ -15,7 +18,14 @@ interface SnowflakeResolver {
 
 interface ClientRaindrop {
     function getUserByAddress(address _address) external view returns (string userName);
-    function isSigned(address _address, bytes32 messageHash, uint8 v, bytes32 r, bytes32 s) external pure returns (bool);
+    function isSigned(
+        address _address, bytes32 messageHash, uint8 v, bytes32 r, bytes32 s
+    ) external pure returns (bool);
+}
+
+interface ViaContract {
+    function snowflakeCall(address resolver, string hydroIdFrom, string hydroIdTo, uint amount, bytes _bytes) external;
+    function snowflakeCall(address resolver, string hydroIdFrom, address to, uint amount, bytes _bytes) external;
 }
 
 contract Snowflake is Ownable {
@@ -24,6 +34,10 @@ contract Snowflake is Ownable {
 
     // hydro token wrapper variable
     mapping (string => uint) internal deposits;
+
+    // signature variables
+    uint signatureTimeout;
+    mapping (bytes32 => bool) signatureLog;
 
     // lookup mappings -- accessible only by wrapper functions
     mapping (string => Identity) internal directory;
@@ -34,8 +48,11 @@ contract Snowflake is Ownable {
     address public clientRaindropAddress;
     address public hydroTokenAddress;
 
-    uint public resolverWhitelistFee;
     addressSet._addressSet resolverWhitelist;
+
+    constructor() public {
+        setSignatureTimeout(7200);
+    }
 
     // identity structures
     struct Identity {
@@ -62,21 +79,10 @@ contract Snowflake is Ownable {
         return addressDirectory[_address];
     }
 
-    // set the fee to become a resolver
-    function setResolverWhitelistFee(uint fee) public onlyOwner {
-        ERC20 hydro = ERC20(hydroTokenAddress);
-        require(fee <= (hydro.totalSupply() / 100 / 10), "Fee is too high.");
-        resolverWhitelistFee = fee;
-    }
-
     // allows whitelisting of resolvers
-    // TODO add additional requirements to become a resolver here?
-    function whitelistResolver(address resolver) public _hasToken(msg.sender, true) {
-        if (resolverWhitelistFee > 0) {
-            require(_withdraw(addressDirectory[msg.sender], owner, resolverWhitelistFee), "Fee was not paid.");
-        }
+    function whitelistResolver(address resolver) public {
         resolverWhitelist.insert(resolver);
-        emit ResolverWhitelisted(resolver, msg.sender);
+        emit ResolverWhitelisted(resolver);
     }
 
     function isWhitelisted(address resolver) public view returns(bool) {
@@ -85,6 +91,13 @@ contract Snowflake is Ownable {
 
     function getWhitelistedResolvers() public view returns(address[]) {
         return resolverWhitelist.members;
+    }
+
+    // set the signature timeout
+    function setSignatureTimeout(uint newTimeout) public {
+        require(newTimeout >= 1800, "Timeout must be at least 30 minutes.");
+        require(newTimeout <= 604800, "Timeout must be less than a week.");
+        signatureTimeout = newTimeout;
     }
 
     // set the raindrop and hydro token addresses
@@ -127,9 +140,35 @@ contract Snowflake is Ownable {
 
     // wrappers that enable modifying resolvers
     function addResolvers(address[] resolvers, uint[] withdrawAllowances) public _hasToken(msg.sender, true) {
-        require(resolvers.length == withdrawAllowances.length, "Malformed inputs.");
+        _addResolvers(addressDirectory[msg.sender], resolvers, withdrawAllowances);
+    }
 
-        Identity storage identity = directory[addressDirectory[msg.sender]];
+    function addResolversDelegated(
+        string hydroId, address[] resolvers, uint[] withdrawAllowances, uint8 v, bytes32 r, bytes32 s, uint timestamp
+    ) public
+    {
+        require(directory[hydroId].owner != address(0), "Must initiate claim for a HydroID with a Snowflake");
+        // solium-disable-next-line security/no-block-members
+        require(timestamp.add(signatureTimeout) > block.timestamp, "Message was signed too long ago.");
+    
+        ClientRaindrop clientRaindrop = ClientRaindrop(clientRaindropAddress);
+        require(
+            clientRaindrop.isSigned(
+                directory[hydroId].owner,
+                keccak256(abi.encodePacked("Add Resolvers", resolvers, withdrawAllowances, timestamp)),
+                v, r, s
+            ),
+            "Permission denied."
+        );
+
+        _addResolvers(hydroId, resolvers, withdrawAllowances);
+    }
+
+    function _addResolvers(
+        string hydroId, address[] resolvers, uint[] withdrawAllowances
+    ) internal {
+        require(resolvers.length == withdrawAllowances.length, "Malformed inputs.");
+        Identity storage identity = directory[hydroId];
 
         for (uint i; i < resolvers.length; i++) {
             require(resolverWhitelist.contains(resolvers[i]), "The given resolver is not on the whitelist.");
@@ -139,25 +178,48 @@ contract Snowflake is Ownable {
             identity.resolverAllowances[resolvers[i]] = withdrawAllowances[i];
             if (snowflakeResolver.callOnSignUp()) {
                 require(
-                    snowflakeResolver.onSignUp(addressDirectory[msg.sender], withdrawAllowances[i]),
+                    snowflakeResolver.onSignUp(hydroId, withdrawAllowances[i]),
                     "Sign up failure."
                 );
             }
-            emit ResolverAdded(addressDirectory[msg.sender], resolvers[i], withdrawAllowances[i]);
+            emit ResolverAdded(hydroId, resolvers[i], withdrawAllowances[i]);
         }
     }
 
-    function changeResolverAllowances(address[] resolvers, uint[] withdrawAllowances)
+    function changeResolverAllowances(address[] resolvers, uint[] withdrawAllowances) 
         public _hasToken(msg.sender, true)
     {
+        _changeResolverAllowances(addressDirectory[msg.sender], resolvers, withdrawAllowances);
+    }
+
+    function changeResolverAllowancesDelegated(
+        string hydroId, address[] resolvers, uint[] withdrawAllowances, uint8 v, bytes32 r, bytes32 s, uint timestamp
+    ) public
+    {
+        require(directory[hydroId].owner != address(0), "Must initiate claim for a HydroID with a Snowflake");
+
+        bytes32 _hash = keccak256(
+            abi.encodePacked("Change Resolver Allowances", resolvers, withdrawAllowances, timestamp)
+        );
+
+        require(signatureLog[_hash] == false, "Signature was already submitted");
+        signatureLog[_hash] = true;
+
+        ClientRaindrop clientRaindrop = ClientRaindrop(clientRaindropAddress);
+        require(clientRaindrop.isSigned(directory[hydroId].owner, _hash, v, r, s), "Permission denied.");
+
+        _changeResolverAllowances(hydroId, resolvers, withdrawAllowances);
+    }
+
+    function _changeResolverAllowances(string hydroId, address[] resolvers, uint[] withdrawAllowances) internal {
         require(resolvers.length == withdrawAllowances.length, "Malformed inputs.");
 
-        Identity storage identity = directory[addressDirectory[msg.sender]];
+        Identity storage identity = directory[hydroId];
 
         for (uint i; i < resolvers.length; i++) {
             require(identity.resolvers.contains(resolvers[i]), "Snowflake has not set this resolver.");
             identity.resolverAllowances[resolvers[i]] = withdrawAllowances[i];
-            emit ResolverAllowanceChanged(addressDirectory[msg.sender], resolvers[i], withdrawAllowances[i]);
+            emit ResolverAllowanceChanged(hydroId, resolvers[i], withdrawAllowances[i]);
         }
     }
 
@@ -214,7 +276,7 @@ contract Snowflake is Ownable {
         Identity storage identity = directory[hydroId];
         return identity.resolverAllowances[resolver];
     }
-
+ 
     // allow contract to receive HYDRO tokens
     function receiveApproval(address sender, uint amount, address _tokenAddress, bytes _bytes) public {
         require(msg.sender == _tokenAddress, "Malformed inputs.");
@@ -222,13 +284,13 @@ contract Snowflake is Ownable {
 
         address recipient;
         if (_bytes.length == 20) {
-            assembly {
+            assembly { // solium-disable-line security/no-inline-assembly
                 recipient := div(mload(add(add(_bytes, 0x20), 0)), 0x1000000000000000000000000)
             }
         } else {
             recipient = sender;
         }
-        require(hasToken(sender), "Invalid token recipient");
+        require(hasToken(recipient), "Invalid token recipient");
 
         ERC20 hydro = ERC20(_tokenAddress);
         require(hydro.transferFrom(sender, address(this), amount), "Unable to transfer token ownership.");
@@ -242,62 +304,88 @@ contract Snowflake is Ownable {
         return deposits[hydroId];
     }
 
-    // transfer snowflake balance to another Snowflake holder (throws if unsuccessful)
+    // transfer snowflake balance from one snowflake holder to another
     function transferSnowflakeBalance(string hydroIdTo, uint amount) public _hasToken(msg.sender, true) {
-        require(directory[hydroIdTo].owner != address(0), "Must transfer to an HydroID with a Snowflake");
-        require(amount > 0, "Amount cannot be 0.");
-
-        string storage hydroIdFrom = addressDirectory[msg.sender];
-        require(deposits[hydroIdFrom] >= amount, "Your balance is too low to transfer this amount.");
-        deposits[hydroIdFrom] = deposits[hydroIdFrom].sub(amount);
-        deposits[hydroIdTo] = deposits[hydroIdTo].add(amount);
-        emit SnowflakeTransfer(hydroIdFrom, hydroIdTo, amount);
+        _transfer(addressDirectory[msg.sender], hydroIdTo, amount);
     }
 
     // withdraw Snowflake balance to an external address
-    function withdrawSnowflakeBalanceTo(address to, uint amount) public _hasToken(msg.sender, true) {
-        require(_withdraw(addressDirectory[msg.sender], to, amount), "Transfer was unsuccessful.");
+    function withdrawSnowflakeBalance(address to, uint amount) public _hasToken(msg.sender, true) {
+        _withdraw(addressDirectory[msg.sender], to, amount);
     }
 
-    // allows resolvers to withdraw to an external address from snowflakes that have approved them
-    function withdrawFrom(string hydroIdFrom, address to, uint amount) public returns (bool) {
-        Identity storage identity = directory[hydroIdFrom];
-        require(identity.owner != address(0), "Must withdraw from a HydroID with a Snowflake");
-        require(identity.resolvers.contains(msg.sender), "Resolver has not been set by from tokenholder.");
-        
-        if (identity.resolverAllowances[msg.sender] < amount) {
-            emit InsufficientAllowance(hydroIdFrom, msg.sender, identity.resolverAllowances[msg.sender], amount);
-            return false;
-        } else {
-            if (_withdraw(hydroIdFrom, to, amount)) {
-                identity.resolverAllowances[msg.sender] = identity.resolverAllowances[msg.sender].sub(amount);
-                return true;
-            } else {
-                return false;
-            }
-        }
+    // allows resolvers to transfer allowance amounts to other snowflakes (throws if unsuccessful)
+    function transferSnowflakeBalanceFrom(string hydroIdFrom, string hydroIdTo, uint amount) public {
+        handleAllowance(hydroIdFrom, amount);
+        _transfer(hydroIdFrom, hydroIdTo, amount);
     }
 
-    function _withdraw(string hydroIdFrom, address to, uint amount) internal returns (bool) {
+    // allows resolvers to withdraw allowance amounts to external addresses (throws if unsuccessful)
+    function withdrawSnowflakeBalanceFrom(string hydroIdFrom, address to, uint amount) public {
+        handleAllowance(hydroIdFrom, amount);
+        _withdraw(hydroIdFrom, to, amount);
+    }
+
+    // allows resolvers to send withdrawal amounts to arbitrary smart contracts 'to' hydroIds (throws if unsuccessful)
+    function withdrawSnowflakeBalanceFromVia(
+        string hydroIdFrom, address via, string hydroIdTo, uint amount, bytes _bytes
+    ) public {
+        handleAllowance(hydroIdFrom, amount);
+        _withdraw(hydroIdFrom, via, amount);
+        ViaContract viaContract = ViaContract(via);
+        viaContract.snowflakeCall(msg.sender, hydroIdFrom, hydroIdTo, amount, _bytes);
+    }
+
+    // allows resolvers to send withdrawal amounts 'to' addresses via arbitrary smart contracts 
+    function withdrawSnowflakeBalanceFromVia(
+        string hydroIdFrom, address via, address to, uint amount, bytes _bytes
+    ) public {
+        handleAllowance(hydroIdFrom, amount);
+        _withdraw(hydroIdFrom, via, amount);
+        ViaContract viaContract = ViaContract(via);
+        viaContract.snowflakeCall(msg.sender, hydroIdFrom, to, amount, _bytes);
+    }
+
+    function _transfer(string hydroIdFrom, string hydroIdTo, uint amount) internal returns (bool) {
+        require(directory[hydroIdTo].owner != address(0), "Must transfer to an HydroID with a Snowflake");
+
+        require(deposits[hydroIdFrom] >= amount, "Cannot withdraw more than the current deposit balance.");
+        deposits[hydroIdFrom] = deposits[hydroIdFrom].sub(amount);
+        deposits[hydroIdTo] = deposits[hydroIdTo].add(amount);
+
+        emit SnowflakeTransfer(hydroIdFrom, hydroIdTo, amount);
+    }
+
+    function _withdraw(string hydroIdFrom, address to, uint amount) internal {
         require(to != address(this), "Cannot transfer to the Snowflake smart contract itself.");
-        require(amount > 0, "Amount cannot be 0.");
 
         require(deposits[hydroIdFrom] >= amount, "Cannot withdraw more than the current deposit balance.");
         deposits[hydroIdFrom] = deposits[hydroIdFrom].sub(amount);
         ERC20 hydro = ERC20(hydroTokenAddress);
-        if (hydro.transfer(to, amount)) {
-            emit SnowflakeWithdraw(to, amount);
-            return true;
-        } else {
-            return false;
+        require(hydro.transfer(to, amount), "Transfer was unsuccessful");
+        emit SnowflakeWithdraw(to, amount);
+    }
+
+    function handleAllowance(string hydroIdFrom, uint amount) internal {
+        Identity storage identity = directory[hydroIdFrom];
+        require(identity.owner != address(0), "Must withdraw from a HydroID with a Snowflake");
+
+        // check that resolver-related details are correct
+        require(identity.resolvers.contains(msg.sender), "Resolver has not been set by from tokenholder.");
+        
+        if (identity.resolverAllowances[msg.sender] < amount) {
+            emit InsufficientAllowance(hydroIdFrom, msg.sender, identity.resolverAllowances[msg.sender], amount);
+            require(false, "Insufficient Allowance");
         }
+
+        identity.resolverAllowances[msg.sender] = identity.resolverAllowances[msg.sender].sub(amount);
     }
 
     // address ownership functions
     // to claim an address, users need to send a transaction from their snowflake address containing a sealed claim
     // sealedClaims are: keccak256(abi.encodePacked(<address>, <secret>, <hydroId>)),
     // where <address> is the address you'd like to claim, and <secret> is a SECRET bytes32 value.
-    function initiateClaimFor(string hydroId, bytes32 sealedClaim, uint8 v, bytes32 r, bytes32 s) public {
+    function initiateClaimDelegated(string hydroId, bytes32 sealedClaim, uint8 v, bytes32 r, bytes32 s) public {
         require(directory[hydroId].owner != address(0), "Must initiate claim for a HydroID with a Snowflake");
 
         ClientRaindrop clientRaindrop = ClientRaindrop(clientRaindropAddress);
@@ -351,7 +439,7 @@ contract Snowflake is Ownable {
     // events
     event SnowflakeMinted(string hydroId);
 
-    event ResolverWhitelisted(address indexed resolver, address sponsor);
+    event ResolverWhitelisted(address indexed resolver);
 
     event ResolverAdded(string hydroId, address resolver, uint withdrawAllowance);
     event ResolverAllowanceChanged(string hydroId, address resolver, uint withdrawAllowance);
@@ -359,7 +447,7 @@ contract Snowflake is Ownable {
 
     event SnowflakeDeposit(string hydroId, address from, uint amount);
     event SnowflakeTransfer(string hydroIdFrom, string hydroIdTo, uint amount);
-    event SnowflakeWithdraw(address indexed hydroId, uint amount);
+    event SnowflakeWithdraw(address to, uint amount);
     event InsufficientAllowance(
         string hydroId, address indexed resolver, uint currentAllowance, uint requestedWithdraw
     );
