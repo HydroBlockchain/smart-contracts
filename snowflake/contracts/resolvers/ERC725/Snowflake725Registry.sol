@@ -18,6 +18,7 @@ contract Snowflake725Registry is SnowflakeResolver {
     constructor () public {
         snowflakeName = "Snowflake ERC725 Registry";
         snowflakeDescription = "A registry of ERC725 contracts and their corresponding Snowflake owners";
+        callOnSignUp = false;
     }
 
     mapping(string => address) snowflakeTo725;
@@ -55,6 +56,13 @@ contract Snowflake725Registry is SnowflakeResolver {
         }
 
         return false;
+    }
+
+    function remove725() public {
+        Snowflake snowflake = Snowflake(snowflakeAddress);
+        string memory hydroId = snowflake.getHydroId(msg.sender);
+
+        snowflakeTo725[hydroId] = address(0);
     }
 
     function get725(string _hydroId) public view returns(address) {
