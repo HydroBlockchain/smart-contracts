@@ -21,200 +21,308 @@ interface ViaContract {
 }
 
 contract IdentityRegistry {
-    function mintIdentityDelegated(address recoveryAddress, address associatedAddress, address[] resolvers, uint8 v, bytes32 r, bytes32 s) public returns (uint ein);
-    function identityExists(uint ein) public view returns (bool);
-    function getEIN(address _address) public view returns (uint ein);
-    function hasIdentity(address _address) public view returns (bool);
+    function isSigned(address _address, bytes32 messageHash, uint8 v, bytes32 r, bytes32 s) public view returns (bool);
 
-    function addProviders(uint ein, address[] providers, address approvingAddress, uint8 v, bytes32 r, bytes32 s, uint salt) public;
-    function removeProviders(uint ein, address[] providers, address approvingAddress, uint8 v, bytes32 r, bytes32 s, uint salt) public;
+    function identityExists(uint ein) public view returns (bool);
+    function hasIdentity(address _address) public view returns (bool);
+    function getEIN(address _address) public view returns (uint ein);
+    function isAddressFor(uint ein, address _address) public view returns (bool);
+    function isProviderFor(uint ein, address provider) public view returns (bool);
+    function isResolverFor(uint ein, address resolver) public view returns (bool);
+    function getDetails(uint ein) public view
+        returns (address recoveryAddress, address[] associatedAddresses, address[] providers, address[] resolvers);
+    function mintIdentity(address recoveryAddress, address provider, address[] resolvers) public returns (uint ein);
+    function mintIdentityDelegated(
+        address recoveryAddress, address associatedAddress, address[] resolvers, uint8 v, bytes32 r, bytes32 s
+    )
+        public returns (uint ein);
+    function addAddress(
+        uint ein, address addressToAdd, address approvingAddress, uint8[2] v, bytes32[2] r, bytes32[2] s, uint salt
+    )
+        public;
+    function removeAddress(uint ein, address addressToRemove, uint8 v, bytes32 r, bytes32 s, uint salt) public;
+    function addProviders(address[] providers) public;
+    function addProviders(uint ein, address[] providers) public;
+    function removeProviders(address[] providers) public;
+    function removeProviders(uint ein, address[] providers) public;
     function addResolvers(uint ein, address[] resolvers) public;
     function removeResolvers(uint ein, address[] resolvers) public;
-    function isResolverFor(uint ein, address resolver) public view returns (bool);
-    function addAddress(
-        uint ein,
-        address approvingAddress,
-        address addressToAdd,
-        uint8[2] v, bytes32[2] r, bytes32[2] s, uint salt) public;
-    function removeAddress(uint ein, address addressToRemove, uint8 v, bytes32 r, bytes32 s, uint salt) public;
+
     function initiateRecoveryAddressChange(uint ein, address newRecoveryAddress) public;
     function triggerRecovery(uint ein, address newAssociatedAddress, uint8 v, bytes32 r, bytes32 s) public;
+    function triggerPoisonPill(uint ein, address[] firstChunk, address[] lastChunk, bool clearResolvers) public;
 }
 
 contract Snowflake is Ownable {
     using SafeMath for uint;
 
-    // hydro token wrapper variable
-    mapping (uint => uint) internal deposits;
+    // tally hydro token deposits from EINs
+    mapping (uint => uint) public deposits;
 
     // signature variables
-    uint signatureTimeout;
-    mapping (bytes32 => bool) signatureLog;
+    uint public signatureTimeout;
+    mapping (bytes32 => bool) public signatureLog;
 
-    // lookup mappings -- accessible only by wrapper functions
-    mapping (uint => mapping (address => uint)) internal resolverAllowances;
+    // mapping from identity to resolver to allowance
+    mapping (uint => mapping (address => uint)) public resolverAllowances;
 
     // admin/contract variables
-    address public clientRaindropAddress;
     address public hydroTokenAddress;
+    address public identityRegistryAddress;
+    ERC20 private hydroToken;
+    IdentityRegistry private identityRegistry;
 
-    IdentityRegistry registry;
-    ERC20 hydro;
-
-    constructor (address _identityRegistryAddress, address _hydroTokenAddress) public {
-        setSignatureTimeout(27000);
-        registry = IdentityRegistry(_identityRegistryAddress);
-        hydro = ERC20(_hydroTokenAddress);
+    constructor (address _hydroTokenAddress, address _identityRegistryAddress) public {
+        setAddresses(_hydroTokenAddress, _identityRegistryAddress);
+        setSignatureTimeout(60 * 60 * 5); // 5 hours
     }
 
-    // checks whether the given address is owned by a token (does not throw)
-    function hasToken(address _address) public view returns (bool) {
-        return registry.hasIdentity(msg.sender);
-    }
-
-    // enforces that a particular address has a token
-    modifier _hasToken(address _address, bool check) {
-        require(hasToken(_address) == check, "The transaction sender does not have an Identity token.");
+    // enforces that a particular address has an EIN
+    modifier hasIdentity(address _address, bool check) {
+        require(identityRegistry.hasIdentity(_address) == check, "The address does not have an EIN.");
         _;
+    }
+
+    // enforces that a particular EIN exists
+    modifier identityExists(uint ein, bool check) {
+        require(identityRegistry.identityExists(ein) == check, "The EIN does not exist.");
+        _;
+    }
+
+    // enforces signature timeouts
+    modifier timestampIsValid(uint timestamp) {
+        // solium-disable-next-line security/no-block-members
+        require(timestamp.add(signatureTimeout) > block.timestamp, "Message was signed too long ago.");
+        _;
+    }
+
+    modifier isAddressFor(uint ein, address _address) {
+        require(identityRegistry.isAddressFor(ein, _address), "Address is not associated with EIN.");
+        _;
+    }
+
+
+    // set the hydro token and identity registry addresses
+    function setAddresses(address _hydroTokenAddress, address _identityRegistryAddress) public onlyOwner {
+        hydroTokenAddress = _hydroTokenAddress;
+        hydroToken = ERC20(_hydroTokenAddress);
+
+        identityRegistryAddress = _identityRegistryAddress;
+        identityRegistry = IdentityRegistry(_identityRegistryAddress);
     }
 
     // set the signature timeout
     function setSignatureTimeout(uint newTimeout) public {
-        require(newTimeout >= 1800, "Timeout must be at least 30 minutes.");
-        require(newTimeout <= 604800, "Timeout must be less than a week.");
+        require(newTimeout >= 1800 && newTimeout <= 604800, "Timeout must between 30 minutes and a week.");
         signatureTimeout = newTimeout;
     }
 
-    // set the raindrop and hydro token addresses
-    function setAddresses(address hydroToken) public onlyOwner {
-        hydroTokenAddress = hydroToken;
-        hydro = ERC20(hydroTokenAddress);
-    }
 
-    function mintIdentityDelegated(address mintIdentityDelegated, address identityAddress, uint8 v, bytes32 r, bytes32 s) public {
-        registry.mintIdentityDelegated(mintIdentityDelegated, identityAddress, v, r, s);
-    }
-
-    function addResolvers(address[] resolvers, uint[] withdrawAllowances) public _hasToken(msg.sender, true) {
-        _addResolvers(registry.getEIN(msg.sender), resolvers, withdrawAllowances);
-    }
-
-    function addResolversDelegated(
-        address _address, address[] resolvers, uint[] withdrawAllowances, uint8 v, bytes32 r, bytes32 s, uint timestamp
-    ) public
+    // wrap mintIdentityDelegated
+    function mintIdentityDelegated(
+        address recoveryAddress, address associatedAddress, address[] resolvers, uint8 v, bytes32 r, bytes32 s
+    )
+        public returns (uint ein)
     {
-        uint ein = registry.getEIN(_address);
-        require(registry.identityExists(ein), "Must initiate claim for a valid identity");
-        // solium-disable-next-line security/no-block-members
-        require(timestamp.add(signatureTimeout) > block.timestamp, "Message was signed too long ago.");
+        return identityRegistry.mintIdentityDelegated(recoveryAddress, associatedAddress, resolvers, v, r, s);
+    }
 
+    // wrap addAddress
+    function addAddress(
+        uint ein,
+        address addressToAdd,
+        address approvingAddress,
+        uint8[2] v, bytes32[2] r, bytes32[2] s, uint salt
+    )
+        public
+    {
+        identityRegistry.addAddress(ein, addressToAdd, approvingAddress, v, r, s, salt);
+    }
+
+    // wrap removeAddress
+    function removeAddress(uint ein, address addressToRemove, uint8 v, bytes32 r, bytes32 s, uint salt) public {
+        identityRegistry.removeAddress(ein, addressToRemove, v, r, s, salt);
+    }
+
+    // delegated addProviders
+    function addProviders(
+        uint ein, address[] providers, address approvingAddress, uint8 v, bytes32 r, bytes32 s, uint timestamp
+    )
+        public isAddressFor(ein, approvingAddress) timestampIsValid(timestamp)
+    {
         require(
-            registry.isSigned(
-                _address,
-                keccak256(abi.encodePacked("Add Resolvers", resolvers, withdrawAllowances, timestamp)),
+            identityRegistry.isSigned(
+                approvingAddress, keccak256(abi.encodePacked("Add Providers", ein, providers, timestamp)), v, r, s
+            ),
+            "Permission denied."
+        );
+
+        identityRegistry.addProviders(ein, providers);
+        emit ProviderAddedFromSnowflake(ein, providers, approvingAddress);
+    }
+
+    // delegated removeProviders
+    function removeProviders(
+        uint ein, address[] providers, address approvingAddress, uint8 v, bytes32 r, bytes32 s, uint timestamp
+    )
+        public isAddressFor(ein, approvingAddress) timestampIsValid(timestamp)
+    {
+        require(
+            identityRegistry.isSigned(
+                approvingAddress, keccak256(abi.encodePacked("Remove Providers", ein, providers, timestamp)), v, r, s
+            ),
+            "Permission denied."
+        );
+
+        identityRegistry.removeProviders(ein, providers);
+        emit ProviderRemovedFromSnowflake(ein, providers, approvingAddress);
+    }
+
+    // delegated wrapper to add new providers and remove old ones
+    function upgradeProviders(
+        uint ein, address[] newProviders, address[] oldProviders,
+        address approvingAddress, uint8[2] v, bytes32[2] r, bytes32[2] s, uint timestamp
+    )
+        public
+    {
+        addProviders(ein, newProviders, approvingAddress, v[0], r[0], s[0], timestamp);
+        removeProviders(ein, oldProviders, approvingAddress, v[1], r[1], s[1], timestamp);
+
+        emit ProvidersUpgradedFromSnowflake(ein, newProviders, oldProviders, approvingAddress);
+    }
+
+    // add resolvers for identity of msg.sender
+    function addResolvers(address[] resolvers, bool[] isSnowflake, uint[] withdrawAllowances) public {
+        addResolvers(identityRegistry.getEIN(msg.sender), resolvers, isSnowflake, withdrawAllowances);
+    }
+
+    // add resolvers delegated
+    function addResolvers(
+        uint ein, address[] resolvers, bool[] isSnowflake, uint[] withdrawAllowances,
+        address approvingAddress, uint8 v, bytes32 r, bytes32 s, uint timestamp
+    )
+        public isAddressFor(ein, approvingAddress) timestampIsValid(timestamp)
+    {
+        require(
+            identityRegistry.isSigned(
+                approvingAddress,
+                keccak256(abi.encodePacked("Add Resolvers", ein, resolvers, withdrawAllowances, timestamp)),
                 v, r, s
             ),
             "Permission denied."
         );
 
-        _addResolvers(ein, resolvers, withdrawAllowances);
+        addResolvers(ein, resolvers, isSnowflake, withdrawAllowances);
     }
 
-    function _addResolvers(
-        uint ein, address[] resolvers, uint[] withdrawAllowances
-    ) internal {
-        require(resolvers.length == withdrawAllowances.length, "Malformed inputs.");
+    function addResolvers(uint ein, address[] resolvers, bool[] isSnowflake, uint[] withdrawAllowances) private {
+        require(resolvers.length == isSnowflake.length, "Malformed inputs.");
+        require(isSnowflake.length == withdrawAllowances.length, "Malformed inputs.");
 
         for (uint i; i < resolvers.length; i++) {
-            require(!registry.isResolverFor(ein, resolvers[i]), "Identity has already set this resolver.");
-
-            SnowflakeResolver snowflakeResolver = SnowflakeResolver(resolvers[i]);
-            resolverAllowances[ein][resolvers[i]] = withdrawAllowances[i];
-            if (snowflakeResolver.callOnSignUp()) {
-                require(
-                    snowflakeResolver.onSignUp(ein, withdrawAllowances[i]),
-                    "Sign up failure."
-                );
-            }
-            emit ResolverAdded(ein, resolvers[i], withdrawAllowances[i]);
-        }
-
-        registry.addResolvers(ein, resolvers);
-    }
-
-    function removeResolvers(address[] resolvers, bool force) public _hasToken(msg.sender, true) {
-        uint ein = registry.getEIN(msg.sender)
-
-        for (uint i; i < resolvers.length; i++) {
-            require(registry.isResolverFor(ein, resolvers[i]), "Snowflake has not set this resolver.");
-
-            delete resolverAllowances[ein][resolvers[i]];
-            if (!force) {
+            require(!identityRegistry.isResolverFor(ein, resolvers[i]), "Identity has already set this resolver.");
+            if (isSnowflake[i]) {
+                resolverAllowances[ein][resolvers[i]] = withdrawAllowances[i];
                 SnowflakeResolver snowflakeResolver = SnowflakeResolver(resolvers[i]);
-                if (snowflakeResolver.callOnRemoval()) {
-                    require(
-                        snowflakeResolver.onRemoval(ein),
-                        "Removal failure."
-                    );
+                if (snowflakeResolver.callOnSignUp()) {
+                    require(snowflakeResolver.onSignUp(ein, withdrawAllowances[i]), "Sign up failure.");
                 }
+                emit SnowflakeResolverAdded(ein, resolvers[i], withdrawAllowances[i]);
             }
-            emit ResolverRemoved(ein, resolvers[i]);
         }
 
-        registry.removeResolvers(ein, resolvers);
+        identityRegistry.addResolvers(ein, resolvers);
     }
 
-    function changeResolverAllowances(address[] resolvers, uint[] withdrawAllowances)
-        public _hasToken(msg.sender, true)
-    {
-        _changeResolverAllowances(registry.getEIN(msg.sender), resolvers, withdrawAllowances);
+    function changeResolverAllowances(address[] resolvers, uint[] withdrawAllowances) public {
+        changeResolverAllowances(identityRegistry.getEIN(msg.sender), resolvers, withdrawAllowances);
     }
 
-    function changeResolverAllowancesDelegated(
-        address _address, address[] resolvers, uint[] withdrawAllowances, uint8 v, bytes32 r, bytes32 s, uint timestamp
-    ) public
+    function changeResolverAllowances(
+        uint ein, address[] resolvers, uint[] withdrawAllowances,
+        address approvingAddress, uint8 v, bytes32 r, bytes32 s, uint salt
+    )
+        public isAddressFor(ein, approvingAddress)
     {
-        uint ein = registry.getEIN(_address);
-        require(registry.identityExists(ein), "Must add Resolver for a valid identity");
-
-        bytes32 _hash = keccak256(
-            abi.encodePacked("Change Resolver Allowances", resolvers, withdrawAllowances, timestamp)
+        bytes32 messageHash = keccak256(
+            abi.encodePacked("Change Allowance", ein, resolvers, withdrawAllowances, salt)
         );
 
-        require(signatureLog[_hash] == false, "Signature was already submitted");
-        signatureLog[_hash] = true;
+        require(signatureLog[messageHash] == false, "Signature was already submitted");
+        signatureLog[messageHash] = true;
 
-        require(registry.isSigned(_address, _hash, v, r, s), "Permission denied.");
+        require(identityRegistry.isSigned(approvingAddress, messageHash, v, r, s), "Permission denied.");
 
-        _changeResolverAllowances(ein, resolvers, withdrawAllowances);
+        changeResolverAllowances(ein, resolvers, withdrawAllowances);
     }
 
-    function _changeResolverAllowances(uint ein, address[] resolvers, uint[] withdrawAllowances) internal {
+    // common logic to change resolver allowances
+    function changeResolverAllowances(uint ein, address[] resolvers, uint[] withdrawAllowances) internal {
         require(resolvers.length == withdrawAllowances.length, "Malformed inputs.");
 
         for (uint i; i < resolvers.length; i++) {
-            require(registry.isResolverFor(ein, resolvers[i]), "Identity has not set this resolver.");
+            require(identityRegistry.isResolverFor(ein, resolvers[i]), "Identity has not set this resolver.");
             resolverAllowances[ein][resolvers[i]] = withdrawAllowances[i];
-            emit ResolverAllowanceChanged(ein, resolvers[i], withdrawAllowances[i]);
+            emit SnowflakeResolverAllowanceChanged(ein, resolvers[i], withdrawAllowances[i]);
         }
     }
 
-    // check resolver allowances (does not throw)
-    function getResolverAllowance(uint ein, address resolver) public view returns (uint withdrawAllowance) {
-        return resolverAllowances[ein][resolver];
+    // remove resolvers for identity of msg.sender
+    function removeResolvers(address[] resolvers, bool[] isSnowflake, bool[] force) public {
+        removeResolvers(identityRegistry.getEIN(msg.sender), resolvers, isSnowflake, force);
     }
 
-    function addAddress(
-        uint ein,
-        address approvingAddress,
-        address addressToAdd,
-        uint8[2] v, bytes32[2] r, bytes32[2] s, uint salt
-    ) public {
-        registry.addAddress(ein, approvingAddress, addressToAdd, v, r, s, salt);
+    // add resolvers delegated
+    function removeResolvers(
+        uint ein, address[] resolvers, bool[] isSnowflake, bool[] force,
+        address approvingAddress, uint8 v, bytes32 r, bytes32 s, uint timestamp
+    )
+        public isAddressFor(ein, approvingAddress) timestampIsValid(timestamp)
+    {
+        require(
+            identityRegistry.isSigned(
+                approvingAddress,
+                keccak256(abi.encodePacked("Remove Resolvers", ein, resolvers, timestamp)),
+                v, r, s
+            ),
+            "Permission denied."
+        );
+
+        removeResolvers(ein, resolvers, isSnowflake, force);
     }
 
-    function removeAddress(uint ein, address addressToRemove, uint8 v, bytes32 r, bytes32 s, uint salt) public {
-        registry.removeAddress(ein, addressToRemove, v, r, s, salt);
+    function removeResolvers(uint ein, address[] resolvers, bool[] isSnowflake, bool[] force) private {
+        require(resolvers.length == isSnowflake.length, "Malformed inputs.");
+        require(isSnowflake.length == force.length, "Malformed inputs.");
+
+        for (uint i; i < resolvers.length; i++) {
+            require(identityRegistry.isResolverFor(ein, resolvers[i]), "Identity has already set this resolver.");
+    
+            delete resolverAllowances[ein][resolvers[i]];
+    
+            if (isSnowflake[i] && !force[i]) {
+                SnowflakeResolver snowflakeResolver = SnowflakeResolver(resolvers[i]);
+                if (snowflakeResolver.callOnRemoval()) {
+                    require(snowflakeResolver.onRemoval(ein), "Removal failure.");
+                }
+                emit SnowflakeResolverRemoved(ein, resolvers[i]);
+            }
+        }
+
+        identityRegistry.removeResolvers(ein, resolvers);
+    }
+
+    // convert bytes to uint
+    function bytesToUint(bytes memory _bytes) private pure returns (uint) {
+        require(_bytes.length == 32, "Argument is not 32 bytes.");
+
+        uint converted;
+        // solium-disable-next-line security/no-inline-assembly
+        assembly {
+            converted := mload(add(add(_bytes, 0x20), 0))
+        }
+
+        return converted;
     }
 
     // allow contract to receive HYDRO tokens
@@ -222,36 +330,28 @@ contract Snowflake is Ownable {
         require(msg.sender == _tokenAddress, "Malformed inputs.");
         require(_tokenAddress == hydroTokenAddress, "Sender is not the HYDRO token smart contract.");
 
-        address recipient;
-        if (_bytes.length == 20) {
-            assembly { // solium-disable-line security/no-inline-assembly
-                recipient := div(mload(add(add(_bytes, 0x20), 0)), 0x1000000000000000000000000)
-            }
+        uint recipient;
+        if (_bytes.length != 0) {
+            recipient = bytesToUint(_bytes);
         } else {
-            recipient = sender;
+            recipient = identityRegistry.getEIN(sender);
         }
-        require(hasToken(recipient), "Invalid token recipient");
 
-        require(hydro.transferFrom(sender, address(this), amount), "Unable to transfer token ownership.");
+        require(hydroToken.transferFrom(sender, address(this), amount), "Unable to transfer token ownership.");
 
-        uint recipientEIN = registry.getEIN(recipient);
-        deposits[recipientEIN] = deposits[recipientEIN].add(amount);
+        deposits[recipient] = deposits[recipient].add(amount);
 
-        emit SnowflakeDeposit(recipientEIN, sender, amount);
-    }
-
-    function snowflakeBalance(uint ein) public view returns (uint) {
-        return deposits[ein];
+        emit SnowflakeDeposit(sender, recipient, amount);
     }
 
     // transfer snowflake balance from one snowflake holder to another
-    function transferSnowflakeBalance(uint einTo, uint amount) public _hasToken(msg.sender, true) {
-        _transfer(registry.getEIN(msg.sender), einTo, amount);
+    function transferSnowflakeBalance(uint einTo, uint amount) public hasIdentity(msg.sender, true) {
+        _transfer(identityRegistry.getEIN(msg.sender), einTo, amount);
     }
 
     // withdraw Snowflake balance to an external address
-    function withdrawSnowflakeBalance(address to, uint amount) public _hasToken(msg.sender, true) {
-        _withdraw(registry.getEIN(msg.sender), to, amount);
+    function withdrawSnowflakeBalance(address to, uint amount) public hasIdentity(msg.sender, true) {
+        _withdraw(identityRegistry.getEIN(msg.sender), to, amount);
     }
 
     // allows resolvers to transfer allowance amounts to other snowflakes (throws if unsuccessful)
@@ -266,10 +366,8 @@ contract Snowflake is Ownable {
         _withdraw(einFrom, to, amount);
     }
 
-    // allows resolvers to send withdrawal amounts to arbitrary smart contracts 'to' identitys (throws if unsuccessful)
-    function withdrawSnowflakeBalanceFromVia(
-        uint einFrom, address via, uint einFrom, uint amount, bytes _bytes
-    ) public {
+    // allows resolvers to send withdrawal amounts to arbitrary smart contracts 'to' identities (throws if unsuccessful)
+    function withdrawSnowflakeBalanceFromVia(uint einFrom, address via, uint einTo, uint amount, bytes _bytes) public {
         handleAllowance(einFrom, amount);
         _withdraw(einFrom, via, amount);
         ViaContract viaContract = ViaContract(via);
@@ -277,9 +375,7 @@ contract Snowflake is Ownable {
     }
 
     // allows resolvers to send withdrawal amounts 'to' addresses via arbitrary smart contracts
-    function withdrawSnowflakeBalanceFromVia(
-        uint einFrom, address via, address to, uint amount, bytes _bytes
-    ) public {
+    function withdrawSnowflakeBalanceFromVia(uint einFrom, address via, address to, uint amount, bytes _bytes) public {
         handleAllowance(einFrom, amount);
         _withdraw(einFrom, via, amount);
         ViaContract viaContract = ViaContract(via);
@@ -287,7 +383,7 @@ contract Snowflake is Ownable {
     }
 
     function _transfer(uint einFrom, uint einTo, uint amount) internal returns (bool) {
-        require(registry.identityExists(einTo), "Must transfer to a valid identity");
+        require(identityRegistry.identityExists(einTo), "Must transfer to a valid identity");
 
         require(deposits[einFrom] >= amount, "Cannot withdraw more than the current deposit balance.");
         deposits[einFrom] = deposits[einFrom].sub(amount);
@@ -301,15 +397,14 @@ contract Snowflake is Ownable {
 
         require(deposits[einFrom] >= amount, "Cannot withdraw more than the current deposit balance.");
         deposits[einFrom] = deposits[einFrom].sub(amount);
-        require(hydro.transfer(to, amount), "Transfer was unsuccessful");
-        emit SnowflakeWithdraw(to, amount);
+        require(hydroToken.transfer(to, amount), "Transfer was unsuccessful");
+
+        emit SnowflakeWithdraw(einFrom, to, amount);
     }
 
     function handleAllowance(uint einFrom, uint amount) internal {
-        require(registry.identityExists(einFrom), "Must call alloance for a valid identity.");
-
         // check that resolver-related details are correct
-        require(registry.isResolverFor(einFrom, msg.sender), "Resolver has not been set by from tokenholder.");
+        require(identityRegistry.isResolverFor(einFrom, msg.sender), "Resolver has not been set by from tokenholder.");
 
         if (resolverAllowances[einFrom][msg.sender] < amount) {
             emit InsufficientAllowance(einFrom, msg.sender, resolverAllowances[einFrom][msg.sender], amount);
@@ -320,46 +415,25 @@ contract Snowflake is Ownable {
     }
 
     function initiateRecoveryAddressChange(address _newAddress) public {
-        require(_newAddress != address(0));
-        uint ein = registry.getEIN(_address);
-        require(registry.identityExists(ein), "Must initiate change for a valid identity");
-
-        registry.initiateRecoveryAddressChange(ein, _newAddress);
-    }
-
-    function triggerRecovery(uint ein, address newAssociatedAddress, uint8 v, bytes32 r, bytes32 s) public {
-        registry.triggerRecovery(ein, newAssociatedAddress, v, r, s);
-    }
-
-    function addProvidersDelegated(address[] providers, address approvingAddress, uint8 v, bytes32 r, bytes32 s, uint salt) public {
-        uint ein = registry.getEIN(approvingAddress);
-        require(registry.identityExists(ein), "Must add Provider for a valid identity");
-
-        registry.addProviders(ein, providers, approvingAddress, v, r, s, salt);
-    }
-
-    function removeProvidersDelegated(address[] providers, address approvingAddress, uint8 v, bytes32 r, bytes32 s, uint salt) public {
-        uint ein = registry.getEIN(approvingAddress);
-        require(registry.identityExists(ein), "Must remove Provider from a valid identity");
-
-        registry.removeProviders(ein, providers, approvingAddress, v, r, s, salt);
+        require(_newAddress != address(0), "Cannot set the recovery address to the zero address.");
+        uint ein = identityRegistry.getEIN(_newAddress);
+        identityRegistry.initiateRecoveryAddressChange(ein, _newAddress);
     }
 
 
     // events
-    event SnowflakeMinted(uint ein);
-
-    event ResolverAdded(uint ein, address resolver, uint withdrawAllowance);
-    event ResolverAllowanceChanged(uint ein, address resolver, uint withdrawAllowance);
-    event ResolverRemoved(uint ein, address resolver);
-
-    event SnowflakeDeposit(uint ein, address from, uint amount);
-    event SnowflakeTransfer(uint einFrom, uint einTo, uint amount);
-    event SnowflakeWithdraw(address to, uint amount);
-    event InsufficientAllowance(
-        uint ein, address indexed resolver, uint currentAllowance, uint requestedWithdraw
+    event ProviderAddedFromSnowflake(uint ein, address[] providers, address approvingAddress);
+    event ProviderRemovedFromSnowflake(uint ein, address[] providers, address approvingAddress);
+    event ProvidersUpgradedFromSnowflake(
+        uint ein, address[] newProviders, address[] oldProviders, address approvingAddress
     );
 
-    event AddressClaimed(address indexed _address, uint ein);
-    event AddressUnclaimed(address indexed _address, uint ein);
+    event SnowflakeResolverAdded(uint ein, address resolver, uint withdrawAllowance);
+    event SnowflakeResolverAllowanceChanged(uint ein, address resolver, uint withdrawAllowance);
+    event SnowflakeResolverRemoved(uint ein, address resolver);
+
+    event SnowflakeDeposit(address indexed from, uint indexed einTo, uint amount);
+    event SnowflakeTransfer(uint indexed einFrom, uint indexed einTo, uint amount);
+    event SnowflakeWithdraw(uint indexed einFrom, address indexed to, uint amount);
+    event InsufficientAllowance(uint indexed ein, address resolver, uint currentAllowance, uint requestedWithdraw);
 }
