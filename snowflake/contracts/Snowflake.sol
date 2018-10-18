@@ -27,11 +27,7 @@ contract IdentityRegistry {
     function hasIdentity(address _address) public view returns (bool);
     function getEIN(address _address) public view returns (uint ein);
     function isAddressFor(uint ein, address _address) public view returns (bool);
-    function isProviderFor(uint ein, address provider) public view returns (bool);
     function isResolverFor(uint ein, address resolver) public view returns (bool);
-    function getDetails(uint ein) public view
-        returns (address recoveryAddress, address[] associatedAddresses, address[] providers, address[] resolvers);
-    function mintIdentity(address recoveryAddress, address provider, address[] resolvers) public returns (uint ein);
     function mintIdentityDelegated(
         address recoveryAddress, address associatedAddress, address[] resolvers, uint8 v, bytes32 r, bytes32 s
     )
@@ -41,36 +37,31 @@ contract IdentityRegistry {
     )
         public;
     function removeAddress(uint ein, address addressToRemove, uint8 v, bytes32 r, bytes32 s, uint salt) public;
-    function addProviders(address[] providers) public;
     function addProviders(uint ein, address[] providers) public;
-    function removeProviders(address[] providers) public;
     function removeProviders(uint ein, address[] providers) public;
     function addResolvers(uint ein, address[] resolvers) public;
     function removeResolvers(uint ein, address[] resolvers) public;
 
     function initiateRecoveryAddressChange(uint ein, address newRecoveryAddress) public;
-    function triggerRecovery(uint ein, address newAssociatedAddress, uint8 v, bytes32 r, bytes32 s) public;
-    function triggerPoisonPill(uint ein, address[] firstChunk, address[] lastChunk, bool clearResolvers) public;
 }
 
 contract Snowflake is Ownable {
     using SafeMath for uint;
 
-    // tally hydro token deposits from EINs
+    // mapping of EINs to hydro token deposits
     mapping (uint => uint) public deposits;
+    // mapping from identity to resolver to allowance
+    mapping (uint => mapping (address => uint)) public resolverAllowances;
+
+    // SC variables
+    address public hydroTokenAddress;
+    ERC20 private hydroToken;
+    address public identityRegistryAddress;
+    IdentityRegistry private identityRegistry;
 
     // signature variables
     uint public signatureTimeout;
     mapping (bytes32 => bool) public signatureLog;
-
-    // mapping from identity to resolver to allowance
-    mapping (uint => mapping (address => uint)) public resolverAllowances;
-
-    // admin/contract variables
-    address public hydroTokenAddress;
-    address public identityRegistryAddress;
-    ERC20 private hydroToken;
-    IdentityRegistry private identityRegistry;
 
     constructor (address _hydroTokenAddress, address _identityRegistryAddress) public {
         setAddresses(_hydroTokenAddress, _identityRegistryAddress);
@@ -89,15 +80,16 @@ contract Snowflake is Ownable {
         _;
     }
 
+    // enforces that a particular address is associated with an EIN
+    modifier isAddressFor(uint ein, address _address) {
+        require(identityRegistry.isAddressFor(ein, _address), "Address is not associated with EIN.");
+        _;
+    }
+
     // enforces signature timeouts
     modifier timestampIsValid(uint timestamp) {
         // solium-disable-next-line security/no-block-members
         require(timestamp.add(signatureTimeout) > block.timestamp, "Message was signed too long ago.");
-        _;
-    }
-
-    modifier isAddressFor(uint ein, address _address) {
-        require(identityRegistry.isAddressFor(ein, _address), "Address is not associated with EIN.");
         _;
     }
 
@@ -317,10 +309,7 @@ contract Snowflake is Ownable {
         require(_bytes.length == 32, "Argument is not 32 bytes.");
 
         uint converted;
-        // solium-disable-next-line security/no-inline-assembly
-        assembly {
-            converted := mload(add(add(_bytes, 0x20), 0))
-        }
+        assembly { converted := mload(add(add(_bytes, 32), 0)) } // solium-disable-line security/no-inline-assembly
 
         return converted;
     }
@@ -382,9 +371,7 @@ contract Snowflake is Ownable {
         viaContract.snowflakeCall(msg.sender, einFrom, to, amount, _bytes);
     }
 
-    function _transfer(uint einFrom, uint einTo, uint amount) internal returns (bool) {
-        require(identityRegistry.identityExists(einTo), "Must transfer to a valid identity");
-
+    function _transfer(uint einFrom, uint einTo, uint amount) private identityExists(einTo, true) returns (bool) {
         require(deposits[einFrom] >= amount, "Cannot withdraw more than the current deposit balance.");
         deposits[einFrom] = deposits[einFrom].sub(amount);
         deposits[einTo] = deposits[einTo].add(amount);
