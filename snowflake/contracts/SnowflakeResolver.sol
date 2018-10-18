@@ -1,6 +1,6 @@
-pragma solidity ^0.4.23;
+pragma solidity ^0.4.24;
 
-import "../zeppelin/ownership/Ownable.sol";
+import "./zeppelin/ownership/Ownable.sol";
 
 interface ApproveAndCaller {
     function approveAndCall(address _spender, uint256 _value, bytes _extraData) external returns (bool success);

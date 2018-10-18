@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
 import "./StringUtils.sol";
-import "../SnowflakeResolver.sol";
+import "../../SnowflakeResolver.sol";
 
 
 interface ERC20 {
@@ -15,7 +15,6 @@ interface IdentityRegistry {
     function isAddressFor(uint ein, address _address) external view returns (bool);
     function isProviderFor(uint ein, address provider) external view returns (bool);
     function isResolverFor(uint ein, address resolver) external view returns (bool);
-    // function identityExists(uint ein) external view returns (bool);
 }
 
 interface Snowflake {

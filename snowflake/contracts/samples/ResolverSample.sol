@@ -1,6 +1,6 @@
 pragma solidity ^0.4.24;
 
-import "../resolvers/SnowflakeResolver.sol";
+import "../SnowflakeResolver.sol";
 
 
 interface Snowflake {
@@ -16,7 +16,7 @@ interface Snowflake {
 }
 
 
-contract TestingResolver is SnowflakeResolver {
+contract ResolverSample is SnowflakeResolver {
     mapping (string => bool) internal signedUp;
 
     constructor (address snowflakeAddress) public {

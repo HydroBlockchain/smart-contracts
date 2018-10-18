@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
 import "./ClaimHolder.sol";
-import "../SnowflakeResolver.sol";
+import "../../SnowflakeResolver.sol";
 
 contract IdentityRegistry {
     function getEIN(address _address) public view returns (uint ein);
@@ -28,7 +28,7 @@ contract Snowflake725Registry is SnowflakeResolver {
         require(einTo725[ein] == address(0), "You already have a 725");
 
         ClaimHolder claim = new ClaimHolder();
-        require(claim.addKey(keccak256(abi.encodePacked(msg.sender)), 1, 1));
+        require(claim.addKey(keccak256(abi.encodePacked(msg.sender)), 1, 1), "Key not added.");
 
         einTo725[ein] = claim;
         return(claim);
@@ -42,7 +42,7 @@ contract Snowflake725Registry is SnowflakeResolver {
 
         require(einTo725[ein] == address(0), "You already have a 725");
 
-        ClaimHolder claim =  ClaimHolder(_contract);
+        ClaimHolder claim = ClaimHolder(_contract);
         bytes32 key;
 
         for (uint x = 0; x < ownedAddresses.length; x++) {

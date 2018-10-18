@@ -1,6 +1,6 @@
-pragma solidity ^0.4.23;
+pragma solidity ^0.4.24;
 
-import "../zeppelin/ownership/Ownable.sol";
+import "./zeppelin/ownership/Ownable.sol";
 
 contract ViaContract {
     function snowflakeCall(address resolver, string hydroIdFrom, string hydroIdTo, uint amount, bytes _bytes) public;

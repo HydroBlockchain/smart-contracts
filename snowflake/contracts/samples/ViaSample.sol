@@ -1,6 +1,6 @@
 pragma solidity ^0.4.24;
 
-import "./SnowflakeVia.sol";
+import "../SnowflakeVia.sol";
 
 interface ERC20 {
     function balanceOf(address who) external returns (uint256);
@@ -12,7 +12,7 @@ interface Snowflake {
     function getHydroId(address _address) external returns (string hydroId);
 }
 
-contract TestingVia is SnowflakeVia {
+contract ViaSample is SnowflakeVia {
     constructor (address snowflakeAddress, address hydroTokenAddress) public {
         setSnowflakeAddress(snowflakeAddress);
         setHydroTokenAddress(hydroTokenAddress);

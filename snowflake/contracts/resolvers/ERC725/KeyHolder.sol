@@ -1,6 +1,6 @@
 pragma solidity ^0.4.24;
 
-import './ERC725.sol';
+import "./ERC725.sol";
 
 contract KeyHolder is ERC725 {
 

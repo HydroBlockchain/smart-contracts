@@ -45,6 +45,10 @@ contract IdentityRegistry {
     function initiateRecoveryAddressChange(uint ein, address newRecoveryAddress) public;
 }
 
+interface ClientRaindrop {
+    function signUp(uint ein, string casedHydroID, address _address) external;
+}
+
 contract Snowflake is Ownable {
     using SafeMath for uint;
 
@@ -54,17 +58,19 @@ contract Snowflake is Ownable {
     mapping (uint => mapping (address => uint)) public resolverAllowances;
 
     // SC variables
-    address public hydroTokenAddress;
-    ERC20 private hydroToken;
     address public identityRegistryAddress;
     IdentityRegistry private identityRegistry;
+    address public hydroTokenAddress;
+    ERC20 private hydroToken;
+    address public clientRaindropAddress;
+    ClientRaindrop private clientRaindrop;
 
     // signature variables
     uint public signatureTimeout;
     mapping (bytes32 => bool) public signatureLog;
 
-    constructor (address _hydroTokenAddress, address _identityRegistryAddress) public {
-        setAddresses(_hydroTokenAddress, _identityRegistryAddress);
+    constructor (address _identityRegistryAddress, address _hydroTokenAddress, address _clientRaindropAddress) public {
+        setAddresses(_identityRegistryAddress, _hydroTokenAddress, _clientRaindropAddress);
         setSignatureTimeout(60 * 60 * 5); // 5 hours
     }
 
@@ -95,17 +101,22 @@ contract Snowflake is Ownable {
 
 
     // set the hydro token and identity registry addresses
-    function setAddresses(address _hydroTokenAddress, address _identityRegistryAddress) public onlyOwner {
-        hydroTokenAddress = _hydroTokenAddress;
-        hydroToken = ERC20(_hydroTokenAddress);
-
+    function setAddresses(address _identityRegistryAddress, address _hydroTokenAddress, address _clientRaindropAddress)
+        public onlyOwner
+    {
         identityRegistryAddress = _identityRegistryAddress;
-        identityRegistry = IdentityRegistry(_identityRegistryAddress);
+        identityRegistry = IdentityRegistry(identityRegistryAddress);
+
+        hydroTokenAddress = _hydroTokenAddress;
+        hydroToken = ERC20(hydroTokenAddress);
+
+        clientRaindropAddress = _clientRaindropAddress;
+        clientRaindrop = ClientRaindrop(clientRaindropAddress);
     }
 
     // set the signature timeout
     function setSignatureTimeout(uint newTimeout) public {
-        require(newTimeout >= 1800 && newTimeout <= 604800, "Timeout must between 30 minutes and a week.");
+        require(newTimeout >= 1800 && newTimeout <= 604800, "Timeout must be between 30 minutes and a week.");
         signatureTimeout = newTimeout;
     }
 
@@ -117,6 +128,23 @@ contract Snowflake is Ownable {
         public returns (uint ein)
     {
         return identityRegistry.mintIdentityDelegated(recoveryAddress, associatedAddress, resolvers, v, r, s);
+    }
+
+    // wrap mintIdentityDelegated and initialize the client raindrop resolver
+    function mintIdentityDelegated(
+        address recoveryAddress, address associatedAddress, string casedHydroId, uint8 v, bytes32 r, bytes32 s
+    )
+        public returns (uint ein)
+    {
+        address[] memory clientRaindropResolver = new address[](1);
+        clientRaindropResolver[0] = clientRaindropAddress;
+        uint _ein = identityRegistry.mintIdentityDelegated(
+            recoveryAddress, associatedAddress, clientRaindropResolver, v, r, s
+        );
+
+        clientRaindrop.signUp(_ein, casedHydroId, associatedAddress);
+
+        return _ein;
     }
 
     // wrap addAddress
@@ -150,7 +178,7 @@ contract Snowflake is Ownable {
         );
 
         identityRegistry.addProviders(ein, providers);
-        emit ProviderAddedFromSnowflake(ein, providers, approvingAddress);
+        emit ProvidersAddedFromSnowflake(ein, providers, approvingAddress);
     }
 
     // delegated removeProviders
@@ -167,7 +195,7 @@ contract Snowflake is Ownable {
         );
 
         identityRegistry.removeProviders(ein, providers);
-        emit ProviderRemovedFromSnowflake(ein, providers, approvingAddress);
+        emit ProvidersRemovedFromSnowflake(ein, providers, approvingAddress);
     }
 
     // delegated wrapper to add new providers and remove old ones
@@ -207,6 +235,7 @@ contract Snowflake is Ownable {
         addResolvers(ein, resolvers, isSnowflake, withdrawAllowances);
     }
 
+    // common logic for adding resolvers
     function addResolvers(uint ein, address[] resolvers, bool[] isSnowflake, uint[] withdrawAllowances) private {
         require(resolvers.length == isSnowflake.length, "Malformed inputs.");
         require(isSnowflake.length == withdrawAllowances.length, "Malformed inputs.");
@@ -226,10 +255,12 @@ contract Snowflake is Ownable {
         identityRegistry.addResolvers(ein, resolvers);
     }
 
+    // change resolver allowances for identity of msg.sender
     function changeResolverAllowances(address[] resolvers, uint[] withdrawAllowances) public {
         changeResolverAllowances(identityRegistry.getEIN(msg.sender), resolvers, withdrawAllowances);
     }
 
+    // change resolver allowances delegated
     function changeResolverAllowances(
         uint ein, address[] resolvers, uint[] withdrawAllowances,
         address approvingAddress, uint8 v, bytes32 r, bytes32 s, uint salt
@@ -283,6 +314,7 @@ contract Snowflake is Ownable {
         removeResolvers(ein, resolvers, isSnowflake, force);
     }
 
+    // common logic to remove resolvers
     function removeResolvers(uint ein, address[] resolvers, bool[] isSnowflake, bool[] force) private {
         require(resolvers.length == isSnowflake.length, "Malformed inputs.");
         require(isSnowflake.length == force.length, "Malformed inputs.");
@@ -409,8 +441,8 @@ contract Snowflake is Ownable {
 
 
     // events
-    event ProviderAddedFromSnowflake(uint ein, address[] providers, address approvingAddress);
-    event ProviderRemovedFromSnowflake(uint ein, address[] providers, address approvingAddress);
+    event ProvidersAddedFromSnowflake(uint ein, address[] providers, address approvingAddress);
+    event ProvidersRemovedFromSnowflake(uint ein, address[] providers, address approvingAddress);
     event ProvidersUpgradedFromSnowflake(
         uint ein, address[] newProviders, address[] oldProviders, address approvingAddress
     );
