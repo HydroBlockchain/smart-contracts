@@ -3,46 +3,44 @@ pragma solidity ^0.4.24;
 import "./ClaimHolder.sol";
 import "../SnowflakeResolver.sol";
 
-contract Snowflake {
-    function getHydroId(address _address) public view returns (string hydroId);
-    function getDetails(string hydroId) public view returns (
-        address owner,
-        address[] resolvers,
-        address[] ownedAddresses,
-        uint256 balance
-    );
+contract IdentityRegistry {
+    function getEIN(address _address) public view returns (uint ein);
+    function getDetails(uint ein) public view
+        returns (address recoveryAddress, address[] associatedAddresses, address[] providers, address[] resolvers);
 }
 
 contract Snowflake725Registry is SnowflakeResolver {
 
-    constructor () public {
+    IdentityRegistry registry;
+
+    constructor (address _identityRegistryAddress) public {
         snowflakeName = "Snowflake ERC725 Registry";
         snowflakeDescription = "A registry of ERC725 contracts and their corresponding Snowflake owners";
         callOnSignUp = false;
+        registry = IdentityRegistry(_identityRegistryAddress);
     }
 
-    mapping(string => address) snowflakeTo725;
+    mapping(uint => address) einTo725;
 
     function create725() public returns(address) {
-        Snowflake snowflake = Snowflake(snowflakeAddress);
-        string memory hydroId = snowflake.getHydroId(msg.sender);
+        uint ein = registry.getEIN(msg.sender);
 
-        require(snowflakeTo725[hydroId] == address(0), "You already have a 725");
+        require(einTo725[ein] == address(0), "You already have a 725");
 
         ClaimHolder claim = new ClaimHolder();
         require(claim.addKey(keccak256(abi.encodePacked(msg.sender)), 1, 1));
 
-        snowflakeTo725[hydroId] = claim;
+        einTo725[ein] = claim;
         return(claim);
     }
 
     function claim725(address _contract) public returns(bool) {
-        Snowflake snowflake = Snowflake(snowflakeAddress);
-        string memory hydroId = snowflake.getHydroId(msg.sender);
-        address[] memory ownedAddresses;
-        (,,ownedAddresses,) = snowflake.getDetails(hydroId);
+        uint ein = registry.getEIN(msg.sender);
 
-        require(snowflakeTo725[hydroId] == address(0), "You already have a 725");
+        address[] memory ownedAddresses;
+        (,ownedAddresses,,) = registry.getDetails(ein);
+
+        require(einTo725[ein] == address(0), "You already have a 725");
 
         ClaimHolder claim =  ClaimHolder(_contract);
         bytes32 key;
@@ -50,7 +48,7 @@ contract Snowflake725Registry is SnowflakeResolver {
         for (uint x = 0; x < ownedAddresses.length; x++) {
             (,,key) = claim.getKey(keccak256(abi.encodePacked(ownedAddresses[x])));
             if (key == keccak256(abi.encodePacked(ownedAddresses[x]))) {
-                snowflakeTo725[hydroId] = _contract;
+                einTo725[ein] = _contract;
                 return true;
             }
         }
@@ -59,14 +57,13 @@ contract Snowflake725Registry is SnowflakeResolver {
     }
 
     function remove725() public {
-        Snowflake snowflake = Snowflake(snowflakeAddress);
-        string memory hydroId = snowflake.getHydroId(msg.sender);
+        uint ein = registry.getEIN(msg.sender);
 
-        snowflakeTo725[hydroId] = address(0);
+        einTo725[ein] = address(0);
     }
 
-    function get725(string _hydroId) public view returns(address) {
-        return snowflakeTo725[_hydroId];
+    function get725(uint _ein) public view returns(address) {
+        return einTo725[_ein];
     }
 
 }
