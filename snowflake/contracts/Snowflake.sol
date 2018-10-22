@@ -20,32 +20,32 @@ interface ViaContract {
     function snowflakeCall(address resolver, uint einFrom, address to, uint amount, bytes _bytes) external;
 }
 
-contract IdentityRegistry {
-    function isSigned(address _address, bytes32 messageHash, uint8 v, bytes32 r, bytes32 s) public view returns (bool);
+interface IdentityRegistryInterface {
+    function isSigned(address _address, bytes32 messageHash, uint8 v, bytes32 r, bytes32 s) external view returns (bool);
 
-    function identityExists(uint ein) public view returns (bool);
-    function hasIdentity(address _address) public view returns (bool);
-    function getEIN(address _address) public view returns (uint ein);
-    function isAddressFor(uint ein, address _address) public view returns (bool);
-    function isResolverFor(uint ein, address resolver) public view returns (bool);
+    function identityExists(uint ein) external view returns (bool);
+    function hasIdentity(address _address) external view returns (bool);
+    function getEIN(address _address) external view returns (uint ein);
+    function isAddressFor(uint ein, address _address) external view returns (bool);
+    function isResolverFor(uint ein, address resolver) external view returns (bool);
     function mintIdentityDelegated(
         address recoveryAddress, address associatedAddress, address[] resolvers, uint8 v, bytes32 r, bytes32 s
     )
-        public returns (uint ein);
+        external returns (uint ein);
     function addAddress(
         uint ein, address addressToAdd, address approvingAddress, uint8[2] v, bytes32[2] r, bytes32[2] s, uint salt
     )
-        public;
-    function removeAddress(uint ein, address addressToRemove, uint8 v, bytes32 r, bytes32 s, uint salt) public;
-    function addProviders(uint ein, address[] providers) public;
-    function removeProviders(uint ein, address[] providers) public;
-    function addResolvers(uint ein, address[] resolvers) public;
-    function removeResolvers(uint ein, address[] resolvers) public;
+        external;
+    function removeAddress(uint ein, address addressToRemove, uint8 v, bytes32 r, bytes32 s, uint salt) external;
+    function addProviders(uint ein, address[] providers) external;
+    function removeProviders(uint ein, address[] providers) external;
+    function addResolvers(uint ein, address[] resolvers) external;
+    function removeResolvers(uint ein, address[] resolvers) external;
 
-    function initiateRecoveryAddressChange(uint ein, address newRecoveryAddress) public;
+    function initiateRecoveryAddressChange(uint ein, address newRecoveryAddress) external;
 }
 
-interface ClientRaindrop {
+interface ClientRaindropInterface {
     function signUp(uint ein, string casedHydroID, address _address) external;
 }
 
@@ -59,18 +59,18 @@ contract Snowflake is Ownable {
 
     // SC variables
     address public identityRegistryAddress;
-    IdentityRegistry private identityRegistry;
+    IdentityRegistryInterface private identityRegistry;
     address public hydroTokenAddress;
     ERC20 private hydroToken;
     address public clientRaindropAddress;
-    ClientRaindrop private clientRaindrop;
+    ClientRaindropInterface private clientRaindrop;
 
     // signature variables
     uint public signatureTimeout;
     mapping (bytes32 => bool) public signatureLog;
 
-    constructor (address _identityRegistryAddress, address _hydroTokenAddress, address _clientRaindropAddress) public {
-        setAddresses(_identityRegistryAddress, _hydroTokenAddress, _clientRaindropAddress);
+    constructor (address _identityRegistryAddress, address _hydroTokenAddress) public {
+        setAddresses(_identityRegistryAddress, _hydroTokenAddress);
         setSignatureTimeout(60 * 60 * 5); // 5 hours
     }
 
@@ -101,17 +101,17 @@ contract Snowflake is Ownable {
 
 
     // set the hydro token and identity registry addresses
-    function setAddresses(address _identityRegistryAddress, address _hydroTokenAddress, address _clientRaindropAddress)
-        public onlyOwner
-    {
+    function setAddresses(address _identityRegistryAddress, address _hydroTokenAddress) public onlyOwner {
         identityRegistryAddress = _identityRegistryAddress;
-        identityRegistry = IdentityRegistry(identityRegistryAddress);
+        identityRegistry = IdentityRegistryInterface(identityRegistryAddress);
 
         hydroTokenAddress = _hydroTokenAddress;
         hydroToken = ERC20(hydroTokenAddress);
+    }
 
+    function setClientRaindropAddress(address _clientRaindropAddress) public onlyOwner {
         clientRaindropAddress = _clientRaindropAddress;
-        clientRaindrop = ClientRaindrop(clientRaindropAddress);
+        clientRaindrop = ClientRaindropInterface(clientRaindropAddress);
     }
 
     // set the signature timeout
@@ -432,6 +432,7 @@ contract Snowflake is Ownable {
 
         resolverAllowances[einFrom][msg.sender] = resolverAllowances[einFrom][msg.sender].sub(amount);
     }
+
 
     function initiateRecoveryAddressChange(address _newAddress) public {
         require(_newAddress != address(0), "Cannot set the recovery address to the zero address.");

@@ -9,7 +9,7 @@ interface ERC20 {
     function balanceOf(address who) external view returns (uint256);
 }
 
-interface IdentityRegistry {
+interface IdentityRegistryInterface {
     function isSigned(address _address, bytes32 messageHash, uint8 v, bytes32 r, bytes32 s) external view returns (bool);
     function getEIN(address _address) external view returns (uint ein);
     function isAddressFor(uint ein, address _address) external view returns (bool);
@@ -17,7 +17,7 @@ interface IdentityRegistry {
     function isResolverFor(uint ein, address resolver) external view returns (bool);
 }
 
-interface Snowflake {
+interface SnowflakeInterface {
     function hydroTokenAddress() external view returns (address);
     function identityRegistryAddress() external view returns (address);
 }
@@ -30,7 +30,7 @@ contract ClientRaindrop is SnowflakeResolver {
 
     // other SCs
     ERC20 private hydroToken;
-    IdentityRegistry private identityRegistry;
+    IdentityRegistryInterface private identityRegistry;
 
     // staking requirements
     uint public minimumHydroStakeUser;
@@ -72,13 +72,13 @@ contract ClientRaindrop is SnowflakeResolver {
         _;
     }
 
-    // set the snowflake address, and hydro token/identity registry contract wrappers
+    // set the snowflake address, and hydro token + identity registry contract wrappers
     function setSnowflakeAddress(address _snowflakeAddress) public onlyOwner {
         snowflakeAddress = _snowflakeAddress;
         
-        Snowflake snowflake = Snowflake(snowflakeAddress);
+        SnowflakeInterface snowflake = SnowflakeInterface(snowflakeAddress);
         hydroToken = ERC20(snowflake.hydroTokenAddress());
-        identityRegistry = IdentityRegistry(snowflake.identityRegistryAddress());
+        identityRegistry = IdentityRegistryInterface(snowflake.identityRegistryAddress());
     }
 
     // set minimum hydro balances required for sign ups
@@ -117,7 +117,7 @@ contract ClientRaindrop is SnowflakeResolver {
         // check conditions specific to this resolver
         require(hydroIDAvailable(uncasedHydroIDHash), "HydroID is unavailable.");
         require(einDirectory[ein] == bytes32(0), "EIN is already mapped to a HydroID.");
-        require(addressDirectory[_address] == bytes32(0), "Address is already mapped to a HydroID");
+        require(addressDirectory[_address] == bytes32(0), "Address is already mapped to a HydroID.");
 
         // update mappings
         userDirectory[uncasedHydroIDHash] = User(ein, _address, casedHydroID, true, false);

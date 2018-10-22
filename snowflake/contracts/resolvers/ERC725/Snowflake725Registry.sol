@@ -3,21 +3,21 @@ pragma solidity ^0.4.24;
 import "./ClaimHolder.sol";
 import "../../SnowflakeResolver.sol";
 
-contract IdentityRegistry {
-    function getEIN(address _address) public view returns (uint ein);
-    function getDetails(uint ein) public view
+interface IdentityRegistryInterface {
+    function getEIN(address _address) external view returns (uint ein);
+    function getDetails(uint ein) external view
         returns (address recoveryAddress, address[] associatedAddresses, address[] providers, address[] resolvers);
 }
 
 contract Snowflake725Registry is SnowflakeResolver {
 
-    IdentityRegistry registry;
+    IdentityRegistryInterface registry;
 
     constructor (address _identityRegistryAddress) public {
         snowflakeName = "Snowflake ERC725 Registry";
         snowflakeDescription = "A registry of ERC725 contracts and their corresponding Snowflake owners";
         callOnSignUp = false;
-        registry = IdentityRegistry(_identityRegistryAddress);
+        registry = IdentityRegistryInterface(_identityRegistryAddress);
     }
 
     mapping(uint => address) einTo725;

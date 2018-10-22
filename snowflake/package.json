@@ -22,7 +22,7 @@
   "dependencies": {
     "ethereumjs-util": "^5.2.0",
     "ganache-cli": "^6.1.8",
-    "truffle": "^5.0.0-beta.1",
+    "truffle": "^5.0.0-next.12",
     "web3": "^1.0.0-beta.34"
   }
 }

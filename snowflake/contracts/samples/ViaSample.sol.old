@@ -7,7 +7,7 @@ interface ERC20 {
     function transfer(address to, uint256 value) external returns (bool);
 }
 
-interface Snowflake {
+interface SnowflakeInterface {
     function whitelistResolver(address resolver) external;
     function getHydroId(address _address) external returns (string hydroId);
 }
@@ -46,7 +46,7 @@ contract ViaSample is SnowflakeVia {
 
     // allows hydroIds with balances to withdraw their accumulated eth balance to an address
     function withdrawTo(address to) public {
-        Snowflake snowflake = Snowflake(snowflakeAddress);
+        SnowflakeInterface snowflake = SnowflakeInterface(snowflakeAddress);
         to.transfer(balances[snowflake.getHydroId(msg.sender)]);
     }
 
