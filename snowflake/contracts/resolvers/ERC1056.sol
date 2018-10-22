@@ -1,6 +1,6 @@
 pragma solidity ^0.4.24;
 
-interface IdentityRegistry {
+interface IdentityRegistryInterface {
     function getEIN(address _address) external view returns (uint ein);
     function isResolverFor(uint ein, address resolver) external view returns (bool);
     function identityExists(uint ein) external view returns (bool);
@@ -44,11 +44,11 @@ contract SignatureVerifier {
 }
 
 contract ERC1056RegistryResolver is SignatureVerifier {
-    IdentityRegistry identityRegistry;
+    IdentityRegistryInterface identityRegistry;
     EthereumDIDRegistry ethereumDIDRegistry;
 
     constructor (address identityRegistryAddress, address ethereumDIDRegistryAddress) public {
-        identityRegistry = IdentityRegistry(identityRegistryAddress);
+        identityRegistry = IdentityRegistryInterface(identityRegistryAddress);
         ethereumDIDRegistry = EthereumDIDRegistry(ethereumDIDRegistryAddress);
     }
 
@@ -68,7 +68,9 @@ contract ERC1056RegistryResolver is SignatureVerifier {
     }
 
     function changeOwnerDelegated(address newOwner, uint8 sigV, bytes32 sigR, bytes32 sigS, uint einDelegated) public {
-        uint ein  = recoverEIN(keccak256(abi.encodePacked("changeOwnerDelegated", newOwner, actionNonce[einDelegated])), sigV, sigR, sigS);
+        uint ein = recoverEIN(
+            keccak256(abi.encodePacked("changeOwnerDelegated", newOwner, actionNonce[einDelegated])), sigV, sigR, sigS
+        );
         require(ein == einDelegated, "The signing address did not pass the correct EIN");
         actionNonce[ein]++;
         _changeOwner(einToDID[ein], newOwner);
@@ -84,8 +86,16 @@ contract ERC1056RegistryResolver is SignatureVerifier {
         _addDelegate(einToDID[ein], delegateType, delegate, validity);
     }
 
-    function addDelegateDelegated(bytes32 delegateType, address delegate, uint validity, uint8 sigV, bytes32 sigR, bytes32 sigS, uint einDelegated) public {
-        uint ein  = recoverEIN(keccak256(abi.encodePacked("addDelegateDelegated", delegateType, delegate, validity, actionNonce[einDelegated])), sigV, sigR, sigS);
+    function addDelegateDelegated(
+        bytes32 delegateType, address delegate, uint validity, uint8 sigV, bytes32 sigR, bytes32 sigS, uint einDelegated
+    )
+        public
+    {
+        uint ein = recoverEIN(
+            keccak256(
+                abi.encodePacked("addDelegateDelegated", delegateType, delegate, validity, actionNonce[einDelegated])
+            ),
+            sigV, sigR, sigS);
         require(ein == einDelegated, "The signing address did not pass the correct EIN");
         actionNonce[ein]++;
         _addDelegate(einToDID[ein], delegateType, delegate, validity);
@@ -102,7 +112,12 @@ contract ERC1056RegistryResolver is SignatureVerifier {
     }
 
     function revokeDelegateDelegated(bytes32 delegateType, address delegate, uint8 sigV, bytes32 sigR, bytes32 sigS, uint einDelegated) public {
-        uint ein  = recoverEIN(keccak256(abi.encodePacked("revokeDelegateDelegated", delegateType, delegate, actionNonce[einDelegated])), sigV, sigR, sigS);
+        uint ein = recoverEIN(
+            keccak256(
+                abi.encodePacked("revokeDelegateDelegated", delegateType, delegate, actionNonce[einDelegated])
+            ),
+            sigV, sigR, sigS
+        );
         require(ein == einDelegated, "The signing address did not pass the correct EIN");
         actionNonce[ein]++;
         _revokeDelegate(einToDID[ein], delegateType, delegate);
@@ -119,7 +134,12 @@ contract ERC1056RegistryResolver is SignatureVerifier {
     }
 
     function setAttributeDelegated(bytes32 name, bytes value, uint validity, uint8 sigV, bytes32 sigR, bytes32 sigS, uint einDelegated) public {
-        uint ein  = recoverEIN(keccak256(abi.encodePacked("setAttributeDelegated", name, value, validity, actionNonce[einDelegated])), sigV, sigR, sigS);
+        uint ein = recoverEIN(
+            keccak256(
+                abi.encodePacked("setAttributeDelegated", name, value, validity, actionNonce[einDelegated])
+            ),
+            sigV, sigR, sigS
+        );
         require(ein == einDelegated, "The signing address did not pass the correct EIN");
         actionNonce[ein]++;
         _setAttribute(einToDID[ein], name, value, validity);
@@ -135,8 +155,17 @@ contract ERC1056RegistryResolver is SignatureVerifier {
         _revokeAttribute(einToDID[ein], name, value);
     }
 
-    function revokeAttributeDelegated(bytes32 name, bytes value, uint8 sigV, bytes32 sigR, bytes32 sigS, uint einDelegated) public {
-        uint ein  = recoverEIN(keccak256(abi.encodePacked("revokeDelegateDelegated", name, value, actionNonce[einDelegated])), sigV, sigR, sigS);
+    function revokeAttributeDelegated(
+        bytes32 name, bytes value, uint8 sigV, bytes32 sigR, bytes32 sigS, uint einDelegated
+    )
+        public
+    {
+        uint ein = recoverEIN(
+            keccak256(
+                abi.encodePacked("revokeDelegateDelegated", name, value, actionNonce[einDelegated])
+            ),
+            sigV, sigR, sigS
+        );
         require(ein == einDelegated, "The signing address did not pass the correct EIN");
         actionNonce[ein]++;
         _revokeAttribute(einToDID[ein], name, value);
@@ -147,8 +176,8 @@ contract ERC1056RegistryResolver is SignatureVerifier {
         ethereumDIDRegistry.revokeAttribute(_did, _name, _value);
     }
 
-    function recoverEIN(bytes32 _hash, uint8 _sigV, bytes32 _sigS, bytes32 _sigS) internal returns(uint){
-        address delegatedAddress = recoverAddress(_hash), sigV, sigR, sigS);
+    function recoverEIN(bytes32 _hash, uint8 _sigV, bytes32 _sigR, bytes32 _sigS) internal view returns(uint){
+        address delegatedAddress = recoverAddress(_hash, _sigV, _sigR, _sigS);
         uint ein = identityRegistry.getEIN(delegatedAddress);
         return ein;
     }
