@@ -1,4 +1,4 @@
-pragma solidity ^0.4.23;
+pragma solidity ^0.4.24;
 
 
 // thanks to https://github.com/willitscale/solidity-util and https://github.com/Arachnid/solidity-stringutils
@@ -15,9 +15,7 @@ library StringUtils {
      */
     function toSlice(string self) internal pure returns (slice) {
         uint ptr;
-        assembly {
-            ptr := add(self, 0x20)
-        }
+        assembly { ptr := add(self, 0x20) } // solium-disable-line security/no-inline-assembly
         return slice(bytes(self).length, ptr);
     }
 
@@ -38,7 +36,7 @@ library StringUtils {
     function toString(slice self) internal pure returns (string) {
         string memory ret = new string(self._len);
         uint retptr;
-        assembly { retptr := add(ret, 32) }
+        assembly { retptr := add(ret, 0x20) } // solium-disable-line security/no-inline-assembly
 
         memcpy(retptr, self._ptr, self._len);
         return ret;
@@ -79,18 +77,17 @@ library StringUtils {
         return _b1;
     }
 
-    function memcpy(uint dest, uint src, uint len) private pure {
+    function memcpy(uint dest, uint src, uint len) private pure { // solium-disable-line security/no-assign-params
         // Copy word-length chunks while possible
         for (; len >= 32; len -= 32) {
-            assembly {
-                mstore(dest, mload(src))
-            }
+            assembly { mstore(dest, mload(src)) } // solium-disable-line security/no-inline-assembly
             dest += 32;
             src += 32;
         }
 
         // Copy remaining bytes
         uint mask = 256 ** (32 - len) - 1;
+        // solium-disable-next-line security/no-inline-assembly
         assembly {
             let srcpart := and(mload(src), not(mask))
             let destpart := and(mload(dest), mask)

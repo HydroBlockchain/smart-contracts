@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
-import './ERC735.sol';
-import './KeyHolder.sol';
+import "./ERC735.sol";
+import "./KeyHolder.sol";
 
 contract ClaimHolder is KeyHolder, ERC735 {
 
@@ -35,7 +35,7 @@ contract ClaimHolder is KeyHolder, ERC735 {
         bytes32 claimId = keccak256(abi.encodePacked(_issuer, _topic));
 
         if (msg.sender != address(this)) {
-          require(keyHasPurpose(keccak256(abi.encodePacked(msg.sender)), 3), "Sender does not have claim signer key");
+            require(keyHasPurpose(keccak256(abi.encodePacked(msg.sender)), 3), "Sender does not have claim signer key");
         }
 
         if (claims.byId[claimId].issuer != _issuer) {
@@ -64,7 +64,7 @@ contract ClaimHolder is KeyHolder, ERC735 {
 
     function removeClaim(bytes32 _claimId) public returns (bool success) {
         if (msg.sender != address(this)) {
-          require(keyHasPurpose(keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have management key");
+            require(keyHasPurpose(keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have management key");
         }
 
         emit ClaimRemoved(
@@ -83,7 +83,7 @@ contract ClaimHolder is KeyHolder, ERC735 {
 
     function getClaim(bytes32 _claimId)
         public
-        constant
+        view
         returns(
             uint256 claimType,
             uint256 scheme,
@@ -105,7 +105,7 @@ contract ClaimHolder is KeyHolder, ERC735 {
 
     function getClaimIdsByTopic(uint256 _topic)
         public
-        constant
+        view
         returns(bytes32[] claimIds)
     {
         return claims.byTopic[_topic];

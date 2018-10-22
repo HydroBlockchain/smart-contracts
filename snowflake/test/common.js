@@ -1,59 +1,37 @@
 const Web3 = require('web3')
-const ethUtil = require('ethereumjs-util')
 const web3 = new Web3(Web3.givenProvider || 'http://localhost:8555')
 
+const IdentityRegistry = artifacts.require('./_testing/IdentityRegistry.sol')
 const HydroToken = artifacts.require('./_testing/HydroToken.sol')
+const Snowflake = artifacts.require('./Snowflake.sol')
 const ClientRaindrop = artifacts.require('./_testing/ClientRaindrop.sol')
 
-const Snowflake = artifacts.require('./Snowflake.sol')
+async function initialize (owner, users) {
+  const instances = {}
 
-module.exports.sign = (messageHash, user, method) => {
-  return new Promise((resolve, reject) => {
-    if (method === 'unprefixed') {
-      let signature = ethUtil.ecsign(
-        Buffer.from(ethUtil.stripHexPrefix(messageHash), 'hex'), Buffer.from(user.private, 'hex')
-      )
-      signature.r = ethUtil.bufferToHex(signature.r)
-      signature.s = ethUtil.bufferToHex(signature.s)
-      signature.v = parseInt(ethUtil.bufferToHex(signature.v))
-      resolve(signature)
-    } else {
-      web3.eth.sign(messageHash, user.public)
-        .then(concatenatedSignature => {
-          let strippedSignature = ethUtil.stripHexPrefix(concatenatedSignature)
-          let signature = {
-            r: ethUtil.addHexPrefix(strippedSignature.substr(0, 64)),
-            s: ethUtil.addHexPrefix(strippedSignature.substr(64, 64)),
-            v: parseInt(ethUtil.addHexPrefix(strippedSignature.substr(128, 2))) + 27
-          }
-          resolve(signature)
-        })
-    }
-  })
-}
-
-module.exports.initialize = async (ownerAddress, raindropUsers) => {
-  var instances = {}
-  instances.token = await HydroToken.new({ from: ownerAddress })
-  for (let i = 0; i < raindropUsers.length; i++) {
-    await instances.token.transfer(
-      raindropUsers[i].public,
+  instances.HydroToken = await HydroToken.new({ from: owner })
+  for (let i = 0; i < users.length; i++) {
+    await instances.HydroToken.transfer(
+      users[i].address,
       web3.utils.toBN(1000).mul(web3.utils.toBN(1e18)),
-      { from: ownerAddress }
+      { from: owner }
     )
   }
 
-  instances.raindrop = await ClientRaindrop.new({ from: ownerAddress })
-  await instances.raindrop.setHydroTokenAddress(instances.token.address, { from: ownerAddress })
-  for (let i = 0; i < raindropUsers.length; i++) {
-    await instances.raindrop.signUpUser(raindropUsers[i].hydroId, { from: raindropUsers[i].public })
-  }
+  instances.IdentityRegistry = await IdentityRegistry.new({ from: owner })
 
-  instances.snowflake = await Snowflake.new({ from: ownerAddress })
-  let receipt = await web3.eth.getTransactionReceipt(instances.snowflake.transactionHash)
-  assert.isAtMost(receipt.cumulativeGasUsed, 6500000)
+  instances.Snowflake = await Snowflake.new(
+    instances.IdentityRegistry.address, instances.HydroToken.address, { from: owner }
+  )
+  let receipt = await web3.eth.getTransactionReceipt(instances.Snowflake.transactionHash)
+  assert.isAtMost(receipt.cumulativeGasUsed, 6000000)
 
-  await instances.snowflake.setAddresses(instances.raindrop.address, instances.token.address)
+  instances.ClientRaindrop = await ClientRaindrop.new(instances.Snowflake.address, 0, 0, { from: owner })
+  await instances.Snowflake.setClientRaindropAddress(instances.ClientRaindrop.address)
 
   return instances
+}
+
+module.exports = {
+  initialize: initialize
 }

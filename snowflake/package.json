@@ -6,7 +6,7 @@
     "test": "npx truffle test --network ganache",
     "build": "npm run buidl",
     "buidl": "rm -rf build/ && npx truffle compile",
-    "chain": "npx ganache-cli --seed hydro --port 8555 -l 0x7A1200"
+    "chain": "npx ganache-cli --seed hydro --port 8555"
   },
   "keywords": [],
   "author": "",
@@ -22,7 +22,7 @@
   "dependencies": {
     "ethereumjs-util": "^5.2.0",
     "ganache-cli": "^6.1.8",
-    "truffle": "^5.0.0-beta.1",
+    "truffle": "^5.0.0-next.12",
     "web3": "^1.0.0-beta.34"
   }
 }
