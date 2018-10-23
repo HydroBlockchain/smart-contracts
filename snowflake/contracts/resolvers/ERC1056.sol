@@ -1,6 +1,8 @@
 pragma solidity ^0.4.24;
 
 interface IdentityRegistryInterface {
+    function isSigned(address _address, bytes32 messageHash, uint8 v, bytes32 r, bytes32 s)
+        external view returns (bool);
     function getEIN(address _address) external view returns (uint ein);
     function isResolverFor(uint ein, address resolver) external view returns (bool);
     function identityExists(uint ein) external view returns (bool);
@@ -19,31 +21,7 @@ interface EthereumDIDRegistry {
     function revokeAttribute(address identity, bytes32 name, bytes value) external;
 }
 
-contract SignatureVerifier {
-    // define the Ethereum prefix for signing a message of length 32
-    bytes private prefix = "\x19Ethereum Signed Message:\n32";
-
-    // checks if the provided (v, r, s) signature of messageHash was created by the private key associated with _address
-    function isSigned(address _address, bytes32 messageHash, uint8 v, bytes32 r, bytes32 s) public view returns (bool) {
-        return _isSigned(_address, messageHash, v, r, s) || _isSignedPrefixed(_address, messageHash, v, r, s);
-    }
-
-    // checks unprefixed signatures
-    function _isSigned(address _address, bytes32 messageHash, uint8 v, bytes32 r, bytes32 s)
-        private pure returns (bool)
-    {
-        return ecrecover(messageHash, v, r, s) == _address;
-    }
-
-    // checks prefixed signatures
-    function _isSignedPrefixed(address _address, bytes32 messageHash, uint8 v, bytes32 r, bytes32 s)
-        private view returns (bool)
-    {
-        return _isSigned(_address, keccak256(abi.encodePacked(prefix, messageHash)), v, r, s);
-    }
-}
-
-contract ERC1056 is SignatureVerifier {
+contract ERC1056 {
     IdentityRegistryInterface identityRegistry;
     EthereumDIDRegistry ethereumDIDRegistry;
 
@@ -70,7 +48,7 @@ contract ERC1056 is SignatureVerifier {
     function changeOwnerDelegated(address newOwner, uint8 sigV, bytes32 sigR, bytes32 sigS, address addrDelegated) public {
         uint ein = identityRegistry.getEIN(addrDelegated);
         require(
-            isSigned(
+            identityRegistry.isSigned(
                 addrDelegated,
                 keccak256(abi.encodePacked("changeOwnerDelegated", newOwner, actionNonce[ein])),
                 sigV, sigR, sigS
@@ -92,13 +70,14 @@ contract ERC1056 is SignatureVerifier {
     }
 
     function addDelegateDelegated(
-        bytes32 delegateType, address delegate, uint validity, uint8 sigV, bytes32 sigR, bytes32 sigS, address addrDelegated
+        bytes32 delegateType, address delegate, uint validity,
+        uint8 sigV, bytes32 sigR, bytes32 sigS, address addrDelegated
     )
         public
     {
         uint ein = identityRegistry.getEIN(addrDelegated);
         require(
-            isSigned(
+            identityRegistry.isSigned(
                 addrDelegated,
                 keccak256(abi.encodePacked("addDelegateDelegated", delegateType, delegate, validity, actionNonce[ein])),
                 sigV, sigR, sigS
@@ -126,7 +105,7 @@ contract ERC1056 is SignatureVerifier {
     {
         uint ein = identityRegistry.getEIN(addrDelegated);
         require(
-            isSigned(
+            identityRegistry.isSigned(
                 addrDelegated,
                 keccak256(abi.encodePacked("revokeDelegateDelegated", delegateType, delegate, actionNonce[ein])),
                 sigV, sigR, sigS
@@ -154,7 +133,7 @@ contract ERC1056 is SignatureVerifier {
     {
         uint ein = identityRegistry.getEIN(addrDelegated);
         require(
-            isSigned(
+            identityRegistry.isSigned(
                 addrDelegated,
                 keccak256(abi.encodePacked("setAttributeDelegated", name, value, validity, actionNonce[ein])),
                 sigV, sigR, sigS
@@ -182,7 +161,7 @@ contract ERC1056 is SignatureVerifier {
     {
         uint ein = identityRegistry.getEIN(addrDelegated);
         require(
-            isSigned(
+            identityRegistry.isSigned(
                 addrDelegated,
                 keccak256(abi.encodePacked("revokeDelegateDelegated", name, value, actionNonce[ein])),
                 sigV, sigR, sigS
