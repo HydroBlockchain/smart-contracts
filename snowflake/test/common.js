@@ -5,6 +5,8 @@ const IdentityRegistry = artifacts.require('./_testing/IdentityRegistry.sol')
 const HydroToken = artifacts.require('./_testing/HydroToken.sol')
 const Snowflake = artifacts.require('./Snowflake.sol')
 const ClientRaindrop = artifacts.require('./_testing/ClientRaindrop.sol')
+const EthereumDIDRegistry = artifacts.require('./_testing/EthereumDIDRegistry.sol')
+const Erc1056 = artifacts.require('./resolvers/ERC1056.sol')
 
 async function initialize (owner, users) {
   const instances = {}
@@ -28,6 +30,9 @@ async function initialize (owner, users) {
 
   instances.ClientRaindrop = await ClientRaindrop.new(instances.Snowflake.address, 0, 0, { from: owner })
   await instances.Snowflake.setClientRaindropAddress(instances.ClientRaindrop.address)
+
+  instances.EthereumDIDRegistry = await EthereumDIDRegistry.new({ from: owner })
+  instances.Erc1056 = await Erc1056.new(instances.IdentityRegistry.address, instances.EthereumDIDRegistry.address, { from: owner })
 
   return instances
 }
