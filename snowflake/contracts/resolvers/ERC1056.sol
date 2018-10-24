@@ -58,7 +58,7 @@ contract ERC1056 is SignatureVerifier {
     function initialize(address identity, uint8 sigV, bytes32 sigR, bytes32 sigS) public {
         uint ein = identityRegistry.getEIN(msg.sender);
         require(einToDID[ein] == address(0), "This EIN has already been initialized");
-        ethereumDIDRegistry.changeOwnerSigned(identity, sigV, sigR, sigS, address(this));
+        ethereumDIDRegistry.changeOwnerSigned(identity, sigV, sigR, sigS, this);
         einToDID[ein] = identity;
     }
 
@@ -167,7 +167,7 @@ contract ERC1056 is SignatureVerifier {
         require(isSigned(
             addrDelegated,
             keccak256(
-                abi.encodePacked("revokeDelegateDelegated", name, value, actionNonce[ein])
+                abi.encodePacked("revokeAttributeDelegated", name, value, actionNonce[ein])
             ),
             sigV, sigR, sigS
         ), "Function execution is incorrectly signed.");

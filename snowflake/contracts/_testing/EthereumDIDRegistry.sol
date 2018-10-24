@@ -1,4 +1,4 @@
-pragma solidity ^0.4.4;
+pragma solidity ^0.4.24;
 
 contract EthereumDIDRegistry {
 
@@ -8,7 +8,7 @@ contract EthereumDIDRegistry {
   mapping(address => uint) public nonce;
 
   modifier onlyOwner(address identity, address actor) {
-    require (actor == identityOwner(identity));
+    require (actor == identityOwner(identity), "Actor does not equal identity owner");
     _;
   }
 
@@ -44,7 +44,7 @@ contract EthereumDIDRegistry {
 
   function checkSignature(address identity, uint8 sigV, bytes32 sigR, bytes32 sigS, bytes32 hash) internal returns(address) {
     address signer = ecrecover(hash, sigV, sigR, sigS);
-    require(signer == identityOwner(identity));
+    require(signer == identityOwner(identity), "Signer does not equal identity owner");
     nonce[signer]++;
     return signer;
   }
