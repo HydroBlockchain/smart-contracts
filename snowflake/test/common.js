@@ -4,9 +4,7 @@ const web3 = new Web3(Web3.givenProvider || 'http://localhost:8555')
 const IdentityRegistry = artifacts.require('./_testing/IdentityRegistry.sol')
 const HydroToken = artifacts.require('./_testing/HydroToken.sol')
 const Snowflake = artifacts.require('./Snowflake.sol')
-const ClientRaindrop = artifacts.require('./_testing/ClientRaindrop.sol')
-const EthereumDIDRegistry = artifacts.require('./_testing/EthereumDIDRegistry.sol')
-const Erc1056 = artifacts.require('./resolvers/ERC1056.sol')
+const ClientRaindrop = artifacts.require('./resolvers/ClientRaindrop/ClientRaindrop.sol')
 
 async function initialize (owner, users) {
   const instances = {}
@@ -25,14 +23,9 @@ async function initialize (owner, users) {
   instances.Snowflake = await Snowflake.new(
     instances.IdentityRegistry.address, instances.HydroToken.address, { from: owner }
   )
-  let receipt = await web3.eth.getTransactionReceipt(instances.Snowflake.transactionHash)
-  assert.isAtMost(receipt.cumulativeGasUsed, 6000000)
 
   instances.ClientRaindrop = await ClientRaindrop.new(instances.Snowflake.address, 0, 0, { from: owner })
   await instances.Snowflake.setClientRaindropAddress(instances.ClientRaindrop.address)
-
-  instances.EthereumDIDRegistry = await EthereumDIDRegistry.new({ from: owner })
-  instances.Erc1056 = await Erc1056.new(instances.IdentityRegistry.address, instances.EthereumDIDRegistry.address, { from: owner })
 
   return instances
 }

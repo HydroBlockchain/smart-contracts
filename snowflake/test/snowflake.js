@@ -130,7 +130,7 @@ contract('Testing Snowflake', function (accounts) {
       const permission = await sign(permissionString, user.address, user.private)
 
       await instances.Snowflake.addResolvers(
-        user.identity, [instances.ClientRaindrop.address], [true], [0], user.address,
+        user.address, [instances.ClientRaindrop.address], [true], [0],
         permission.v, permission.r, permission.s, timestamp)
     })
 
