@@ -10,8 +10,7 @@
     "ethereumjs-util": "^5.1.5",
     "ethereumjs-wallet": "^0.6.0",
     "sha3": "^1.2.2",
-    "web3": "^1.0.0-beta.34",
-    "web3-provider-engine": "^13.8.0"
+    "web3": "^1.0.0-beta2"
   },
   "devDependencies": {
     "eslint": "^4.19.1",
