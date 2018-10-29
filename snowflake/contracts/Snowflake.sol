@@ -33,10 +33,10 @@ interface IdentityRegistryInterface {
     )
         external returns (uint ein);
     function addAddress(
-        uint ein, address addressToAdd, address approvingAddress, uint8[2] v, bytes32[2] r, bytes32[2] s, uint salt
+        address approvingAddress, address addressToAdd, uint8[2] v, bytes32[2] r, bytes32[2] s, uint[2] timestamp
     )
         external;
-    function removeAddress(uint ein, address addressToRemove, uint8 v, bytes32 r, bytes32 s, uint salt) external;
+    function removeAddress(address addressToRemove, uint8 v, bytes32 r, bytes32 s, uint timestamp) external;
     function addProviders(uint ein, address[] providers) external;
     function removeProviders(uint ein, address[] providers) external;
     function addResolvers(uint ein, address[] resolvers) external;
@@ -67,11 +67,11 @@ contract Snowflake is Ownable {
 
     // signature variables
     uint public signatureTimeout;
-    mapping (bytes32 => bool) public signatureLog;
+    mapping (uint => uint) public signatureNonce;
 
     constructor (address _identityRegistryAddress, address _hydroTokenAddress) public {
         setAddresses(_identityRegistryAddress, _hydroTokenAddress);
-        setSignatureTimeout(60 * 60 * 5); // 5 hours
+        setSignatureTimeout(5 hours);
     }
 
     // enforces that a particular address has an EIN
@@ -142,37 +142,43 @@ contract Snowflake is Ownable {
             recoveryAddress, associatedAddress, clientRaindropResolver, v, r, s
         );
 
-        clientRaindrop.signUp(_ein, casedHydroId, associatedAddress);
+        signUpClientRaindrop(_ein, casedHydroId, associatedAddress);
 
         return _ein;
     }
 
+    function signUpClientRaindrop(uint ein, string casedHydroId, address associatedAddress) public onlyOwner() {
+        clientRaindrop.signUp(ein, casedHydroId, associatedAddress);
+    }
+
     // wrap addAddress
     function addAddress(
-        uint ein,
-        address addressToAdd,
-        address approvingAddress,
-        uint8[2] v, bytes32[2] r, bytes32[2] s, uint salt
+        address approvingAddress, address addressToAdd, uint8[2] v, bytes32[2] r, bytes32[2] s, uint[2] timestamp
     )
         public
     {
-        identityRegistry.addAddress(ein, addressToAdd, approvingAddress, v, r, s, salt);
+        identityRegistry.addAddress(approvingAddress, addressToAdd, v, r, s, timestamp);
     }
 
     // wrap removeAddress
-    function removeAddress(uint ein, address addressToRemove, uint8 v, bytes32 r, bytes32 s, uint salt) public {
-        identityRegistry.removeAddress(ein, addressToRemove, v, r, s, salt);
+    function removeAddress(address addressToRemove, uint8 v, bytes32 r, bytes32 s, uint timestamp) public {
+        identityRegistry.removeAddress(addressToRemove, v, r, s, timestamp);
     }
 
     // delegated addProviders
-    function addProviders(
-        uint ein, address[] providers, address approvingAddress, uint8 v, bytes32 r, bytes32 s, uint timestamp
-    )
-        public isAddressFor(ein, approvingAddress) timestampIsValid(timestamp)
+    function addProviders(address approvingAddress, address[] providers, uint8 v, bytes32 r, bytes32 s, uint timestamp)
+        public timestampIsValid(timestamp)
     {
+        uint ein = identityRegistry.getEIN(approvingAddress);
         require(
             identityRegistry.isSigned(
-                approvingAddress, keccak256(abi.encodePacked("Add Providers", ein, providers, timestamp)), v, r, s
+                approvingAddress,
+                keccak256(
+                    abi.encodePacked(
+                        "I authorize that these Providers be added to my Identity", ein, providers, timestamp
+                    )
+                ),
+                v, r, s
             ),
             "Permission denied."
         );
@@ -183,13 +189,20 @@ contract Snowflake is Ownable {
 
     // delegated removeProviders
     function removeProviders(
-        uint ein, address[] providers, address approvingAddress, uint8 v, bytes32 r, bytes32 s, uint timestamp
+        address approvingAddress, address[] providers, uint8 v, bytes32 r, bytes32 s, uint timestamp
     )
-        public isAddressFor(ein, approvingAddress) timestampIsValid(timestamp)
+        public timestampIsValid(timestamp)
     {
+        uint ein = identityRegistry.getEIN(approvingAddress);
         require(
             identityRegistry.isSigned(
-                approvingAddress, keccak256(abi.encodePacked("Remove Providers", ein, providers, timestamp)), v, r, s
+                approvingAddress,
+                keccak256(
+                    abi.encodePacked(
+                        "I authorize that these Providers be removed from my Identity", ein, providers, timestamp
+                    )
+                ),
+                v, r, s
             ),
             "Permission denied."
         );
@@ -200,14 +213,14 @@ contract Snowflake is Ownable {
 
     // delegated wrapper to add new providers and remove old ones
     function upgradeProviders(
-        uint ein, address[] newProviders, address[] oldProviders,
-        address approvingAddress, uint8[2] v, bytes32[2] r, bytes32[2] s, uint timestamp
+        address approvingAddress, address[] newProviders, address[] oldProviders,
+        uint8[2] v, bytes32[2] r, bytes32[2] s, uint[2] timestamp
     )
         public
     {
-        addProviders(ein, newProviders, approvingAddress, v[0], r[0], s[0], timestamp);
-        removeProviders(ein, oldProviders, approvingAddress, v[1], r[1], s[1], timestamp);
-
+        addProviders(approvingAddress, newProviders, v[0], r[0], s[0], timestamp[0]);
+        removeProviders(approvingAddress, oldProviders, v[1], r[1], s[1], timestamp[1]);
+        uint ein = identityRegistry.getEIN(approvingAddress);
         emit ProvidersUpgradedFromSnowflake(ein, newProviders, oldProviders, approvingAddress);
     }
 
@@ -218,11 +231,12 @@ contract Snowflake is Ownable {
 
     // add resolvers delegated
     function addResolvers(
-        uint ein, address[] resolvers, bool[] isSnowflake, uint[] withdrawAllowances,
-        address approvingAddress, uint8 v, bytes32 r, bytes32 s, uint timestamp
+        address approvingAddress, address[] resolvers, bool[] isSnowflake, uint[] withdrawAllowances,
+        uint8 v, bytes32 r, bytes32 s, uint timestamp
     )
-        public isAddressFor(ein, approvingAddress) timestampIsValid(timestamp)
+        public timestampIsValid(timestamp)
     {
+        uint ein = identityRegistry.getEIN(approvingAddress);
         require(
             identityRegistry.isSigned(
                 approvingAddress,
@@ -262,18 +276,16 @@ contract Snowflake is Ownable {
 
     // change resolver allowances delegated
     function changeResolverAllowances(
-        uint ein, address[] resolvers, uint[] withdrawAllowances,
-        address approvingAddress, uint8 v, bytes32 r, bytes32 s, uint salt
+        address approvingAddress, address[] resolvers, uint[] withdrawAllowances, uint8 v, bytes32 r, bytes32 s
     )
-        public isAddressFor(ein, approvingAddress)
+        public
     {
+        uint ein = identityRegistry.getEIN(approvingAddress);
+
+        uint nonce = signatureNonce[ein]++;
         bytes32 messageHash = keccak256(
-            abi.encodePacked("Change Allowance", ein, resolvers, withdrawAllowances, salt)
+            abi.encodePacked("Change Allowance", ein, resolvers, withdrawAllowances, nonce)
         );
-
-        require(signatureLog[messageHash] == false, "Signature was already submitted");
-        signatureLog[messageHash] = true;
-
         require(identityRegistry.isSigned(approvingAddress, messageHash, v, r, s), "Permission denied.");
 
         changeResolverAllowances(ein, resolvers, withdrawAllowances);
@@ -297,15 +309,21 @@ contract Snowflake is Ownable {
 
     // add resolvers delegated
     function removeResolvers(
-        uint ein, address[] resolvers, bool[] isSnowflake, bool[] force,
-        address approvingAddress, uint8 v, bytes32 r, bytes32 s, uint timestamp
+        address approvingAddress, address[] resolvers, bool[] isSnowflake, bool[] force,
+        uint8 v, bytes32 r, bytes32 s, uint timestamp
     )
-        public isAddressFor(ein, approvingAddress) timestampIsValid(timestamp)
+        public timestampIsValid(timestamp)
     {
+        uint ein = identityRegistry.getEIN(approvingAddress);
+
         require(
             identityRegistry.isSigned(
                 approvingAddress,
-                keccak256(abi.encodePacked("Remove Resolvers", ein, resolvers, timestamp)),
+                keccak256(
+                    abi.encodePacked(
+                        "I authorize that these Resolvers be removed from my Identity.", ein, resolvers, timestamp
+                    )
+                ),
                 v, r, s
             ),
             "Permission denied."
@@ -354,6 +372,7 @@ contract Snowflake is Ownable {
         uint recipient;
         if (_bytes.length != 0) {
             recipient = bytesToUint(_bytes);
+            require(identityRegistry.identityExists(recipient), "The recipient EIN does not exist.");
         } else {
             recipient = identityRegistry.getEIN(sender);
         }
@@ -366,12 +385,12 @@ contract Snowflake is Ownable {
     }
 
     // transfer snowflake balance from one snowflake holder to another
-    function transferSnowflakeBalance(uint einTo, uint amount) public hasIdentity(msg.sender, true) {
+    function transferSnowflakeBalance(uint einTo, uint amount) public {
         _transfer(identityRegistry.getEIN(msg.sender), einTo, amount);
     }
 
     // withdraw Snowflake balance to an external address
-    function withdrawSnowflakeBalance(address to, uint amount) public hasIdentity(msg.sender, true) {
+    function withdrawSnowflakeBalance(address to, uint amount) public {
         _withdraw(identityRegistry.getEIN(msg.sender), to, amount);
     }
 
@@ -388,7 +407,7 @@ contract Snowflake is Ownable {
     }
 
     // allows resolvers to send withdrawal amounts to arbitrary smart contracts 'to' identities (throws if unsuccessful)
-    function withdrawSnowflakeBalanceFromVia(uint einFrom, address via, uint einTo, uint amount, bytes _bytes) public {
+    function transferSnowflakeBalanceFromVia(uint einFrom, address via, uint einTo, uint amount, bytes _bytes) public {
         handleAllowance(einFrom, amount);
         _withdraw(einFrom, via, amount);
         ViaContract viaContract = ViaContract(via);
@@ -434,10 +453,32 @@ contract Snowflake is Ownable {
     }
 
 
-    function initiateRecoveryAddressChange(address _newAddress) public {
-        require(_newAddress != address(0), "Cannot set the recovery address to the zero address.");
-        uint ein = identityRegistry.getEIN(_newAddress);
-        identityRegistry.initiateRecoveryAddressChange(ein, _newAddress);
+    function initiateRecoveryAddressChange(address newAddress) public {
+        initiateRecoveryAddressChange(identityRegistry.getEIN(msg.sender), newAddress);
+    }
+
+    function initiateRecoveryAddressChange(address approvingAddress, address newAddress, uint8 v, bytes32 r, bytes32 s)
+        public
+    {
+        uint ein = identityRegistry.getEIN(approvingAddress);
+        uint nonce = signatureNonce[ein]++;
+        require(
+            identityRegistry.isSigned(
+                approvingAddress,
+                keccak256(
+                    abi.encodePacked("I authorize this change of Recovery Address.", ein, newAddress, nonce)
+                ),
+                v, r, s
+            ),
+            "Permission denied."
+        );
+
+        initiateRecoveryAddressChange(identityRegistry.getEIN(msg.sender), newAddress);
+    }
+
+    function initiateRecoveryAddressChange(uint ein, address newAddress) public {
+        require(newAddress != address(0), "Cannot set the recovery address to the zero address.");
+        identityRegistry.initiateRecoveryAddressChange(ein, newAddress);
     }
 
 

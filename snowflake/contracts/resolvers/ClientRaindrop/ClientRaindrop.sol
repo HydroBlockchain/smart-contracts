@@ -33,8 +33,8 @@ contract ClientRaindrop is SnowflakeResolver {
     IdentityRegistryInterface private identityRegistry;
 
     // staking requirements
-    uint public minimumHydroStakeUser;
-    uint public minimumHydroStakeDelegatedUser;
+    uint public hydroStakeUser;
+    uint public hydroStakeDelegatedUser;
 
     // User account template
     struct User {
@@ -54,7 +54,7 @@ contract ClientRaindrop is SnowflakeResolver {
     mapping (address => bytes32) private addressDirectory;
 
 
-    constructor(address _snowflakeAddress, uint _minimumHydroStakeUser, uint _minimumHydroStakeDelegatedUser)
+    constructor(address _snowflakeAddress, uint _hydroStakeUser, uint _hydroStakeDelegatedUser)
         SnowflakeResolver(
             "Client Raindrop", "A registry that links EINs to HydroIDs to power Client Raindrop MFA.",
             _snowflakeAddress,
@@ -63,7 +63,7 @@ contract ClientRaindrop is SnowflakeResolver {
         public
     {
         setSnowflakeAddress(_snowflakeAddress);
-        setStakes(_minimumHydroStakeUser, _minimumHydroStakeDelegatedUser);
+        setStakes(_hydroStakeUser, _hydroStakeDelegatedUser);
     }
 
     // Requires an address to have a minimum number of Hydro
@@ -73,8 +73,8 @@ contract ClientRaindrop is SnowflakeResolver {
     }
 
     // set the snowflake address, and hydro token + identity registry contract wrappers
-    function setSnowflakeAddress(address _snowflakeAddress) public onlyOwner {
-        snowflakeAddress = _snowflakeAddress;
+    function setSnowflakeAddress(address _snowflakeAddress) public onlyOwner() {
+        super.setSnowflakeAddress(_snowflakeAddress);
         
         SnowflakeInterface snowflake = SnowflakeInterface(snowflakeAddress);
         hydroToken = ERC20(snowflake.hydroTokenAddress());
@@ -82,29 +82,28 @@ contract ClientRaindrop is SnowflakeResolver {
     }
 
     // set minimum hydro balances required for sign ups
-    function setStakes(uint newMinimumHydroStakeUser, uint newMinimumHydroStakeDelegatedUser) public onlyOwner {
+    function setStakes(uint _hydroStakeUser, uint _hydroStakeDelegatedUser) public onlyOwner() {
         // <= the airdrop amount
-        require(newMinimumHydroStakeUser <= 222222 * 10**18, "Stake is too high.");
-        minimumHydroStakeUser = newMinimumHydroStakeUser;
+        require(_hydroStakeUser <= 222222 * 10**18, "Stake is too high.");
+        hydroStakeUser = _hydroStakeDelegatedUser;
 
         // <= 1% of total supply
-        require(newMinimumHydroStakeDelegatedUser <= hydroToken.totalSupply() / 100, "Stake is too high.");
-        minimumHydroStakeDelegatedUser = newMinimumHydroStakeDelegatedUser;
+        require(_hydroStakeDelegatedUser <= hydroToken.totalSupply() / 100, "Stake is too high.");
+        hydroStakeDelegatedUser = _hydroStakeDelegatedUser;
     }
 
 
     // Allows users to sign up with their own address
-    function signUp(string casedHydroID) public requireStake(msg.sender, minimumHydroStakeUser) {
+    function signUp(string casedHydroID) public requireStake(msg.sender, hydroStakeUser) {
         _signUp(identityRegistry.getEIN(msg.sender), casedHydroID, msg.sender);
     }
 
     // Allows providers to sign up users on their behalf
     function signUp(uint ein, string casedHydroID, address _address)
-        public requireStake(msg.sender, minimumHydroStakeDelegatedUser)
+        public requireStake(msg.sender, hydroStakeDelegatedUser)
     {
         require(identityRegistry.isAddressFor(ein, _address), "Passed address is not associated with passed EIN.");
         require(identityRegistry.isProviderFor(ein, msg.sender), "msg.sender is not a Provider for the passed EIN.");
-
         _signUp(ein, casedHydroID, _address);
     }
 

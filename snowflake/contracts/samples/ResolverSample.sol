@@ -17,31 +17,31 @@ interface SnowflakeInterface {
 
 
 contract ResolverSample is SnowflakeResolver {
+    SnowflakeInterface private snowflake;
+
     mapping (string => bool) internal signedUp;
 
-    constructor (address snowflakeAddress) public {
-        snowflakeName = "Testing Resolver";
-        snowflakeDescription = "This is an example Snowflake resolver.";
+    constructor (address snowflakeAddress) 
+        SnowflakeResolver("Sample Resolver", "This is a sample Snowflake resolver.", snowflakeAddress, true, true)
+        public
+    {
         setSnowflakeAddress(snowflakeAddress);
+    }
 
-        callOnSignUp = true;
-        callOnRemoval = true;
-
-        SnowflakeInterface snowflake = SnowflakeInterface(snowflakeAddress);
-        snowflake.whitelistResolver(address(this));
+    // set the snowflake address, and hydro token + identity registry contract wrappers
+    function setSnowflakeAddress(address snowflakeAddress) public onlyOwner() {
+        super.setSnowflakeAddress(snowflakeAddress);
+        snowflake = SnowflakeInterface(snowflakeAddress);
     }
 
     // implement signup function
-    function onSignUp(string hydroId, uint allowance) public returns (bool) {
-        require(msg.sender == snowflakeAddress, "Did not originate from Snowflake.");
+    function onSignUp(string hydroId, uint allowance) public senderIsSnowflake() returns (bool) {
         require(allowance > 0, "Must set an allowance."); // obviously useless without a corresponding withdrawal!
-        signedUp[hydroId] = true;
-        return true;
+        return signedUp[hydroId] = true;
     }
 
     // implement removal function
-    function onRemoval(string hydroId, uint allowance) public returns (bool) {
-        require(msg.sender == snowflakeAddress, "Did not originate from Snowflake.");
+    function onRemoval(string hydroId, uint allowance) public senderIsSnowflake() returns (bool) {
         signedUp[hydroId] = false;
         // this is just arbitrary, to test functionality
         if (allowance > 0) {
@@ -53,19 +53,16 @@ contract ResolverSample is SnowflakeResolver {
 
     // example functions to test *From token functions
     function transferSnowflakeBalanceFrom(string hydroIdFrom, string hydroIdTo, uint amount) public onlyOwner {
-        SnowflakeInterface snowflake = SnowflakeInterface(snowflakeAddress);
         snowflake.transferSnowflakeBalanceFrom(hydroIdFrom, hydroIdTo, amount);
     }
 
     function withdrawSnowflakeBalanceFrom(string hydroIdFrom, address to, uint amount) public onlyOwner {
-        SnowflakeInterface snowflake = SnowflakeInterface(snowflakeAddress);
         snowflake.withdrawSnowflakeBalanceFrom(hydroIdFrom, to, amount);
     } 
 
     function withdrawSnowflakeBalanceFromVia(string hydroIdFrom, address via, string hydroIdTo, uint amount)
         public onlyOwner
     {
-        Snowflake snowflake = Snowflake(snowflakeAddress);
         bytes memory _;
         snowflake.withdrawSnowflakeBalanceFromVia(hydroIdFrom, via, hydroIdTo, amount, _);
     }
@@ -73,7 +70,6 @@ contract ResolverSample is SnowflakeResolver {
     function withdrawSnowflakeBalanceFromVia(string hydroIdFrom, address via, address to, uint amount)
         public onlyOwner
     {
-        Snowflake snowflake = Snowflake(snowflakeAddress);
         bytes memory _;
         snowflake.withdrawSnowflakeBalanceFromVia(hydroIdFrom, via, to, amount, _);
     }
