@@ -3,21 +3,26 @@
   "version": "1.0.0",
   "description": "Hydro Snowflake identity protocol",
   "scripts": {
-    "test": "npx truffle test --network ganache",
     "build": "npm run buidl",
     "buidl": "rm -rf build/ && npx truffle compile",
-    "chain": "npx ganache-cli --seed hydro --port 8555"
+    "chain": "npx ganache-cli --port 8545 --seed hydro",
+    "test": "npx truffle test --network development",
+    "cover": "npx solidity-coverage",
+    "chain-cover": "npx testrpc-sc --port 8555 -l 0xfffffffffff -g 0x01 --allowUnlimitedContractSize --seed hydro",
+    "test-cover": "npx truffle test --network coverage"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "coveralls": "^3.0.2",
     "eslint": "^4.19.1",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-import": "^2.12.0",
     "eslint-plugin-node": "^6.0.1",
     "eslint-plugin-promise": "^3.8.0",
-    "eslint-plugin-standard": "^3.1.0"
+    "eslint-plugin-standard": "^3.1.0",
+    "solidity-coverage": "^0.5.11"
   },
   "dependencies": {
     "ethereumjs-util": "^5.2.0",

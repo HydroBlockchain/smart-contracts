@@ -4,6 +4,20 @@ var gas = 6.5 * 1e6
 
 module.exports = {
   networks: {
+    development: {
+      host: 'localhost',
+      port: 8545,
+      network_id: '*',
+      websockets: true
+    },
+    coverage: {
+      host: 'localhost',
+      port: 8555,
+      network_id: '*',
+      gas: 0xfffffffffff,
+      gasPrice: 0x01,
+      websockets: true
+    },
     rinkebyIPC: {
       host: 'localhost',
       port: 8545,
@@ -21,11 +35,6 @@ module.exports = {
       gas: gas,
       gasPrice: Web3.utils.toWei('8', 'gwei'),
       skipDryRun: true
-    },
-    ganache: {
-      host: 'localhost',
-      port: 8555,
-      network_id: '*'
     }
   },
   compilers: {
