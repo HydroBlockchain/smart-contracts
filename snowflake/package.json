@@ -5,7 +5,7 @@
   "scripts": {
     "build": "npm run buidl",
     "buidl": "rm -rf build/ && npx truffle compile",
-    "chain": "npx ganache-cli --port 8545 -g 0x01 --seed hydro",
+    "chain": "npx ganache-cli --port 8545 --seed hydro",
     "test": "npx truffle test --network development",
     "cover": "rm -f coverage.json && rm -rf coverage && npx solidity-coverage",
     "chain-cover": "npx testrpc-sc --port 8555 -l 0xfffffffffff -g 0x01 --allowUnlimitedContractSize --seed hydro",
