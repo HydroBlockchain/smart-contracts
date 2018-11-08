@@ -99,10 +99,8 @@ contract ClientRaindrop is SnowflakeResolver {
     }
 
     // Allows providers to sign up users on their behalf
-    function signUp(uint ein, string casedHydroID, address _address)
-        public requireStake(msg.sender, hydroStakeDelegatedUser)
-    {
-        require(identityRegistry.isAddressFor(ein, _address), "Passed address is not associated with passed EIN.");
+    function signUp(address _address, string casedHydroID) public requireStake(msg.sender, hydroStakeDelegatedUser) {
+        uint ein = identityRegistry.getEIN(_address);
         require(identityRegistry.isProviderFor(ein, msg.sender), "msg.sender is not a Provider for the passed EIN.");
         _signUp(ein, casedHydroID, _address);
     }

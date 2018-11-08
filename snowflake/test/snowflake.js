@@ -1,11 +1,7 @@
-const Web3 = require('web3')
-const web3 = new Web3(Web3.givenProvider || 'http://localhost:8555')
-
 const common = require('./common.js')
 const { sign, verifyIdentity } = require('./utilities')
 
 // const ResolverSample = artifacts.require('./samples/ResolverSample.sol')
-// const ViaSample = artifacts.require('./samples/ViaSample.sol')
 
 let instances
 
@@ -36,24 +32,22 @@ contract('Testing Snowflake', function (accounts) {
   })
 
   describe('Test Snowflake', async () => {
-    it('Identity can be minted', async function () {
+    it('Identity can be created', async function () {
       const user = users[0]
 
+      const timestamp = Math.round(new Date() / 1000) - 1
       const permissionString = web3.utils.soliditySha3(
-        'Mint',
-        instances.IdentityRegistry.address,
-        user.recoveryAddress,
-        user.address,
-        instances.Snowflake.address,
-        { t: 'address[]', v: [] }
+        '0x19', '0x00', instances.IdentityRegistry.address,
+        'I authorize the creation of an Identity on my behalf.',
+        user.recoveryAddress, user.address, instances.Snowflake.address, { t: 'address[]', v: [] }, timestamp
       )
 
       const permission = await sign(permissionString, user.address, user.private)
 
-      await instances.Snowflake.methods['mintIdentityDelegated(address,address,address[],uint8,bytes32,bytes32)'](
-        user.recoveryAddress, user.address, [],
-        permission.v, permission.r, permission.s
-      )
+      await instances.Snowflake
+        .methods['createIdentityDelegated(address,address,address[],uint8,bytes32,bytes32,uint256)'](
+          user.recoveryAddress, user.address, [], permission.v, permission.r, permission.s, timestamp
+        )
 
       user.identity = web3.utils.toBN(1)
 
@@ -64,63 +58,69 @@ contract('Testing Snowflake', function (accounts) {
         resolvers:           []
       })
     })
-
-    it('Identity can be minted with Client Raindrop', async function () {
-      const user = users[1]
-
-      const permissionString = web3.utils.soliditySha3(
-        'Mint',
-        instances.IdentityRegistry.address,
-        user.recoveryAddress,
-        user.address,
-        instances.Snowflake.address,
-        { t: 'address[]', v: [instances.ClientRaindrop.address] }
-      )
-
-      const permission = await sign(permissionString, user.address, user.private)
-
-      await instances.Snowflake.methods['mintIdentityDelegated(address,address,string,uint8,bytes32,bytes32)'](
-        user.recoveryAddress, user.address, user.hydroID,
-        permission.v, permission.r, permission.s
-      )
-
-      user.identity = web3.utils.toBN(2)
-
-      await verifyIdentity(user.identity, instances.IdentityRegistry, {
-        recoveryAddress:     user.recoveryAddress,
-        associatedAddresses: [user.address],
-        providers:           [instances.Snowflake.address],
-        resolvers:           [instances.ClientRaindrop.address]
-      })
-    })
   })
 
   describe('Testing Client Raindrop', async () => {
-    const user = users[0]
+    let user = users[0]
 
-    it('Insufficiently staked signups are rejected', async function () {
-      const newStake = web3.utils.toBN(1).mul(web3.utils.toBN(1e18))
+    const newStake = web3.utils.toBN(1).mul(web3.utils.toBN(1e18))
+    it('Stakes are settable', async function () {
       await instances.ClientRaindrop.setStakes(newStake, newStake)
+    })
 
+    it('Insufficiently staked self signups are rejected', async function () {
       instances.ClientRaindrop.signUp(user.hydroID, { from: user.address })
         .then(() => assert.fail('unstaked HydroID was reserved', 'transaction should fail'))
-        .catch(error => assert.include(
-          error.message, 'Insufficient staked HYDRO balance.', 'unexpected error')
-        )
+        .catch(error => assert.include(error.message, 'Insufficient staked HYDRO balance.', 'unexpected error'))
 
       await instances.HydroToken.transfer(user.address, newStake, { from: accounts[0] })
     })
 
+    let timestamp
+    let permission
+    it('Insufficiently staked provider sign-ups are rejected', async function () {
+      user = users[1]
+
+      timestamp = Math.round(new Date() / 1000) - 1
+      const permissionString = web3.utils.soliditySha3(
+        '0x19', '0x00', instances.IdentityRegistry.address,
+        'I authorize the creation of an Identity on my behalf.',
+        user.recoveryAddress,
+        user.address,
+        instances.Snowflake.address,
+        { t: 'address[]', v: [instances.ClientRaindrop.address] },
+        timestamp
+      )
+
+      permission = await sign(permissionString, user.address, user.private)
+
+      await instances.Snowflake
+        .methods['createIdentityDelegated(address,address,string,uint8,bytes32,bytes32,uint256)'](
+          user.recoveryAddress, user.address, user.hydroID, permission.v, permission.r, permission.s, timestamp
+        )
+        .then(() => assert.fail('unstaked HydroID was reserved', 'transaction should fail'))
+        .catch(error => assert.include(error.message, 'Insufficient staked HYDRO balance.', 'unexpected error'))
+    })
+
+    it('Insufficiently staked provider signups are rejected via sign-up', async function () {
+      user = users[0]
+
+      instances.Snowflake.signUpClientRaindrop(user.address, user.hydroID, { from: accounts[0] })
+        .then(() => assert.fail('unstaked HydroID was reserved', 'transaction should fail'))
+        .catch(error => assert.include(error.message, 'Insufficient staked HYDRO balance.', 'unexpected error'))
+
+      await instances.HydroToken.transfer(instances.Snowflake.address, newStake, { from: accounts[0] })
+    })
+
     it('Cannot call signup without setting as resolver.', async function () {
       instances.ClientRaindrop.signUp(user.hydroID, { from: user.address })
-        .then(() => assert.fail('unstaked HydroID was reserved', 'transaction should fail'))
-        .catch(error => assert.include(
-          error.message, 'The passed EIN has not set this resolver.', 'unexpected error')
-        )
+        .then(() => assert.fail('signed up without setting resolver', 'transaction should fail'))
+        .catch(error => assert.include(error.message, 'The passed EIN has not set this resolver.', 'unexpected error'))
 
-      const timestamp = Math.round(new Date() / 1000)
+      const timestamp = Math.round(new Date() / 1000) - 1
       const permissionString = web3.utils.soliditySha3(
-        'Add Resolvers',
+        '0x19', '0x00', instances.Snowflake.address,
+        'I authorize that these Resolvers be added to my Identity.',
         user.identity,
         { t: 'address[]', v: [instances.ClientRaindrop.address] },
         { t: 'uint[]', v: [0] },
@@ -134,7 +134,26 @@ contract('Testing Snowflake', function (accounts) {
         permission.v, permission.r, permission.s, timestamp)
     })
 
+    it('Can sign up provider once conditions are met', async function () {
+      user = users[1]
+
+      await instances.Snowflake
+        .methods['createIdentityDelegated(address,address,string,uint8,bytes32,bytes32,uint256)'](
+          user.recoveryAddress, user.address, user.hydroID, permission.v, permission.r, permission.s, timestamp
+        )
+
+      user.identity = web3.utils.toBN(2)
+
+      await verifyIdentity(user.identity, instances.IdentityRegistry, {
+        recoveryAddress: user.recoveryAddress,
+        associatedAddresses: [user.address],
+        providers: [instances.Snowflake.address],
+        resolvers: [instances.ClientRaindrop.address]
+      })
+    })
+
     it('Bad HydroIDs are rejected', async function () {
+      user = users[0]
       const badHydroIDs = ['Abc', 'aBc', 'abC', 'ABc', 'AbC', 'aBC', 'ABC', '1', '12', 'a'.repeat(33)]
 
       await Promise.all(badHydroIDs.map(badHydroID => {
@@ -146,8 +165,20 @@ contract('Testing Snowflake', function (accounts) {
       }))
     })
 
-    it('Can sign up once conditions are met', async function () {
-      await instances.ClientRaindrop.signUp(user.hydroID, { from: user.address })
+    it('could sign up self once conditions are met', async function () {
+      await instances.ClientRaindrop.signUp.call(user.hydroID, { from: user.address })
+        .catch(error => assert.fail(error.message, 'transaction should not fail'))
+    })
+
+    it('Can sign up provider once conditions are met via signup', async function () {
+      await instances.Snowflake.signUpClientRaindrop(user.address, user.hydroID, { from: accounts[0] })
+
+      await verifyIdentity(user.identity, instances.IdentityRegistry, {
+        recoveryAddress:     user.recoveryAddress,
+        associatedAddresses: [user.address],
+        providers:           [instances.Snowflake.address],
+        resolvers:           [instances.ClientRaindrop.address]
+      })
     })
   })
 })

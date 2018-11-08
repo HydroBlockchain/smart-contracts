@@ -1,7 +1,8 @@
 const AddressSet = artifacts.require('./_testing/AddressSet/AddressSet.sol')
 const IdentityRegistry = artifacts.require('./_testing/IdentityRegistry.sol')
 
-const SafeMath = artifacts.require('./libraries/SafeMath.sol')
+const SafeMath = artifacts.require('./zeppelin/math/SafeMath.sol')
+const BytesLib = artifacts.require('./BytesLib.sol')
 const Snowflake = artifacts.require('./Snowflake.sol')
 
 const StringUtils = artifacts.require('./resolvers/ClientRaindrop/StringUtils.sol')
@@ -13,6 +14,8 @@ module.exports = async function (deployer) {
 
   deployer.deploy(SafeMath)
   deployer.link(SafeMath, Snowflake)
+  deployer.deploy(BytesLib)
+  deployer.link(BytesLib, Snowflake)
 
   deployer.deploy(StringUtils)
   deployer.link(StringUtils, ClientRaindrop)

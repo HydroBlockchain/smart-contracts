@@ -1,6 +1,3 @@
-const Web3 = require('web3')
-const web3 = new Web3(Web3.givenProvider || 'http://localhost:8555')
-
 const IdentityRegistry = artifacts.require('./_testing/IdentityRegistry.sol')
 const HydroToken = artifacts.require('./_testing/HydroToken.sol')
 const Snowflake = artifacts.require('./Snowflake.sol')

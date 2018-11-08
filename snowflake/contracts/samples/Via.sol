@@ -12,41 +12,57 @@ interface SnowflakeInterface {
     function getEIN(address _address) external view returns (uint ein);
 }
 
-contract ViaSample is SnowflakeVia {
+contract Via is SnowflakeVia {
     SnowflakeInterface private snowflake;
     ERC20 private hydroToken;
 
-    constructor (address snowflakeAddress) SnowflakeVia(snowflakeAddress) public {
-        setSnowflakeAddress(snowflakeAddress);
+    constructor (address _snowflakeAddress) SnowflakeVia(_snowflakeAddress) public {
+        setSnowflakeAddress(_snowflakeAddress);
     }
 
-    function setSnowflakeAddress(address snowflakeAddress) public onlyOwner() {
-        super.setSnowflakeAddress(snowflakeAddress);
+    function setSnowflakeAddress(address _snowflakeAddress) public onlyOwner() {
+        super.setSnowflakeAddress(_snowflakeAddress);
 
-        snowflake = SnowflakeInterface(snowflakeAddress);
+        snowflake = SnowflakeInterface(_snowflakeAddress);
         hydroToken = ERC20(snowflake.hydroTokenAddress());
     }
 
-    // this contract is responsible for funding itself with ETH
+    // this contract is responsible for funding itself with ETH, and must be entrusted to do so
     function fund() public payable {}
 
-    mapping (uint => uint) balances;
+    // EIN -> ETH balances
+    mapping (uint => uint) public balances;
 
     // a dummy exchange rate between HYDRO and ETH s.t. 10 HYDRO := 1 ETH for testing purposes
     uint exchangeRate = 10;
-
     function convertHydroToEth(uint amount) public view returns (uint) {
         return amount / exchangeRate; // UNSAFE, please don't do this except when testing :)
     }
 
-    // receive tokens, convert to ETH, then add to the hydroId's balance
+    // end recipient is an EIN, credit their (ETH) balance
     function snowflakeCall(address, uint, uint einTo, uint amount, bytes) public senderIsSnowflake() {
+        creditEIN(einTo, amount);
+    }
+
+    function snowflakeCall(address, uint einTo, uint amount, bytes) public senderIsSnowflake() {
+        creditEIN(einTo, amount);
+    }
+
+    function creditEIN(uint einTo, uint amount) private {
         balances[einTo] += convertHydroToEth(amount); // UNSAFE, please use SafeMath when not testing :)
     }
 
-    // receive tokens, convert to ETH, then send to the 'to' address at the current HYDRO exchange rate
+    // end recipient is an address, send them ETH
     function snowflakeCall(address, uint, address to, uint amount, bytes) public senderIsSnowflake() {
-        to.transfer(convertHydroToEth(amount));
+        creditAddress(to, amount);
+    }
+
+    function snowflakeCall(address, address to, uint amount, bytes) public senderIsSnowflake() {
+        creditAddress(to, amount);
+    }
+
+    function creditAddress(address to, uint amount) private {
+        to.transfer(convertHydroToEth(amount)); // UNSAFE, please use SafeMath when not testing :)
     }
 
     // allows hydroIds with balances to withdraw their accumulated eth balance to an address

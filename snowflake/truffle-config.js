@@ -1,6 +1,5 @@
-const Web3 = require('web3')
-
-var gas = 6.5 * 1e6
+const gas = 6.5 * 1e6
+const gasPrice = 8000000000 // 8 gwei
 
 module.exports = {
   networks: {
@@ -24,7 +23,7 @@ module.exports = {
       network_id: 4,
       timeoutBlocks: 200,
       gas: gas,
-      gasPrice: Web3.utils.toWei('2', 'gwei'),
+      gasPrice: gasPrice,
       skipDryRun: true
     },
     mainIPC: {
@@ -33,7 +32,7 @@ module.exports = {
       network_id: 1,
       timeoutBlocks: 200,
       gas: gas,
-      gasPrice: Web3.utils.toWei('8', 'gwei'),
+      gasPrice: gasPrice,
       skipDryRun: true
     }
   },

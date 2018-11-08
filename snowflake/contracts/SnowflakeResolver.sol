@@ -2,11 +2,12 @@ pragma solidity ^0.4.24;
 
 import "./zeppelin/ownership/Ownable.sol";
 
-interface ApproveAndCaller {
+interface _HydroInterface {
     function approveAndCall(address _spender, uint256 _value, bytes _extraData) external returns (bool success);
+    function transfer(address _to, uint256 _amount) external returns (bool success);
 }
 
-interface SnowflakeAddress {
+interface _SnowflakeInterface {
     function hydroTokenAddress() external view returns (address);
 }
 
@@ -45,14 +46,35 @@ contract SnowflakeResolver is Ownable {
         snowflakeAddress = _snowflakeAddress;
     }
 
-    function depositHydroBalanceTo(uint einTo, uint amount) public onlyOwner {
+    function transferHydroBalanceTo(uint einTo, uint amount) internal {
         // convert einTo to bytes
         bytes32 _bytes32 = bytes32(einTo);
         bytes memory convertedEINTo = new bytes(32);
         for (uint i = 0; i < 32; i++) {convertedEINTo[i] = _bytes32[i];}
         
-        ApproveAndCaller hydro = ApproveAndCaller(SnowflakeAddress(snowflakeAddress).hydroTokenAddress());
+        _HydroInterface hydro = _HydroInterface(_SnowflakeInterface(snowflakeAddress).hydroTokenAddress());
         require(hydro.approveAndCall(snowflakeAddress, amount, convertedEINTo), "Unsuccessful approveAndCall.");
+    }
+
+    function withdrawHydroBalanceTo(address to, uint amount) internal {
+        _HydroInterface hydro = _HydroInterface(_SnowflakeInterface(snowflakeAddress).hydroTokenAddress());
+        require(hydro.transfer(to, amount), "Unsuccessful transfer.");
+    }
+
+    function transferHydroBalanceToVia(address via, uint einTo, uint amount, bytes memory _bytes) internal {
+        _HydroInterface hydro = _HydroInterface(_SnowflakeInterface(snowflakeAddress).hydroTokenAddress());
+        require(
+            hydro.approveAndCall(snowflakeAddress, amount, abi.encodePacked(true, address(this), via, einTo, _bytes)),
+            "Unsuccessful approveAndCall."
+        );
+    }
+
+    function withdrawHydroBalanceToVia(address via, address to, uint amount, bytes _bytes) internal {
+        _HydroInterface hydro = _HydroInterface(_SnowflakeInterface(snowflakeAddress).hydroTokenAddress());
+        require(
+            hydro.approveAndCall(snowflakeAddress, amount, abi.encodePacked(false, address(this), via, to, _bytes)),
+            "Unsuccessful approveAndCall."
+        );
     }
 
     // onSignUp is called every time a user sets your contract as a resolver if callOnSignUp is true

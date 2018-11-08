@@ -1,5 +1,3 @@
-const Web3 = require('web3')
-const web3 = new Web3(Web3.givenProvider || 'http://localhost:8555')
 const ethUtil = require('ethereumjs-util')
 
 function sign (messageHash, address, privateKey, method) {
@@ -42,36 +40,36 @@ function timeTravel (seconds) {
   })
 }
 
-async function verifyIdentity (identity, IdentityRegistry, expectedDetails) {
-  const identityExists = await IdentityRegistry.identityExists(identity)
+async function verifyIdentity (ein, IdentityRegistry, expectedIdentity) {
+  const identityExists = await IdentityRegistry.identityExists(ein)
   assert.isTrue(identityExists, "identity unexpectedly does/doesn't exist.")
 
-  for (const address of expectedDetails.associatedAddresses) {
+  for (const address of expectedIdentity.associatedAddresses) {
     const hasIdentity = await IdentityRegistry.hasIdentity(address)
-    assert.isTrue(hasIdentity, "address unexpectedly does/doesn't have an identity.")
+    assert.isTrue(hasIdentity, "address unexpectedly doesn't have an identity.")
 
     const onChainIdentity = await IdentityRegistry.getEIN(address)
-    assert.isTrue(onChainIdentity.eq(identity), 'on chain identity was set incorrectly.')
+    assert.isTrue(onChainIdentity.eq(ein), 'on chain identity was set incorrectly.')
 
-    const isAddressFor = await IdentityRegistry.isAddressFor(identity, address)
-    assert.isTrue(isAddressFor, 'associated address was set incorrectly.')
+    const isAssociatedAddressFor = await IdentityRegistry.isAssociatedAddressFor(ein, address)
+    assert.isTrue(isAssociatedAddressFor, 'associated address was set incorrectly.')
   }
 
-  for (const provider of expectedDetails.providers) {
-    const isProviderFor = await IdentityRegistry.isProviderFor(identity, provider)
+  for (const provider of expectedIdentity.providers) {
+    const isProviderFor = await IdentityRegistry.isProviderFor(ein, provider)
     assert.isTrue(isProviderFor, 'provider was set incorrectly.')
   }
 
-  for (const resolver of expectedDetails.resolvers) {
-    const isResolverFor = await IdentityRegistry.isResolverFor(identity, resolver)
+  for (const resolver of expectedIdentity.resolvers) {
+    const isResolverFor = await IdentityRegistry.isResolverFor(ein, resolver)
     assert.isTrue(isResolverFor, 'associated resolver was set incorrectly.')
   }
 
-  const details = await IdentityRegistry.getDetails(identity)
-  assert.equal(details.recoveryAddress, expectedDetails.recoveryAddress, 'unexpected recovery address.')
-  assert.deepEqual(details.associatedAddresses, expectedDetails.associatedAddresses, 'unexpected associated addresses.')
-  assert.deepEqual(details.providers, expectedDetails.providers, 'unexpected providers.')
-  assert.deepEqual(details.resolvers, expectedDetails.resolvers, 'unexpected resolvers.')
+  const identity = await IdentityRegistry.getIdentity(ein)
+  assert.equal(identity.recoveryAddress, expectedIdentity.recoveryAddress, 'unexpected recovery address.')
+  assert.deepEqual(identity.associatedAddresses, expectedIdentity.associatedAddresses, 'unexpected associated addresses.')
+  assert.deepEqual(identity.providers, expectedIdentity.providers, 'unexpected providers.')
+  assert.deepEqual(identity.resolvers, expectedIdentity.resolvers, 'unexpected resolvers.')
 }
 
 module.exports = {
