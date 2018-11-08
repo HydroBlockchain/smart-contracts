@@ -16,7 +16,6 @@ async function verifyHydroBalances (accounts, amounts) {
   let hydroBalance
   for (let i = 0; i < accounts.length; i++) {
     hydroBalance = await instances.HydroToken.balanceOf.call(accounts[i])
-    console.log(hydroBalance)
     assert.isTrue(hydroBalance.eq(amounts[i]), `Incorrect balance for address ${accounts[i]}`)
   }
 }

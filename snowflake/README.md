@@ -1,6 +1,6 @@
 # Snowflake
-[![Build Status](https://travis-ci.org/hydrogen-dev/smart-contracts.svg?branch=ERC1484-dev)](https://travis-ci.org/hydrogen-dev/smart-contracts)
-[![Coverage Status](https://coveralls.io/repos/github/hydrogen-dev/smart-contracts/badge.svg?branch=ERC1484-dev)](https://coveralls.io/github/hydrogen-dev/smart-contracts?branch=ERC1484-dev)
+[![Build Status](https://travis-ci.org/hydrogen-dev/smart-contracts.svg?branch=master)](https://travis-ci.org/hydrogen-dev/smart-contracts)
+[![Coverage Status](https://coveralls.io/repos/github/hydrogen-dev/smart-contracts/badge.svg?branch=master)](https://coveralls.io/github/hydrogen-dev/smart-contracts?branch=master)
 
 ## Introduction
 Snowflake is an ERC-1484 `Provider` that provides on-/off-chain identity management. For more details, see [our whitepaper](https://github.com/hydrogen-dev/hydro-docs/tree/master/Snowflake).

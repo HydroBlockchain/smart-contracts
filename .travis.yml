@@ -1,7 +1,7 @@
 sudo: required
 branches:
   only:
-  - ERC1484-dev
+  - master
 language: node_js
 node_js:
 - '10'
