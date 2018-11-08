@@ -12,7 +12,9 @@ before_install:
   - cd snowflake
 install: npm install
 before_script:
-  - npm run chain > /dev/null &
+  - npm run chain > /dev/null & npm run chain-cover > /dev/null &
   - sleep 5
   - npm run build
 script: npm run test
+after_script:
+  - npm run cover && cat coverage/lcov.info | npx coveralls

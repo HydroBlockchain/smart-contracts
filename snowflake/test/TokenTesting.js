@@ -5,15 +5,18 @@ const ViaSample = artifacts.require('./samples/Via.sol')
 const ResolverSample = artifacts.require('./samples/Resolver.sol')
 
 async function verifySnowflakeBalances (amounts) {
+  let snowflakeBalance
   for (let i = 0; i < 2; i++) {
-    let snowflakeBalance = await instances.Snowflake.deposits(users[i].identity)
+    snowflakeBalance = await instances.Snowflake.deposits(users[i].identity)
     assert.isTrue(snowflakeBalance.eq(amounts[i]), `Incorrect balance for identity ${users[i].identity}`)
   }
 }
 
 async function verifyHydroBalances (accounts, amounts) {
+  let hydroBalance
   for (let i = 0; i < accounts.length; i++) {
-    let hydroBalance = await instances.HydroToken.balanceOf(accounts[i])
+    hydroBalance = await instances.HydroToken.balanceOf.call(accounts[i])
+    console.log(hydroBalance)
     assert.isTrue(hydroBalance.eq(amounts[i]), `Incorrect balance for address ${accounts[i]}`)
   }
 }

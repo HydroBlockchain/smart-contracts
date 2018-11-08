@@ -69,7 +69,7 @@ contract('Testing Snowflake', function (accounts) {
     })
 
     it('Insufficiently staked self signups are rejected', async function () {
-      instances.ClientRaindrop.signUp(user.hydroID, { from: user.address })
+      await instances.ClientRaindrop.signUp(user.hydroID, { from: user.address })
         .then(() => assert.fail('unstaked HydroID was reserved', 'transaction should fail'))
         .catch(error => assert.include(error.message, 'Insufficient staked HYDRO balance.', 'unexpected error'))
 
@@ -105,7 +105,7 @@ contract('Testing Snowflake', function (accounts) {
     it('Insufficiently staked provider signups are rejected via sign-up', async function () {
       user = users[0]
 
-      instances.Snowflake.signUpClientRaindrop(user.address, user.hydroID, { from: accounts[0] })
+      await instances.Snowflake.signUpClientRaindrop(user.address, user.hydroID, { from: accounts[0] })
         .then(() => assert.fail('unstaked HydroID was reserved', 'transaction should fail'))
         .catch(error => assert.include(error.message, 'Insufficient staked HYDRO balance.', 'unexpected error'))
 
@@ -113,7 +113,7 @@ contract('Testing Snowflake', function (accounts) {
     })
 
     it('Cannot call signup without setting as resolver.', async function () {
-      instances.ClientRaindrop.signUp(user.hydroID, { from: user.address })
+      await instances.ClientRaindrop.signUp(user.hydroID, { from: user.address })
         .then(() => assert.fail('signed up without setting resolver', 'transaction should fail'))
         .catch(error => assert.include(error.message, 'The passed EIN has not set this resolver.', 'unexpected error'))
 
