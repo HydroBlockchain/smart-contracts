@@ -95,29 +95,29 @@ contract('Testing Snowflake Token Functionality', function (accounts) {
     })
   })
 
-  describe('Testing self initiated methods', async () => {
-    const startingAmount = web3.utils.toBN(100).mul(web3.utils.toBN(1e18))
-    const transferAmount = web3.utils.toBN(1e18)
-    it('can transfer HYDRO from 1 snowflake to another', async () => {
-      await instances.Snowflake.transferSnowflakeBalance(users[1].identity, transferAmount, { from: users[0].address })
-      await verifySnowflakeBalances([startingAmount.sub(transferAmount), transferAmount])
-    })
-
-    const withdrawAmount = web3.utils.toBN(1e18)
-    it('can withdraw HYDRO from from a snowflake', async () => {
-      await instances.Snowflake.withdrawSnowflakeBalance(users[1].address, transferAmount, { from: users[1].address })
-      await verifySnowflakeBalances([startingAmount.sub(transferAmount), web3.utils.toBN(0)])
-      await verifyHydroBalances([users[1].address], [withdrawAmount])
-    })
-
-    it('reset', async () => {
-      await instances.HydroToken.approveAndCall(
-        instances.Snowflake.address, withdrawAmount, web3.eth.abi.encodeParameter('uint', users[0].identity.toString()),
-        { from: users[1].address }
-      )
-      await verifySnowflakeBalances([startingAmount, web3.utils.toBN(0)])
-    })
-  })
+  // describe('Testing self initiated methods', async () => {
+  //   const startingAmount = web3.utils.toBN(100).mul(web3.utils.toBN(1e18))
+  //   const transferAmount = web3.utils.toBN(1e18)
+  //   it('can transfer HYDRO from 1 snowflake to another', async () => {
+  //     await instances.Snowflake.transferSnowflakeBalance(users[1].identity, transferAmount, { from: users[0].address })
+  //     await verifySnowflakeBalances([startingAmount.sub(transferAmount), transferAmount])
+  //   })
+  //
+  //   const withdrawAmount = web3.utils.toBN(1e18)
+  //   it('can withdraw HYDRO from from a snowflake', async () => {
+  //     await instances.Snowflake.withdrawSnowflakeBalance(users[1].address, transferAmount, { from: users[1].address })
+  //     await verifySnowflakeBalances([startingAmount.sub(transferAmount), web3.utils.toBN(0)])
+  //     await verifyHydroBalances([users[1].address], [withdrawAmount])
+  //   })
+  //
+  //   it('reset', async () => {
+  //     await instances.HydroToken.approveAndCall(
+  //       instances.Snowflake.address, withdrawAmount, web3.eth.abi.encodeParameter('uint', users[0].identity.toString()),
+  //       { from: users[1].address }
+  //     )
+  //     await verifySnowflakeBalances([startingAmount, web3.utils.toBN(0)])
+  //   })
+  // })
 
   describe('Testing resolver initiated methods', async () => {
     it('deploy sample resolver', async () => {
@@ -230,7 +230,7 @@ contract('Testing Snowflake Token Functionality', function (accounts) {
     const transferAmount = web3.utils.toBN(10e18)
     it('resolver can transfer escrow balances from via', async () => {
       await instances.ResolverSample._transferHydroBalanceToVia(
-        instances.ViaSample.address, users[1].identity, transferAmount, '0x00', { from: accounts[0] }
+        instances.ViaSample.address, users[1].identity, transferAmount, { from: accounts[0] }
       )
 
       // 1 because we sent 10 hydro := 1 eth as defined in the via contract
@@ -241,7 +241,7 @@ contract('Testing Snowflake Token Functionality', function (accounts) {
     const withdrawAmount = web3.utils.toBN(10e18)
     it('resolver can withdraw escrow balances from via', async () => {
       await instances.ResolverSample._withdrawHydroBalanceToVia(
-        instances.ViaSample.address, users[1].address, withdrawAmount, '0x00'
+        instances.ViaSample.address, users[1].address, withdrawAmount
       )
     })
   })

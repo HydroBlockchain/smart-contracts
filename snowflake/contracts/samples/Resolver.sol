@@ -78,11 +78,13 @@ contract Resolver is SnowflakeResolver {
         withdrawHydroBalanceTo(to, amount);
     }
 
-    function _transferHydroBalanceToVia(address via, uint einTo, uint amount, bytes memory _bytes) public onlyOwner {
-        transferHydroBalanceToVia(via, einTo, amount, _bytes);
+    function _transferHydroBalanceToVia(address via, uint einTo, uint amount) public onlyOwner {
+        bytes memory _;
+        transferHydroBalanceToVia(via, einTo, amount, _);
     }
 
-    function _withdrawHydroBalanceToVia(address via, address to, uint amount, bytes _bytes) public onlyOwner {
-        withdrawHydroBalanceToVia(via, to, amount, _bytes);
+    function _withdrawHydroBalanceToVia(address via, address to, uint amount) public onlyOwner {
+        bytes memory _;
+        withdrawHydroBalanceToVia(via, to, amount, _);
     }
 }

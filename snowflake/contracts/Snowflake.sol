@@ -29,9 +29,7 @@ interface IdentityRegistryInterface {
     ) external view returns (bool);
 
     function identityExists(uint ein) external view returns (bool);
-    function hasIdentity(address _address) external view returns (bool);
     function getEIN(address _address) external view returns (uint ein);
-    function isAssociatedAddressFor(uint ein, address _address) external view returns (bool);
     function isResolverFor(uint ein, address resolver) external view returns (bool);
     function createIdentityDelegated(
         address recoveryAddress, address associatedAddress, address[] resolvers,
@@ -71,29 +69,16 @@ contract Snowflake is Ownable {
     ClientRaindropInterface private clientRaindrop;
 
     // signature variables
-    uint public signatureTimeout;
+    uint public signatureTimeout = 1 days;
     mapping (uint => uint) public signatureNonce;
 
     constructor (address _identityRegistryAddress, address _hydroTokenAddress) public {
         setAddresses(_identityRegistryAddress, _hydroTokenAddress);
-        setSignatureTimeout(5 hours);
-    }
-
-    // enforces that a particular address has an EIN
-    modifier hasIdentity(address _address, bool check) {
-        require(identityRegistry.hasIdentity(_address) == check, "The address does not have an EIN.");
-        _;
     }
 
     // enforces that a particular EIN exists
     modifier identityExists(uint ein, bool check) {
         require(identityRegistry.identityExists(ein) == check, "The EIN does not exist.");
-        _;
-    }
-
-    // enforces that a particular address is associated with an EIN
-    modifier isAddressFor(uint ein, address _address) {
-        require(identityRegistry.isAssociatedAddressFor(ein, _address), "Address is not associated with EIN.");
         _;
     }
 
@@ -121,12 +106,6 @@ contract Snowflake is Ownable {
         clientRaindrop = ClientRaindropInterface(clientRaindropAddress);
     }
 
-    // set the signature timeout
-    function setSignatureTimeout(uint newTimeout) public {
-        require(newTimeout >= 1800 && newTimeout <= 604800, "Timeout must be between 30 minutes and a week.");
-        signatureTimeout = newTimeout;
-    }
-
 
     // wrap createIdentityDelegated
     function createIdentityDelegated(
@@ -145,11 +124,12 @@ contract Snowflake is Ownable {
         address recoveryAddress, address associatedAddress, string casedHydroId,
         uint8 v, bytes32 r, bytes32 s, uint timestamp
     )
-        public returns (uint ein)
+        public onlyOwner() returns (uint ein)
     {
         address[] memory clientRaindropResolver = new address[](1);
         clientRaindropResolver[0] = clientRaindropAddress;
-        uint _ein = identityRegistry.createIdentityDelegated(
+
+        uint _ein = createIdentityDelegated(
             recoveryAddress, associatedAddress, clientRaindropResolver, v, r, s, timestamp
         );
 
@@ -176,7 +156,7 @@ contract Snowflake is Ownable {
         identityRegistry.removeAddressDelegated(addressToRemove, v, r, s, timestamp);
     }
 
-    // delegated addProviders
+    // wrap/permission addProviders by signature
     function addProviders(address approvingAddress, address[] providers, uint8 v, bytes32 r, bytes32 s, uint timestamp)
         public ensureSignatureTimeValid(timestamp)
     {
@@ -200,7 +180,7 @@ contract Snowflake is Ownable {
         emit ProvidersAddedFromSnowflake(ein, providers, approvingAddress);
     }
 
-    // delegated removeProviders
+    // wrap/permission removeProviders by signature
     function removeProviders(
         address approvingAddress, address[] providers, uint8 v, bytes32 r, bytes32 s, uint timestamp
     )
@@ -403,12 +383,13 @@ contract Snowflake is Ownable {
 
             emit SnowflakeDeposit(sender, recipient, amount);
         }
+        // transferring to a via
         else {
-            // // decode arguments for transferToVia
             address resolver;
             address via;
             bytes memory _snowflakeCallBytes;
             ViaContract viaContract;
+            // decode arguments for transferToVia
             if (_bytes[0] == byte(0x01)) {
                 uint einTo;
                 (resolver, via, einTo, _snowflakeCallBytes) = interpretTransferToViaBytes(_bytes);
@@ -464,10 +445,26 @@ contract Snowflake is Ownable {
         _transfer(identityRegistry.getEIN(msg.sender), einTo, amount);
     }
 
+    // // transfer snowflake balance from one snowflake holder to another, via
+    // function transferSnowflakeBalanceVia(address via, uint einTo, uint amount, bytes _bytes) public {
+    //     uint einFrom = identityRegistry.getEIN(msg.sender);
+    //     _withdraw(einFrom, via, amount);
+    //     ViaContract viaContract = ViaContract(via);
+    //     viaContract.snowflakeCall(msg.sender, einFrom, einTo, amount, _bytes);
+    // }
+
     // withdraw Snowflake balance to an external address
     function withdrawSnowflakeBalance(address to, uint amount) public {
         _withdraw(identityRegistry.getEIN(msg.sender), to, amount);
     }
+
+    // // withdraw snowflake balance from one snowflake holder to an address, via
+    // function withdrawSnowflakeBalanceVia(address via, address to, uint amount, bytes _bytes) public {
+    //     uint einFrom = identityRegistry.getEIN(msg.sender);
+    //     _withdraw(einFrom, via, amount);
+    //     ViaContract viaContract = ViaContract(via);
+    //     viaContract.snowflakeCall(msg.sender, einFrom, to, amount, _bytes);
+    // }
 
     // allows resolvers to transfer allowance amounts to other snowflakes (throws if unsuccessful)
     function transferSnowflakeBalanceFrom(uint einFrom, uint einTo, uint amount) public {
@@ -552,7 +549,7 @@ contract Snowflake is Ownable {
             "Permission denied."
         );
 
-        initiateRecoveryAddressChange(identityRegistry.getEIN(msg.sender), newAddress);
+        initiateRecoveryAddressChange(ein, newAddress);
     }
 
     function initiateRecoveryAddressChange(uint ein, address newAddress) public {
