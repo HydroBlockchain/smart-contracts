@@ -22,6 +22,11 @@ interface SnowflakeInterface {
     function identityRegistryAddress() external view returns (address);
 }
 
+interface OldClientRaindrop {
+    function userNameTaken(string userName) external view returns (bool);
+    function getUserByName(string userName) external view returns (string, address);
+}
+
 
 contract ClientRaindrop is SnowflakeResolver {
     // attach the StringUtils library
@@ -53,6 +58,8 @@ contract ClientRaindrop is SnowflakeResolver {
     // Mapping from address to uncased hydroID hashes
     mapping (address => bytes32) private addressDirectory;
 
+    // Old Client Raindrop Address
+    address oldAddress = 0x0;
 
     constructor(address _snowflakeAddress, uint _hydroStakeUser, uint _hydroStakeDelegatedUser)
         SnowflakeResolver(
@@ -75,7 +82,7 @@ contract ClientRaindrop is SnowflakeResolver {
     // set the snowflake address, and hydro token + identity registry contract wrappers
     function setSnowflakeAddress(address _snowflakeAddress) public onlyOwner() {
         super.setSnowflakeAddress(_snowflakeAddress);
-        
+
         SnowflakeInterface snowflake = SnowflakeInterface(snowflakeAddress);
         hydroToken = ERC20(snowflake.hydroTokenAddress());
         identityRegistry = IdentityRegistryInterface(snowflake.identityRegistryAddress());
@@ -109,6 +116,7 @@ contract ClientRaindrop is SnowflakeResolver {
     function _signUp(uint ein, string casedHydroID, address _address) internal {
         require(bytes(casedHydroID).length > 2 && bytes(casedHydroID).length < 33, "HydroID has invalid length.");
         require(identityRegistry.isResolverFor(ein, address(this)), "The passed EIN has not set this resolver.");
+        checkForOldHydroId(casedHydroID, _address);
 
         bytes32 uncasedHydroIDHash = keccak256(abi.encodePacked(casedHydroID.toSlice().copy().toString().lower()));
         // check conditions specific to this resolver
@@ -122,6 +130,17 @@ contract ClientRaindrop is SnowflakeResolver {
         addressDirectory[_address] = uncasedHydroIDHash;
 
         emit HydroIDClaimed(ein, casedHydroID, _address);
+    }
+
+    function checkForOldHydroId(string casedHydroID, address _address) public view {
+        OldClientRaindrop raindrop = OldClientRaindrop(oldAddress);
+        bool usernameTaken = raindrop.userNameTaken(casedHydroID);
+        string casedUsername;
+        address takenAddress;
+        if (usernameTaken) {
+            (casedUsername,takenAddress) = raindrop.getUserByName(casedHydroID);
+            require(_address == takenAddress, "This HydroId is already claimed by another address.");
+        }
     }
 
     function onRemoval(uint ein) public senderIsSnowflake() returns (bool) {
