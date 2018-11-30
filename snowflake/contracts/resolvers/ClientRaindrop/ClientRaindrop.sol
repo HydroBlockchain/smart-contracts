@@ -6,6 +6,11 @@ import "../../interfaces/IdentityRegistryInterface.sol";
 import "../../interfaces/HydroInterface.sol";
 import "../../interfaces/SnowflakeInterface.sol";
 
+interface OldClientRaindrop {
+    function userNameTaken(string calldata userName) external view returns (bool);
+    function getUserByName(string calldata userName) external view returns (string memory, address);
+}
+
 contract ClientRaindrop is SnowflakeResolver {
     // attach the StringUtils library
     using StringUtils for string;
@@ -14,6 +19,7 @@ contract ClientRaindrop is SnowflakeResolver {
     // other SCs
     HydroInterface private hydroToken;
     IdentityRegistryInterface private identityRegistry;
+    OldClientRaindrop private oldClientRaindrop;
 
     // staking requirements
     uint public hydroStakeUser;
@@ -36,7 +42,10 @@ contract ClientRaindrop is SnowflakeResolver {
     mapping (address => bytes32) private addressDirectory;
 
 
-    constructor(address snowflakeAddress, uint _hydroStakeUser, uint _hydroStakeDelegatedUser)
+
+    constructor(
+        address snowflakeAddress, address oldClientRaindropAddress, uint _hydroStakeUser, uint _hydroStakeDelegatedUser
+    )
         SnowflakeResolver(
             "Client Raindrop", "A registry that links EINs to HydroIDs to power Client Raindrop MFA.",
             snowflakeAddress,
@@ -45,6 +54,7 @@ contract ClientRaindrop is SnowflakeResolver {
         public
     {
         setSnowflakeAddress(snowflakeAddress);
+        setOldClientRaindropAddress(oldClientRaindropAddress);
         setStakes(_hydroStakeUser, _hydroStakeDelegatedUser);
     }
 
@@ -57,10 +67,15 @@ contract ClientRaindrop is SnowflakeResolver {
     // set the snowflake address, and hydro token + identity registry contract wrappers
     function setSnowflakeAddress(address snowflakeAddress) public onlyOwner() {
         super.setSnowflakeAddress(snowflakeAddress);
-        
+
         SnowflakeInterface snowflake = SnowflakeInterface(snowflakeAddress);
         hydroToken = HydroInterface(snowflake.hydroTokenAddress());
         identityRegistry = IdentityRegistryInterface(snowflake.identityRegistryAddress());
+    }
+
+    // set the old client raindrop address
+    function setOldClientRaindropAddress(address oldClientRaindropAddress) public onlyOwner() {
+        oldClientRaindrop = OldClientRaindrop(oldClientRaindropAddress);
     }
 
     // set minimum hydro balances required for sign ups
@@ -99,6 +114,7 @@ contract ClientRaindrop is SnowflakeResolver {
     function _signUp(uint ein, string memory casedHydroID, address _address) internal {
         require(bytes(casedHydroID).length > 2 && bytes(casedHydroID).length < 33, "HydroID has invalid length.");
         require(identityRegistry.isResolverFor(ein, address(this)), "The passed EIN has not set this resolver.");
+        checkForOldHydroID(casedHydroID, _address);
 
         bytes32 uncasedHydroIDHash = keccak256(abi.encodePacked(casedHydroID.toSlice().copy().toString().lower()));
         // check conditions specific to this resolver
@@ -112,6 +128,14 @@ contract ClientRaindrop is SnowflakeResolver {
         addressDirectory[_address] = uncasedHydroIDHash;
 
         emit HydroIDClaimed(ein, casedHydroID, _address);
+    }
+
+    function checkForOldHydroID(string memory casedHydroID, address _address) public view {
+        bool usernameTaken = oldClientRaindrop.userNameTaken(casedHydroID);
+        if (usernameTaken) {
+            (, address takenAddress) = oldClientRaindrop.getUserByName(casedHydroID);
+            require(_address == takenAddress, "This Hydro ID is already claimed by another address.");
+        }
     }
 
     function onRemoval(uint ein, bytes memory) public senderIsSnowflake() returns (bool) {

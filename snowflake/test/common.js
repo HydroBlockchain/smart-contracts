@@ -2,6 +2,7 @@ const IdentityRegistry = artifacts.require('./_testing/IdentityRegistry.sol')
 const HydroToken = artifacts.require('./_testing/HydroToken.sol')
 const Snowflake = artifacts.require('./Snowflake.sol')
 const ClientRaindrop = artifacts.require('./resolvers/ClientRaindrop/ClientRaindrop.sol')
+const OldClientRaindrop = artifacts.require('./_testing/OldClientRaindrop.sol')
 
 async function initialize (owner, users) {
   const instances = {}
@@ -21,7 +22,11 @@ async function initialize (owner, users) {
     instances.IdentityRegistry.address, instances.HydroToken.address, { from: owner }
   )
 
-  instances.ClientRaindrop = await ClientRaindrop.new(instances.Snowflake.address, 0, 0, { from: owner })
+  instances.OldClientRaindrop = await OldClientRaindrop.new({ from: owner })
+
+  instances.ClientRaindrop = await ClientRaindrop.new(
+    instances.Snowflake.address, instances.OldClientRaindrop.address, 0, 0, { from: owner }
+  )
   await instances.Snowflake.setClientRaindropAddress(instances.ClientRaindrop.address, { from: owner })
 
   return instances
