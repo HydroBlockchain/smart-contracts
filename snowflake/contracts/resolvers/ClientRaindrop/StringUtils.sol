@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.0;
 
 
 // thanks to https://github.com/willitscale/solidity-util and https://github.com/Arachnid/solidity-stringutils
@@ -13,7 +13,7 @@ library StringUtils {
      * @param self The string to make a slice from.
      * @return A newly allocated slice containing the entire string.
      */
-    function toSlice(string self) internal pure returns (slice) {
+    function toSlice(string memory self) internal pure returns (slice memory ) {
         uint ptr;
         assembly { ptr := add(self, 0x20) } // solium-disable-line security/no-inline-assembly
         return slice(bytes(self).length, ptr);
@@ -24,7 +24,7 @@ library StringUtils {
      * @param self The slice to copy.
      * @return A new slice containing the same data as `self`.
      */
-    function copy(slice self) internal pure returns (slice) {
+    function copy(slice memory self) internal pure returns (slice memory ) {
         return slice(self._len, self._ptr);
     }
 
@@ -33,7 +33,7 @@ library StringUtils {
      * @param self The slice to copy.
      * @return A newly allocated string containing the slice's text.
      */
-    function toString(slice self) internal pure returns (string) {
+    function toString(slice memory self) internal pure returns (string memory ) {
         string memory ret = new string(self._len);
         uint retptr;
         assembly { retptr := add(ret, 0x20) } // solium-disable-line security/no-inline-assembly
@@ -52,7 +52,7 @@ library StringUtils {
     *              otherwise this is the string base to convert to lower case
     * @return string
     */
-    function lower(string _base) internal pure returns (string) {
+    function lower(string memory _base) internal pure returns (string memory ) {
         bytes memory _baseBytes = bytes(_base);
         for (uint i = 0; i < _baseBytes.length; i++) {
             _baseBytes[i] = _lower(_baseBytes[i]);

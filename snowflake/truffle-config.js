@@ -1,5 +1,5 @@
 const gas = 6.5 * 1e6
-const gasPrice = 8000000000 // 8 gwei
+const gasPrice = 2000000000 // 2 gwei
 
 module.exports = {
   networks: {
@@ -38,7 +38,7 @@ module.exports = {
   },
   compilers: {
     solc: {
-      version: '0.4.25',
+      version: './node_modules/solc',
       settings: {
         optimizer: {
           enabled: true,

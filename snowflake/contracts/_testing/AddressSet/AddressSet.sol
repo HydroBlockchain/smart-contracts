@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.0;
 
 /// @title An implementation of the set data structure for addresses.
 /// @author Noah Zinsmeister
@@ -29,7 +29,7 @@ library AddressSet {
             self.memberIndices[self.members[self.memberIndices[other] - 1]] = self.memberIndices[other];
             delete self.memberIndices[other];
             // remove the last element
-            self.members.length--;
+            self.members.pop();
         }
     }
 

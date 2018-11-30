@@ -1,15 +1,10 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.0;
 
 import "./zeppelin/ownership/Ownable.sol";
 
-interface _HydroInterface {
-    function approveAndCall(address _spender, uint256 _value, bytes _extraData) external returns (bool success);
-    function transfer(address _to, uint256 _amount) external returns (bool success);
-}
-
-interface _SnowflakeInterface {
-    function hydroTokenAddress() external view returns (address);
-}
+import "./interfaces/HydroInterface.sol";
+import "./interfaces/SnowflakeInterface.sol";
+import "./interfaces/SnowflakeResolverInterface.sol";
 
 contract SnowflakeResolver is Ownable {
     string public snowflakeName;
@@ -17,22 +12,22 @@ contract SnowflakeResolver is Ownable {
 
     address public snowflakeAddress;
 
-    bool public callOnSignUp;
+    bool public callOnAddition;
     bool public callOnRemoval;
 
     constructor(
-        string _snowflakeName, string _snowflakeDescription,
+        string memory _snowflakeName, string memory _snowflakeDescription,
         address _snowflakeAddress,
-        bool _callOnSignUp, bool _callOnRemoval
+        bool _callOnAddition, bool _callOnRemoval
     )
         public
     {
         snowflakeName = _snowflakeName;
         snowflakeDescription = _snowflakeDescription;
 
-        snowflakeAddress = _snowflakeAddress;
+        setSnowflakeAddress(_snowflakeAddress);
 
-        callOnSignUp = _callOnSignUp;
+        callOnAddition = _callOnAddition;
         callOnRemoval = _callOnRemoval;
     }
 
@@ -41,50 +36,49 @@ contract SnowflakeResolver is Ownable {
         _;
     }
 
-    // this can be overriden to initialize other variables, such as an ERC20 object to wrap the HYDRO token
+    // this can be overriden to initialize other variables, such as e.g. an ERC20 object to wrap the HYDRO token
     function setSnowflakeAddress(address _snowflakeAddress) public onlyOwner {
         snowflakeAddress = _snowflakeAddress;
     }
 
+    // if callOnAddition is true, onAddition is called every time a user adds the contract as a resolver
+    // this implementation **must** use the senderIsSnowflake modifier
+    // returning false will disallow users from adding the contract as a resolver
+    function onAddition(uint ein, uint allowance, bytes memory extraData) public returns (bool);
+
+    // if callOnRemoval is true, onRemoval is called every time a user removes the contract as a resolver
+    // this function **must** use the senderIsSnowflake modifier
+    // returning false soft prevents users from removing the contract as a resolver
+    // however, note that they can force remove the resolver, bypassing onRemoval
+    function onRemoval(uint ein, bytes memory extraData) public returns (bool);
+
     function transferHydroBalanceTo(uint einTo, uint amount) internal {
-        // convert einTo to bytes
-        bytes32 _bytes32 = bytes32(einTo);
-        bytes memory convertedEINTo = new bytes(32);
-        for (uint i = 0; i < 32; i++) {convertedEINTo[i] = _bytes32[i];}
-        
-        _HydroInterface hydro = _HydroInterface(_SnowflakeInterface(snowflakeAddress).hydroTokenAddress());
-        require(hydro.approveAndCall(snowflakeAddress, amount, convertedEINTo), "Unsuccessful approveAndCall.");
+        HydroInterface hydro = HydroInterface(SnowflakeInterface(snowflakeAddress).hydroTokenAddress());
+        require(hydro.approveAndCall(snowflakeAddress, amount, abi.encode(einTo)), "Unsuccessful approveAndCall.");
     }
 
     function withdrawHydroBalanceTo(address to, uint amount) internal {
-        _HydroInterface hydro = _HydroInterface(_SnowflakeInterface(snowflakeAddress).hydroTokenAddress());
+        HydroInterface hydro = HydroInterface(SnowflakeInterface(snowflakeAddress).hydroTokenAddress());
         require(hydro.transfer(to, amount), "Unsuccessful transfer.");
     }
 
-    function transferHydroBalanceToVia(address via, uint einTo, uint amount, bytes memory _bytes) internal {
-        _HydroInterface hydro = _HydroInterface(_SnowflakeInterface(snowflakeAddress).hydroTokenAddress());
+    function transferHydroBalanceToVia(address via, uint einTo, uint amount, bytes memory snowflakeCallBytes) internal {
+        HydroInterface hydro = HydroInterface(SnowflakeInterface(snowflakeAddress).hydroTokenAddress());
         require(
-            hydro.approveAndCall(snowflakeAddress, amount, abi.encodePacked(true, address(this), via, einTo, _bytes)),
+            hydro.approveAndCall(
+                snowflakeAddress, amount, abi.encode(true, address(this), via, einTo, snowflakeCallBytes)
+            ),
             "Unsuccessful approveAndCall."
         );
     }
 
-    function withdrawHydroBalanceToVia(address via, address to, uint amount, bytes _bytes) internal {
-        _HydroInterface hydro = _HydroInterface(_SnowflakeInterface(snowflakeAddress).hydroTokenAddress());
+    function withdrawHydroBalanceToVia(address via, address to, uint amount, bytes memory snowflakeCallBytes) internal {
+        HydroInterface hydro = HydroInterface(SnowflakeInterface(snowflakeAddress).hydroTokenAddress());
         require(
-            hydro.approveAndCall(snowflakeAddress, amount, abi.encodePacked(false, address(this), via, to, _bytes)),
+            hydro.approveAndCall(
+                snowflakeAddress, amount, abi.encode(false, address(this), via, to, snowflakeCallBytes)
+            ),
             "Unsuccessful approveAndCall."
         );
     }
-
-    // onSignUp is called every time a user sets your contract as a resolver if callOnSignUp is true
-    // this function **must** use the senderIsSnowflake modifier
-    // returning false will disallow users from setting your contract as a resolver
-    // function onSignUp(uint ein, uint allowance) public senderIsSnowflake() returns (bool);
-
-    // onRemoval is called every time a user sets your contract as a resolver if callOnRemoval is true
-    // this function **must** use the senderIsSnowflake modifier
-    // returning false soft prevents users from removing your contract as a resolver
-    // however, they can force remove your resolver, bypassing this function
-    // function onRemoval(uint ein) public senderIsSnowflake() returns (bool);
 }

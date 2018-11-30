@@ -1,16 +1,9 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.0;
 
 import "../SnowflakeResolver.sol";
-
-
-interface SnowflakeInterface {
-    function identityRegistryAddress() external view returns (address);
-    function withdrawSnowflakeBalanceFrom(uint einFrom, address to, uint amount) external;
-}
-
-interface IdentityRegistryInterface {
-    function getEIN(address _address) external view returns (uint ein);
-}
+import "../interfaces/IdentityRegistryInterface.sol";
+import "../interfaces/HydroInterface.sol";
+import "../interfaces/SnowflakeInterface.sol";
 
 contract Status is SnowflakeResolver {
     mapping (uint => string) private statuses;
@@ -23,27 +16,41 @@ contract Status is SnowflakeResolver {
     {}
 
     // implement signup function
-    function onSignUp(uint ein, uint allowance) public senderIsSnowflake() returns (bool) {
-        require(allowance >= signUpFee, "Must set an allowance of at least 1 HYDRO.");
+    function onAddition(uint ein, uint, bytes memory) public senderIsSnowflake() returns (bool) {
         SnowflakeInterface snowflake = SnowflakeInterface(snowflakeAddress);
         snowflake.withdrawSnowflakeBalanceFrom(ein, owner(), signUpFee);
+
         statuses[ein] = firstStatus;
-        emit StatusUpdated(ein, firstStatus);
+
+        emit StatusSignUp(ein);
+
         return true;
     }
 
-    function getStatus(uint ein) public view returns (string) {
+    function onRemoval(uint, bytes memory) public senderIsSnowflake() returns (bool) {}
+
+    function getStatus(uint ein) public view returns (string memory) {
         return statuses[ein];
     }
 
-    // example function that calls withdraw on a linked hydroID
-    function setStatus(string status) public {
-        uint ein = IdentityRegistryInterface(
-            SnowflakeInterface(snowflakeAddress).identityRegistryAddress()
-        ).getEIN(msg.sender);
+    function setStatus(string memory status) public {
+        SnowflakeInterface snowflake = SnowflakeInterface(snowflakeAddress);
+        IdentityRegistryInterface identityRegistry = IdentityRegistryInterface(snowflake.identityRegistryAddress());
+
+        uint ein = identityRegistry.getEIN(msg.sender);
+        require(identityRegistry.isResolverFor(ein, address(this)), "The EIN has not set this resolver.");
+
         statuses[ein] = status;
+
         emit StatusUpdated(ein, status);
     }
 
+    function withdrawFees(address to) public onlyOwner() {
+        SnowflakeInterface snowflake = SnowflakeInterface(snowflakeAddress);
+        HydroInterface hydro = HydroInterface(snowflake.hydroTokenAddress());
+        withdrawHydroBalanceTo(to, hydro.balanceOf(address(this)));
+    }
+
+    event StatusSignUp(uint ein);
     event StatusUpdated(uint ein, string status);
 }

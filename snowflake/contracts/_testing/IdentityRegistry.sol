@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.0;
 
 import "./SignatureVerifier.sol";
 import "./AddressSet/AddressSet.sol";
@@ -164,7 +164,10 @@ contract IdentityRegistry is SignatureVerifier {
     /// @param ein The EIN to get information for.
     /// @return All the information for the Identity denominated by the passed EIN.
     function getIdentity(uint ein) public view _identityExists(ein)
-        returns (address recoveryAddress, address[] associatedAddresses, address[] providers, address[] resolvers)
+        returns (
+            address recoveryAddress,
+            address[] memory associatedAddresses, address[] memory providers, address[] memory resolvers
+        )
     {
         Identity storage _identity = identityDirectory[ein];
 
@@ -180,20 +183,21 @@ contract IdentityRegistry is SignatureVerifier {
     // Identity Management Functions ///////////////////////////////////////////////////////////////////////////////////
 
     /// @notice Create an new Identity for the transaction sender.
-    /// @dev Sets the msg.sender as the only Associated Address.
+    /// @dev Sets the msg.sender as the only associatedAddress.
     /// @param recoveryAddress A recovery address to set for the new Identity.
-    /// @param provider A provider to set for the new Identity.
+    /// @param providers A list of providers to set for the new Identity.
     /// @param resolvers A list of resolvers to set for the new Identity.
     /// @return The EIN of the new Identity.
-    function createIdentity(address recoveryAddress, address provider, address[] resolvers) public returns (uint ein)
+    function createIdentity(address recoveryAddress, address[] memory providers, address[] memory resolvers)
+        public returns (uint ein)
     {
-        return createIdentity(recoveryAddress, msg.sender, provider, resolvers, false);
+        return createIdentity(recoveryAddress, msg.sender, providers, resolvers, false);
     }
 
-    /// @notice Allows a Provider to create an new Identity for the passed associatedAddress.
-    /// @dev Sets the msg.sender as the only provider.
+    /// @notice Allows creation of a new Identity for the passed associatedAddress.
     /// @param recoveryAddress A recovery address to set for the new Identity.
     /// @param associatedAddress An associated address to set for the new Identity (must have produced the signature).
+    /// @param providers A list of providers to set for the new Identity.
     /// @param resolvers A list of resolvers to set for the new Identity.
     /// @param v The v component of the signature.
     /// @param r The r component of the signature.
@@ -201,7 +205,7 @@ contract IdentityRegistry is SignatureVerifier {
     /// @param timestamp The timestamp of the signature.
     /// @return The EIN of the new Identity.
     function createIdentityDelegated(
-        address recoveryAddress, address associatedAddress, address[] resolvers,
+        address recoveryAddress, address associatedAddress, address[] memory providers, address[] memory resolvers,
         uint8 v, bytes32 r, bytes32 s, uint timestamp
     )
         public ensureSignatureTimeValid(timestamp) returns (uint ein)
@@ -213,7 +217,7 @@ contract IdentityRegistry is SignatureVerifier {
                     abi.encodePacked(
                         byte(0x19), byte(0), address(this),
                         "I authorize the creation of an Identity on my behalf.",
-                        recoveryAddress, associatedAddress, msg.sender, resolvers, timestamp
+                        recoveryAddress, associatedAddress, providers, resolvers, timestamp
                     )
                 ),
                 v, r, s
@@ -221,12 +225,13 @@ contract IdentityRegistry is SignatureVerifier {
             "Permission denied."
         );
 
-        return createIdentity(recoveryAddress, associatedAddress, msg.sender, resolvers, true);
+        return createIdentity(recoveryAddress, associatedAddress, providers, resolvers, true);
     }
 
     /// @dev Common logic for all identity creation.
     function createIdentity(
-        address recoveryAddress, address associatedAddress, address provider, address[] resolvers, bool delegated
+        address recoveryAddress,
+        address associatedAddress, address[] memory providers, address[] memory resolvers, bool delegated
     )
         private _hasIdentity(associatedAddress, false) returns (uint)
     {
@@ -234,19 +239,58 @@ contract IdentityRegistry is SignatureVerifier {
         Identity storage _identity = identityDirectory[ein];
 
         _identity.recoveryAddress = recoveryAddress;
-        _identity.associatedAddresses.insert(associatedAddress);
-        associatedAddressDirectory[associatedAddress] = ein;
-        _identity.providers.insert(provider);
-        for (uint i; i < resolvers.length; i++) {
-            _identity.resolvers.insert(resolvers[i]);
-        }
+        addAssociatedAddress(ein, associatedAddress);
+        addProviders(ein, providers, delegated);
+        addResolvers(ein, resolvers, delegated);
 
-        emit IdentityCreated(msg.sender, ein, recoveryAddress, associatedAddress, provider, resolvers, delegated);
+        emit IdentityCreated(msg.sender, ein, recoveryAddress, associatedAddress, providers, resolvers, delegated);
 
         return ein;
     }
 
-    /// @notice Allows providers to add an associated address to an Identity.
+
+    /// @notice Allows an associated address to add another associated address to its Identity.
+    /// @param approvingAddress An associated address for an Identity.
+    /// @param addressToAdd A new address to set for the Identity of the sender.
+    /// @param v The v component of the signature.
+    /// @param r The r component of the signature.
+    /// @param s The s component of the signature.
+    /// @param timestamp The timestamp of the signature.
+    function addAssociatedAddress(
+        address approvingAddress, address addressToAdd, uint8 v, bytes32 r, bytes32 s, uint timestamp
+    )
+        public ensureSignatureTimeValid(timestamp)
+    {
+        bool fromApprovingAddress = msg.sender == approvingAddress;
+        require(
+            fromApprovingAddress || msg.sender == addressToAdd, "One or both of the passed addresses are malformed."
+        );
+
+        uint ein = getEIN(approvingAddress);
+
+        require(
+            isSigned(
+                fromApprovingAddress ? addressToAdd : approvingAddress,
+                keccak256(
+                    abi.encodePacked(
+                        byte(0x19), byte(0), address(this),
+                        fromApprovingAddress ?
+                            "I authorize being added to this Identity." :
+                            "I authorize adding this address to my Identity.",
+                        ein, addressToAdd, timestamp
+                    )
+                ),
+                v, r, s
+            ),
+            "Permission denied."
+        );
+
+        addAssociatedAddress(ein, addressToAdd);
+
+        emit AssociatedAddressAdded(msg.sender, ein, approvingAddress, addressToAdd, false);
+    }
+
+    /// @notice Allows addition of an associated address to an Identity.
     /// @dev The first signature must be that of the approvingAddress.
     /// @param approvingAddress An associated address for an Identity.
     /// @param addressToAdd A new address to set for the Identity of approvingAddress.
@@ -255,17 +299,12 @@ contract IdentityRegistry is SignatureVerifier {
     /// @param s The s component of the signatures.
     /// @param timestamp The timestamp of the signatures.
     function addAssociatedAddressDelegated(
-        address approvingAddress, address addressToAdd, uint8[2] v, bytes32[2] r, bytes32[2] s, uint[2] timestamp
+        address approvingAddress, address addressToAdd,
+        uint8[2] memory v, bytes32[2] memory r, bytes32[2] memory s, uint[2] memory timestamp
     )
-        public _hasIdentity(addressToAdd, false)
-        ensureSignatureTimeValid(timestamp[0]) ensureSignatureTimeValid(timestamp[1])
+        public ensureSignatureTimeValid(timestamp[0]) ensureSignatureTimeValid(timestamp[1])
     {
         uint ein = getEIN(approvingAddress);
-
-        require(isProviderFor(ein, msg.sender), "The identity has not set the passed provider.");
-        require(
-            identityDirectory[ein].associatedAddresses.length() < maxAssociatedAddresses, "Too many addresses."
-        );
 
         require(
             isSigned(
@@ -296,13 +335,31 @@ contract IdentityRegistry is SignatureVerifier {
             "Permission denied from address to add."
         );
 
-        identityDirectory[ein].associatedAddresses.insert(addressToAdd);
-        associatedAddressDirectory[addressToAdd] = ein;
+        addAssociatedAddress(ein, addressToAdd);
 
-        emit AssociatedAddressAdded(msg.sender, ein, approvingAddress, addressToAdd);
+        emit AssociatedAddressAdded(msg.sender, ein, approvingAddress, addressToAdd, true);
     }
 
-    /// @notice Allows providers to remove an associated address from an Identity.
+    /// @dev Common logic for all address addition.
+    function addAssociatedAddress(uint ein, address addressToAdd) private _hasIdentity(addressToAdd, false) {
+        require(
+            identityDirectory[ein].associatedAddresses.length() < maxAssociatedAddresses, "Too many addresses."
+        );
+
+        identityDirectory[ein].associatedAddresses.insert(addressToAdd);
+        associatedAddressDirectory[addressToAdd] = ein;
+    }
+
+    /// @notice Allows an associated address to remove itself from its Identity.
+    function removeAssociatedAddress() public {
+        uint ein = getEIN(msg.sender);
+
+        removeAssociatedAddress(ein, msg.sender);
+
+        emit AssociatedAddressRemoved(msg.sender, ein, msg.sender, false);
+    }
+
+    /// @notice Allows removal of an associated address from an Identity.
     /// @param addressToRemove An associated address to remove from its Identity.
     /// @param v The v component of the signature.
     /// @param r The r component of the signature.
@@ -312,8 +369,6 @@ contract IdentityRegistry is SignatureVerifier {
         public ensureSignatureTimeValid(timestamp)
     {
         uint ein = getEIN(addressToRemove);
-
-        require(isProviderFor(ein, msg.sender), "The identity has not set the passed provider.");
 
         require(
             isSigned(
@@ -330,27 +385,33 @@ contract IdentityRegistry is SignatureVerifier {
             "Permission denied."
         );
 
+        removeAssociatedAddress(ein, addressToRemove);
+
+        emit AssociatedAddressRemoved(msg.sender, ein, addressToRemove, true);
+    }
+
+    /// @dev Common logic for all address removal.
+    function removeAssociatedAddress(uint ein, address addressToRemove) private {
         identityDirectory[ein].associatedAddresses.remove(addressToRemove);
         delete associatedAddressDirectory[addressToRemove];
-
-        emit AssociatedAddressRemoved(msg.sender, ein, addressToRemove);
     }
+
 
     /// @notice Allows an associated address to add providers to its Identity.
     /// @param providers A list of providers.
-    function addProviders(address[] providers) public {
+    function addProviders(address[] memory providers) public {
         addProviders(getEIN(msg.sender), providers, false);
     }
 
     /// @notice Allows providers to add providers to an Identity.
     /// @param ein The EIN to add providers to.
     /// @param providers A list of providers.
-    function addProvidersFor(uint ein, address[] providers) public _isProviderFor(ein) {
+    function addProvidersFor(uint ein, address[] memory providers) public _isProviderFor(ein) {
         addProviders(ein, providers, true);
     }
 
     /// @dev Common logic for all provider adding.
-    function addProviders(uint ein, address[] providers, bool delegated) private {
+    function addProviders(uint ein, address[] memory providers, bool delegated) private {
         Identity storage _identity = identityDirectory[ein];
         for (uint i; i < providers.length; i++) {
             _identity.providers.insert(providers[i]);
@@ -360,19 +421,19 @@ contract IdentityRegistry is SignatureVerifier {
 
     /// @notice Allows an associated address to remove providers from its Identity.
     /// @param providers A list of providers.
-    function removeProviders(address[] providers) public {
+    function removeProviders(address[] memory providers) public {
         removeProviders(getEIN(msg.sender), providers, false);
     }
 
     /// @notice Allows providers to remove providers to an Identity.
     /// @param ein The EIN to remove providers from.
     /// @param providers A list of providers.
-    function removeProvidersFor(uint ein, address[] providers) public _isProviderFor(ein) {
+    function removeProvidersFor(uint ein, address[] memory providers) public _isProviderFor(ein) {
         removeProviders(ein, providers, true);
     }
 
     /// @dev Common logic for all provider removal.
-    function removeProviders(uint ein, address[] providers, bool delegated) private {
+    function removeProviders(uint ein, address[] memory providers, bool delegated) private {
         Identity storage _identity = identityDirectory[ein];
         for (uint i; i < providers.length; i++) {
             _identity.providers.remove(providers[i]);
@@ -380,36 +441,70 @@ contract IdentityRegistry is SignatureVerifier {
         }
     }
 
+    /// @notice Allows an associated address to add resolvers to its Identity.
+    /// @param resolvers A list of resolvers.
+    function addResolvers(address[] memory resolvers) public {
+        addResolvers(getEIN(msg.sender), resolvers, false);
+    }
+
     /// @notice Allows providers to add resolvers to an Identity.
     /// @param ein The EIN to add resolvers to.
-    /// @param resolvers A list of providers.
-    function addResolversFor(uint ein, address[] resolvers) public _isProviderFor(ein) {
+    /// @param resolvers A list of resolvers.
+    function addResolversFor(uint ein, address[] memory resolvers) public _isProviderFor(ein) {
+        addResolvers(ein, resolvers, true);
+    }
+
+    /// @dev Common logic for all resolver adding.
+    function addResolvers(uint ein, address[] memory resolvers, bool delegated) private {
         Identity storage _identity = identityDirectory[ein];
         for (uint i; i < resolvers.length; i++) {
             _identity.resolvers.insert(resolvers[i]);
-            emit ResolverAdded(msg.sender, ein, resolvers[i]);
+            emit ResolverAdded(msg.sender, ein, resolvers[i], delegated);
         }
+    }
+
+    /// @notice Allows an associated address to remove resolvers from its Identity.
+    /// @param resolvers A list of resolvers.
+    function removeResolvers(address[] memory resolvers) public {
+        removeResolvers(getEIN(msg.sender), resolvers, true);
     }
 
     /// @notice Allows providers to remove resolvers from an Identity.
     /// @param ein The EIN to remove resolvers from.
-    /// @param resolvers A list of providers.
-    function removeResolversFor(uint ein, address[] resolvers) public _isProviderFor(ein) {
+    /// @param resolvers A list of resolvers.
+    function removeResolversFor(uint ein, address[] memory resolvers) public _isProviderFor(ein) {
+        removeResolvers(ein, resolvers, true);
+    }
+
+    /// @dev Common logic for all resolver removal.
+    function removeResolvers(uint ein, address[] memory resolvers, bool delegated) private {
         Identity storage _identity = identityDirectory[ein];
         for (uint i; i < resolvers.length; i++) {
             _identity.resolvers.remove(resolvers[i]);
-            emit ResolverRemoved(msg.sender, ein, resolvers[i]);
+            emit ResolverRemoved(msg.sender, ein, resolvers[i], delegated);
         }
     }
 
 
     // Recovery Management Functions ///////////////////////////////////////////////////////////////////////////////////
 
+    /// @notice Allows an associated address to change the recovery address for its Identity.
+    /// @dev Recovery addresses can be changed at most once every recoveryTimeout seconds.
+    /// @param newRecoveryAddress A recovery address to set for the sender's EIN.
+    function triggerRecoveryAddressChange(address newRecoveryAddress) public {
+        triggerRecoveryAddressChange(getEIN(msg.sender), newRecoveryAddress, false);
+    }
+
     /// @notice Allows providers to change the recovery address for an Identity.
     /// @dev Recovery addresses can be changed at most once every recoveryTimeout seconds.
     /// @param ein The EIN to set the recovery address of.
     /// @param newRecoveryAddress A recovery address to set for the passed EIN.
     function triggerRecoveryAddressChangeFor(uint ein, address newRecoveryAddress) public _isProviderFor(ein) {
+        triggerRecoveryAddressChange(ein, newRecoveryAddress, true);
+    }
+
+    /// @dev Common logic for all recovery address changes.
+    function triggerRecoveryAddressChange(uint ein, address newRecoveryAddress, bool delegated) private {
         Identity storage _identity = identityDirectory[ein];
 
         require(canChangeRecoveryAddress(ein), "Cannot trigger a change in recovery address yet.");
@@ -417,7 +512,7 @@ contract IdentityRegistry is SignatureVerifier {
          // solium-disable-next-line security/no-block-members
         recoveryAddressChangeLogs[ein] = RecoveryAddressChange(block.timestamp, _identity.recoveryAddress);
 
-        emit RecoveryAddressChangeTriggered(msg.sender, ein, _identity.recoveryAddress, newRecoveryAddress);
+        emit RecoveryAddressChangeTriggered(msg.sender, ein, _identity.recoveryAddress, newRecoveryAddress, delegated);
 
         _identity.recoveryAddress = newRecoveryAddress;
     }
@@ -463,7 +558,7 @@ contract IdentityRegistry is SignatureVerifier {
             "Permission denied."
         );
 
-        // log the old associated addresses to unlock the poison pill
+        // log the old associated addresses to facilitate destruction if necessary
         recoveryLogs[ein] = Recovery(
             block.timestamp, // solium-disable-line security/no-block-members
             keccak256(abi.encodePacked(_identity.associatedAddresses.members))
@@ -472,45 +567,44 @@ contract IdentityRegistry is SignatureVerifier {
         emit RecoveryTriggered(msg.sender, ein, _identity.associatedAddresses.members, newAssociatedAddress);
 
         // remove identity data, and add the new address as the sole associated address
-        resetIdentityData(_identity, false);
-        _identity.recoveryAddress = msg.sender;
-        _identity.associatedAddresses.insert(newAssociatedAddress);
-        associatedAddressDirectory[newAssociatedAddress] = ein;
+        resetIdentityData(_identity, msg.sender, false);
+        addAssociatedAddress(ein, newAssociatedAddress);
     }
 
     /// @notice Allows associated addresses recently removed via recovery to permanently disable their old Identity.
-    /// @param ein The EIN to trigger the poison pill for.
+    /// @param ein The EIN to trigger destruction of.
     /// @param firstChunk The array of addresses before the msg.sender in the pre-recovery associated addresses array.
     /// @param lastChunk The array of addresses after the msg.sender in the pre-recovery associated addresses array.
-    /// @param resetResolvers true if the poisonser wants resolvers to be removed, false otherwise.
-    function triggerPoisonPill(uint ein, address[] firstChunk, address[] lastChunk, bool resetResolvers)
+    /// @param resetResolvers true if the destroyer wants resolvers to be removed, false otherwise.
+    function triggerDestruction(uint ein, address[] memory firstChunk, address[] memory lastChunk, bool resetResolvers)
         public _identityExists(ein)
     {
         require(!canRecover(ein), "Recovery has not recently been triggered.");
         Identity storage _identity = identityDirectory[ein];
 
         // ensure that the msg.sender was an old associated address for the referenced identity
-        address[1] memory middleChunk = [msg.sender];
+        address payable[1] memory middleChunk = [msg.sender];
         require(
-            keccak256(abi.encodePacked(firstChunk, middleChunk, lastChunk)) ==
-                recoveryLogs[ein].hashedOldAssociatedAddresses,
-            "Cannot activate the poison pill from an address that was not recently removed via recovery."
+            keccak256(
+                abi.encodePacked(firstChunk, middleChunk, lastChunk)
+            ) == recoveryLogs[ein].hashedOldAssociatedAddresses,
+            "Cannot destroy an EIN from an address that was not recently removed from said EIN via recovery."
         );
 
-        emit IdentityPoisoned(msg.sender, ein, _identity.recoveryAddress, resetResolvers);
+        emit IdentityDestroyed(msg.sender, ein, _identity.recoveryAddress, resetResolvers);
 
-        resetIdentityData(_identity, resetResolvers);
+        resetIdentityData(_identity, address(0), resetResolvers);
     }
 
     /// @dev Common logic for clearing the data of an Identity.
-    function resetIdentityData(Identity storage identity, bool resetResolvers) private {
-        address[] storage associatedAddresses = identity.associatedAddresses.members;
-        for (uint i; i < associatedAddresses.length; i++) {
-            delete associatedAddressDirectory[associatedAddresses[i]];
+    function resetIdentityData(Identity storage identity, address newRecoveryAddress, bool resetResolvers) private {
+        for (uint i; i < identity.associatedAddresses.members.length; i++) {
+            delete associatedAddressDirectory[identity.associatedAddresses.members[i]];
         }
         delete identity.associatedAddresses;
         delete identity.providers;
         if (resetResolvers) delete identity.resolvers;
+        identity.recoveryAddress = newRecoveryAddress;
     }
 
 
@@ -518,21 +612,22 @@ contract IdentityRegistry is SignatureVerifier {
 
     event IdentityCreated(
         address indexed initiator, uint indexed ein,
-        address recoveryAddress, address associatedAddress, address provider, address[] resolvers, bool delegated
+        address recoveryAddress, address associatedAddress, address[] providers, address[] resolvers, bool delegated
     );
     event AssociatedAddressAdded(
-        address indexed initiator, uint indexed ein, address approvingAddress, address addedAddress
+        address indexed initiator, uint indexed ein, address approvingAddress, address addedAddress, bool delegated
     );
-    event AssociatedAddressRemoved(address indexed initiator, uint indexed ein, address removedAddress);
+    event AssociatedAddressRemoved(address indexed initiator, uint indexed ein, address removedAddress, bool delegated);
     event ProviderAdded(address indexed initiator, uint indexed ein, address provider, bool delegated);
     event ProviderRemoved(address indexed initiator, uint indexed ein, address provider, bool delegated);
-    event ResolverAdded(address indexed initiator, uint indexed ein, address resolvers);
-    event ResolverRemoved(address indexed initiator, uint indexed ein, address resolvers);
+    event ResolverAdded(address indexed initiator, uint indexed ein, address resolvers, bool delegated);
+    event ResolverRemoved(address indexed initiator, uint indexed ein, address resolvers, bool delegated);
     event RecoveryAddressChangeTriggered(
-        address indexed initiator, uint indexed ein, address oldRecoveryAddress, address newRecoveryAddress
+        address indexed initiator, uint indexed ein,
+        address oldRecoveryAddress, address newRecoveryAddress, bool delegated
     );
     event RecoveryTriggered(
         address indexed initiator, uint indexed ein, address[] oldAssociatedAddresses, address newAssociatedAddress
     );
-    event IdentityPoisoned(address indexed initiator, uint indexed ein, address recoveryAddress, bool resolversReset);
+    event IdentityDestroyed(address indexed initiator, uint indexed ein, address recoveryAddress, bool resolversReset);
 }

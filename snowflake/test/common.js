@@ -22,7 +22,7 @@ async function initialize (owner, users) {
   )
 
   instances.ClientRaindrop = await ClientRaindrop.new(instances.Snowflake.address, 0, 0, { from: owner })
-  await instances.Snowflake.setClientRaindropAddress(instances.ClientRaindrop.address)
+  await instances.Snowflake.setClientRaindropAddress(instances.ClientRaindrop.address, { from: owner })
 
   return instances
 }

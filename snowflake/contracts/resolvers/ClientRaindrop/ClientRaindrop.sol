@@ -1,27 +1,10 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.0;
 
 import "./StringUtils.sol";
 import "../../SnowflakeResolver.sol";
-
-
-interface ERC20 {
-    function totalSupply() external view returns (uint256);
-    function balanceOf(address who) external view returns (uint256);
-}
-
-interface IdentityRegistryInterface {
-    function isSigned(address _address, bytes32 messageHash, uint8 v, bytes32 r, bytes32 s) external view returns (bool);
-    function getEIN(address _address) external view returns (uint ein);
-    function isAddressFor(uint ein, address _address) external view returns (bool);
-    function isProviderFor(uint ein, address provider) external view returns (bool);
-    function isResolverFor(uint ein, address resolver) external view returns (bool);
-}
-
-interface SnowflakeInterface {
-    function hydroTokenAddress() external view returns (address);
-    function identityRegistryAddress() external view returns (address);
-}
-
+import "../../interfaces/IdentityRegistryInterface.sol";
+import "../../interfaces/HydroInterface.sol";
+import "../../interfaces/SnowflakeInterface.sol";
 
 contract ClientRaindrop is SnowflakeResolver {
     // attach the StringUtils library
@@ -29,7 +12,7 @@ contract ClientRaindrop is SnowflakeResolver {
     using StringUtils for StringUtils.slice;
 
     // other SCs
-    ERC20 private hydroToken;
+    HydroInterface private hydroToken;
     IdentityRegistryInterface private identityRegistry;
 
     // staking requirements
@@ -41,9 +24,8 @@ contract ClientRaindrop is SnowflakeResolver {
         uint ein;
         address _address;
         string casedHydroID;
-
         bool initialized;
-        bool poisoned;
+        bool destroyed;
     }
 
     // Mapping from uncased hydroID hashes to users
@@ -54,15 +36,15 @@ contract ClientRaindrop is SnowflakeResolver {
     mapping (address => bytes32) private addressDirectory;
 
 
-    constructor(address _snowflakeAddress, uint _hydroStakeUser, uint _hydroStakeDelegatedUser)
+    constructor(address snowflakeAddress, uint _hydroStakeUser, uint _hydroStakeDelegatedUser)
         SnowflakeResolver(
             "Client Raindrop", "A registry that links EINs to HydroIDs to power Client Raindrop MFA.",
-            _snowflakeAddress,
-            false, true
+            snowflakeAddress,
+            true, true
         )
         public
     {
-        setSnowflakeAddress(_snowflakeAddress);
+        setSnowflakeAddress(snowflakeAddress);
         setStakes(_hydroStakeUser, _hydroStakeDelegatedUser);
     }
 
@@ -73,11 +55,11 @@ contract ClientRaindrop is SnowflakeResolver {
     }
 
     // set the snowflake address, and hydro token + identity registry contract wrappers
-    function setSnowflakeAddress(address _snowflakeAddress) public onlyOwner() {
-        super.setSnowflakeAddress(_snowflakeAddress);
+    function setSnowflakeAddress(address snowflakeAddress) public onlyOwner() {
+        super.setSnowflakeAddress(snowflakeAddress);
         
         SnowflakeInterface snowflake = SnowflakeInterface(snowflakeAddress);
-        hydroToken = ERC20(snowflake.hydroTokenAddress());
+        hydroToken = HydroInterface(snowflake.hydroTokenAddress());
         identityRegistry = IdentityRegistryInterface(snowflake.identityRegistryAddress());
     }
 
@@ -92,21 +74,29 @@ contract ClientRaindrop is SnowflakeResolver {
         hydroStakeDelegatedUser = _hydroStakeDelegatedUser;
     }
 
-
-    // Allows users to sign up with their own address
-    function signUp(string casedHydroID) public requireStake(msg.sender, hydroStakeUser) {
-        _signUp(identityRegistry.getEIN(msg.sender), casedHydroID, msg.sender);
+    // function for users calling signup for themselves
+    function signUp(address _address, string memory casedHydroId) public requireStake(msg.sender, hydroStakeUser) {
+        uint ein = identityRegistry.getEIN(msg.sender);
+        require(
+            identityRegistry.isAssociatedAddressFor(ein, _address),
+            "The passed address is not associated with the calling Identity."
+        );
+        _signUp(ein, casedHydroId, _address);
     }
 
-    // Allows providers to sign up users on their behalf
-    function signUp(address _address, string casedHydroID) public requireStake(msg.sender, hydroStakeDelegatedUser) {
-        uint ein = identityRegistry.getEIN(_address);
-        require(identityRegistry.isProviderFor(ein, msg.sender), "msg.sender is not a Provider for the passed EIN.");
+    // function for users signing up through the snowflake provider
+    function onAddition(uint ein, uint, bytes memory extraData)
+        // solium-disable-next-line security/no-tx-origin
+        public senderIsSnowflake() requireStake(tx.origin, hydroStakeDelegatedUser) returns (bool)
+    {
+        (address _address, string memory casedHydroID) = abi.decode(extraData, (address, string));
+        require(identityRegistry.isProviderFor(ein, msg.sender), "Snowflake is not a Provider for the passed EIN.");
         _signUp(ein, casedHydroID, _address);
+        return true;
     }
 
     // Common internal logic for all user signups
-    function _signUp(uint ein, string casedHydroID, address _address) internal {
+    function _signUp(uint ein, string memory casedHydroID, address _address) internal {
         require(bytes(casedHydroID).length > 2 && bytes(casedHydroID).length < 33, "HydroID has invalid length.");
         require(identityRegistry.isResolverFor(ein, address(this)), "The passed EIN has not set this resolver.");
 
@@ -124,11 +114,11 @@ contract ClientRaindrop is SnowflakeResolver {
         emit HydroIDClaimed(ein, casedHydroID, _address);
     }
 
-    function onRemoval(uint ein) public senderIsSnowflake() returns (bool) {
+    function onRemoval(uint ein, bytes memory) public senderIsSnowflake() returns (bool) {
         bytes32 uncasedHydroIDHash = einDirectory[ein];
         assert(uncasedHydroIDHashActive(uncasedHydroIDHash));
 
-        emit HydroIDPoisoned(
+        emit HydroIDDestroyed(
             ein, userDirectory[uncasedHydroIDHash].casedHydroID, userDirectory[uncasedHydroIDHash]._address
         );
 
@@ -136,11 +126,12 @@ contract ClientRaindrop is SnowflakeResolver {
         delete einDirectory[ein];
         delete userDirectory[uncasedHydroIDHash].casedHydroID;
         delete userDirectory[uncasedHydroIDHash]._address;
-        userDirectory[uncasedHydroIDHash].poisoned = true;
+        userDirectory[uncasedHydroIDHash].destroyed = true;
     }
 
+
     // returns whether a given hydroID is available
-    function hydroIDAvailable(string uncasedHydroID) public view returns (bool available) {
+    function hydroIDAvailable(string memory uncasedHydroID) public view returns (bool available) {
         return hydroIDAvailable(keccak256(abi.encodePacked(uncasedHydroID.lower())));
     }
 
@@ -149,31 +140,43 @@ contract ClientRaindrop is SnowflakeResolver {
         return !userDirectory[uncasedHydroIDHash].initialized;
     }
 
-    // Returns a bool indicating whether a given hydroID is poisoned
-    function hydroIDPoisoned(bytes32 uncasedHydroIDHash) private view returns (bool) {
-        return userDirectory[uncasedHydroIDHash].poisoned;
+    // returns whether a given hydroID is destroyed
+    function hydroIDDestroyed(string memory uncasedHydroID) public view returns (bool destroyed) {
+        return hydroIDDestroyed(keccak256(abi.encodePacked(uncasedHydroID.lower())));
+    }
+
+    // Returns a bool indicating whether a given hydroID is destroyed
+    function hydroIDDestroyed(bytes32 uncasedHydroIDHash) private view returns (bool) {
+        return userDirectory[uncasedHydroIDHash].destroyed;
+    }
+
+    // returns whether a given hydroID is active
+    function hydroIDActive(string memory uncasedHydroID) public view returns (bool active) {
+        return uncasedHydroIDHashActive(keccak256(abi.encodePacked(uncasedHydroID.lower())));
     }
 
     // Returns a bool indicating whether a given hydroID is active
-    function uncasedHydroIDHashActive(bytes32 uncasedHydroIDHash) private view returns (bool taken) {
-        return !hydroIDAvailable(uncasedHydroIDHash) && !hydroIDPoisoned(uncasedHydroIDHash);
+    function uncasedHydroIDHashActive(bytes32 uncasedHydroIDHash) private view returns (bool) {
+        return !hydroIDAvailable(uncasedHydroIDHash) && !hydroIDDestroyed(uncasedHydroIDHash);
     }
 
 
     // Returns details by uncased hydroID
-    function getDetails(string uncasedHydroID) public view returns (uint ein, address _address, string casedHydroID) {
+    function getDetails(string memory uncasedHydroID) public view
+        returns (uint ein, address _address, string memory casedHydroID)
+    {
         User storage user = getDetails(keccak256(abi.encodePacked(uncasedHydroID.lower())));
         return (user.ein, user._address, user.casedHydroID);
     }
 
     // Returns details by EIN
-    function getDetails(uint ein) public view returns (address _address, string casedHydroID) {
+    function getDetails(uint ein) public view returns (address _address, string memory casedHydroID) {
         User storage user = getDetails(einDirectory[ein]);
         return (user._address, user.casedHydroID);
     }
 
     // Returns details by address
-    function getDetails(address _address) public view returns (uint ein, string casedHydroID) {
+    function getDetails(address _address) public view returns (uint ein, string memory casedHydroID) {
         User storage user = getDetails(addressDirectory[_address]);
         return (user.ein, user.casedHydroID);
     }
@@ -186,5 +189,5 @@ contract ClientRaindrop is SnowflakeResolver {
 
     // Events for when a user signs up for Raindrop Client and when their account is deleted
     event HydroIDClaimed(uint indexed ein, string hydroID, address userAddress);
-    event HydroIDPoisoned(uint indexed ein, string hydroID, address userAddress);
+    event HydroIDDestroyed(uint indexed ein, string hydroID, address userAddress);
 }
