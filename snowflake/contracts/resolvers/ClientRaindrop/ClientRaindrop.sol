@@ -1,15 +1,11 @@
 pragma solidity ^0.5.0;
 
 import "./StringUtils.sol";
+import "./OldClientRaindropInterface.sol";
 import "../../SnowflakeResolver.sol";
 import "../../interfaces/IdentityRegistryInterface.sol";
 import "../../interfaces/HydroInterface.sol";
 import "../../interfaces/SnowflakeInterface.sol";
-
-interface OldClientRaindrop {
-    function userNameTaken(string calldata userName) external view returns (bool);
-    function getUserByName(string calldata userName) external view returns (string memory, address);
-}
 
 contract ClientRaindrop is SnowflakeResolver {
     // attach the StringUtils library
@@ -19,7 +15,7 @@ contract ClientRaindrop is SnowflakeResolver {
     // other SCs
     HydroInterface private hydroToken;
     IdentityRegistryInterface private identityRegistry;
-    OldClientRaindrop private oldClientRaindrop;
+    OldClientRaindropInterface private oldClientRaindrop;
 
     // staking requirements
     uint public hydroStakeUser;
@@ -75,7 +71,7 @@ contract ClientRaindrop is SnowflakeResolver {
 
     // set the old client raindrop address
     function setOldClientRaindropAddress(address oldClientRaindropAddress) public onlyOwner() {
-        oldClientRaindrop = OldClientRaindrop(oldClientRaindropAddress);
+        oldClientRaindrop = OldClientRaindropInterface(oldClientRaindropAddress);
     }
 
     // set minimum hydro balances required for sign ups
