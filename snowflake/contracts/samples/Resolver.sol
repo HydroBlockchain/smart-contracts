@@ -33,6 +33,12 @@ contract Resolver is SnowflakeResolver {
     // implement removal function
     function onRemoval(uint, bytes memory) public senderIsSnowflake() returns (bool) {}
 
+    // example function to test allowAndCall
+    function transferSnowflakeBalanceFromAllowAndCall(uint einFrom, uint einTo, uint amount) public {
+        require(identityRegistry.isProviderFor(einFrom, msg.sender));
+        snowflake.transferSnowflakeBalanceFrom(einFrom, einTo, amount);
+    }
+
     // example functions to test *From token functions
     function transferSnowflakeBalanceFrom(uint einTo, uint amount) public {
         snowflake.transferSnowflakeBalanceFrom(identityRegistry.getEIN(msg.sender), einTo, amount);

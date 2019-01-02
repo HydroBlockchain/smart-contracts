@@ -138,6 +138,24 @@ contract('Testing Snowflake Token Functionality', function (accounts) {
       await verifyHydroBalances([instances.ResolverSample.address], [escrowAmount])
     })
 
+    const allowAndCallTransferAmount = web3.utils.toBN(1e18)
+    it('resolver could use allowAndCall', async () => {
+      const methodID = web3.utils
+        .soliditySha3('transferSnowflakeBalanceFromAllowAndCall(uint256,uint256,uint256)')
+        .substring(0, 10)
+
+      const encodedArgs = [
+        users[0].identity.toString(16, 64),
+        users[1].identity.toString(16, 64),
+        allowAndCallTransferAmount.toString(16, 64)
+      ]
+      const data = `${methodID}${encodedArgs.join('')}`
+
+      await instances.Snowflake.allowAndCall.call(
+        instances.ResolverSample.address, transferAmount, data, { from: users[0].address }
+      )
+    })
+
     const transferAmount = web3.utils.toBN(1e18)
     it('resolver can transfer balances from', async () => {
       await instances.ResolverSample.transferSnowflakeBalanceFrom(

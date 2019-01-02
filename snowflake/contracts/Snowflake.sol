@@ -457,6 +457,61 @@ contract Snowflake is Ownable {
         resolverAllowances[einFrom][msg.sender] = resolverAllowances[einFrom][msg.sender].sub(amount);
     }
 
+    // allowAndCall from msg.sender
+    function allowAndCall(address destination, uint amount, bytes memory data)
+        public returns (bytes memory returnData)
+    {
+        return allowAndCall(identityRegistry.getEIN(msg.sender), amount, destination, data);
+    }
+
+    // allowAndCall from approvingAddress with meta-transaction
+    function allowAndCallDelegated(
+        address destination, uint amount, bytes memory data, address approvingAddress, uint8 v, bytes32 r, bytes32 s
+    )
+        public returns (bytes memory returnData)
+    {
+        uint ein = identityRegistry.getEIN(approvingAddress);
+        uint nonce = signatureNonce[ein]++;
+        validateAllowAndCallDelegatedSignature(approvingAddress, ein, destination, amount, data, nonce, v, r, s);
+
+        return allowAndCall(ein, amount, destination, data);
+    }
+
+    function validateAllowAndCallDelegatedSignature(
+        address approvingAddress, uint ein, address destination, uint amount, bytes memory data, uint nonce,
+        uint8 v, bytes32 r, bytes32 s
+    )
+        private view
+    {
+        require(
+            identityRegistry.isSigned(
+                approvingAddress,
+                keccak256(
+                    abi.encodePacked(
+                        byte(0x19), byte(0), address(this),
+                        "I authorize this allow and call.", ein, destination, amount, data, nonce
+                    )
+                ),
+                v, r, s
+            ),
+            "Permission denied."
+        );
+    }
+
+    // internal logic for allowAndCall
+    function allowAndCall(uint ein, uint amount, address destination, bytes memory data)
+        private returns (bytes memory returnData)
+    {
+        // check that resolver-related details are correct
+        require(identityRegistry.isResolverFor(ein, destination), "Destination has not been set by from tokenholder.");
+        resolverAllowances[ein][destination] = resolverAllowances[ein][destination].add(amount);
+
+        // solium-disable-next-line security/no-low-level-calls
+        (bool success, bytes memory _returnData) = destination.call(data);
+        require(success, "Call was not successful.");
+        return _returnData;
+    }
+
     // events
     event SnowflakeProvidersUpgraded(uint indexed ein, address[] newProviders, address[] oldProviders, address approvingAddress);
 
