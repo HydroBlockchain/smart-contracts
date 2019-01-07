@@ -504,7 +504,9 @@ contract Snowflake is Ownable {
     {
         // check that resolver-related details are correct
         require(identityRegistry.isResolverFor(ein, destination), "Destination has not been set by from tokenholder.");
-        resolverAllowances[ein][destination] = resolverAllowances[ein][destination].add(amount);
+        if (amount != 0) {
+            resolverAllowances[ein][destination] = resolverAllowances[ein][destination].add(amount);
+        }
 
         // solium-disable-next-line security/no-low-level-calls
         (bool success, bytes memory _returnData) = destination.call(data);
