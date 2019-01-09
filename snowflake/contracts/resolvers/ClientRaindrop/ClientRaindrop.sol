@@ -37,8 +37,6 @@ contract ClientRaindrop is SnowflakeResolver {
     // Mapping from address to uncased hydroID hashes
     mapping (address => bytes32) private addressDirectory;
 
-
-
     constructor(
         address snowflakeAddress, address oldClientRaindropAddress, uint _hydroStakeUser, uint _hydroStakeDelegatedUser
     )
@@ -87,12 +85,7 @@ contract ClientRaindrop is SnowflakeResolver {
 
     // function for users calling signup for themselves
     function signUp(address _address, string memory casedHydroId) public requireStake(msg.sender, hydroStakeUser) {
-        uint ein = identityRegistry.getEIN(msg.sender);
-        require(
-            identityRegistry.isAssociatedAddressFor(ein, _address),
-            "The passed address is not associated with the calling Identity."
-        );
-        _signUp(ein, casedHydroId, _address);
+        _signUp(identityRegistry.getEIN(msg.sender), casedHydroId, _address);
     }
 
     // function for users signing up through the snowflake provider
@@ -110,6 +103,10 @@ contract ClientRaindrop is SnowflakeResolver {
     function _signUp(uint ein, string memory casedHydroID, address _address) internal {
         require(bytes(casedHydroID).length > 2 && bytes(casedHydroID).length < 33, "HydroID has invalid length.");
         require(identityRegistry.isResolverFor(ein, address(this)), "The passed EIN has not set this resolver.");
+        require(
+            identityRegistry.isAssociatedAddressFor(ein, _address),
+            "The passed address is not associated with the calling Identity."
+        );
         checkForOldHydroID(casedHydroID, _address);
 
         bytes32 uncasedHydroIDHash = keccak256(abi.encodePacked(casedHydroID.toSlice().copy().toString().lower()));
