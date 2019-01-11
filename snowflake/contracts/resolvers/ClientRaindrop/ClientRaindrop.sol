@@ -96,6 +96,7 @@ contract ClientRaindrop is SnowflakeResolver {
         (address _address, string memory casedHydroID) = abi.decode(extraData, (address, string));
         require(identityRegistry.isProviderFor(ein, msg.sender), "Snowflake is not a Provider for the passed EIN.");
         _signUp(ein, casedHydroID, _address);
+     
         return true;
     }
 
@@ -144,6 +145,8 @@ contract ClientRaindrop is SnowflakeResolver {
         delete userDirectory[uncasedHydroIDHash].casedHydroID;
         delete userDirectory[uncasedHydroIDHash]._address;
         userDirectory[uncasedHydroIDHash].destroyed = true;
+
+        return true;
     }
 
 
