@@ -260,7 +260,6 @@ contract Snowflake is Ownable {
 
         for (uint i; i < resolvers.length; i++) {
             require(identityRegistry.isResolverFor(ein, resolvers[i]), "Identity has not set this resolver.");
-            require(resolverAllowances[ein][resolvers[i]] == 0, "Allowance is not 0.");
             resolverAllowances[ein][resolvers[i]] = withdrawAllowances[i];
             emit SnowflakeResolverAllowanceChanged(ein, resolvers[i], withdrawAllowances[i]);
         }
