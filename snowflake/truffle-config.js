@@ -17,6 +17,12 @@ module.exports = {
       gasPrice: 0x01,
       websockets: true
     },
+     ganache: {
+      host: 'localhost',
+      port: 8545,
+      network_id: '*', 
+      websockets: true
+    },
     rinkebyIPC: {
       host: 'localhost',
       port: 8545,
