@@ -1,0 +1,1435 @@
+{
+	"compiler": {
+		"version": "0.5.16+commit.9c3226ce"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_identityRegistryAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_hydroTokenAddress",
+						"type": "address"
+					}
+				],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "previousOwner",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "OwnershipTransferred",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "einTo",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "SnowflakeDeposit",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "resolver",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "currentAllowance",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "requestedWithdraw",
+						"type": "uint256"
+					}
+				],
+				"name": "SnowflakeInsufficientAllowance",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address[]",
+						"name": "newProviders",
+						"type": "address[]"
+					},
+					{
+						"indexed": false,
+						"internalType": "address[]",
+						"name": "oldProviders",
+						"type": "address[]"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "approvingAddress",
+						"type": "address"
+					}
+				],
+				"name": "SnowflakeProvidersUpgraded",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "resolver",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "withdrawAllowance",
+						"type": "uint256"
+					}
+				],
+				"name": "SnowflakeResolverAdded",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "resolver",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "withdrawAllowance",
+						"type": "uint256"
+					}
+				],
+				"name": "SnowflakeResolverAllowanceChanged",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "resolver",
+						"type": "address"
+					}
+				],
+				"name": "SnowflakeResolverRemoved",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "einFrom",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "einTo",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "SnowflakeTransfer",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "resolverFrom",
+						"type": "address"
+					}
+				],
+				"name": "SnowflakeTransferFrom",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "resolverFrom",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "einTo",
+						"type": "uint256"
+					}
+				],
+				"name": "SnowflakeTransferFromVia",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "resolverFrom",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "via",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "einTo",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "SnowflakeTransferToVia",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "einFrom",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "SnowflakeWithdraw",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "resolverFrom",
+						"type": "address"
+					}
+				],
+				"name": "SnowflakeWithdrawFrom",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "resolverFrom",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					}
+				],
+				"name": "SnowflakeWithdrawFromVia",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "resolverFrom",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "via",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "SnowflakeWithdrawToVia",
+				"type": "event"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "approvingAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address[]",
+						"name": "providers",
+						"type": "address[]"
+					},
+					{
+						"internalType": "uint8",
+						"name": "v",
+						"type": "uint8"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "r",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "s",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					}
+				],
+				"name": "addProvidersFor",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "resolver",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "isSnowflake",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "withdrawAllowance",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "extraData",
+						"type": "bytes"
+					}
+				],
+				"name": "addResolver",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "resolver",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "isSnowflake",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "withdrawAllowance",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "extraData",
+						"type": "bytes"
+					}
+				],
+				"name": "addResolverAsProvider",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "approvingAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "resolver",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "isSnowflake",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "withdrawAllowance",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "extraData",
+						"type": "bytes"
+					},
+					{
+						"internalType": "uint8",
+						"name": "v",
+						"type": "uint8"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "r",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "s",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					}
+				],
+				"name": "addResolverFor",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "destination",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "data",
+						"type": "bytes"
+					}
+				],
+				"name": "allowAndCall",
+				"outputs": [
+					{
+						"internalType": "bytes",
+						"name": "returnData",
+						"type": "bytes"
+					}
+				],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "destination",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "data",
+						"type": "bytes"
+					},
+					{
+						"internalType": "address",
+						"name": "approvingAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint8",
+						"name": "v",
+						"type": "uint8"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "r",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "s",
+						"type": "bytes32"
+					}
+				],
+				"name": "allowAndCallDelegated",
+				"outputs": [
+					{
+						"internalType": "bytes",
+						"name": "returnData",
+						"type": "bytes"
+					}
+				],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "resolvers",
+						"type": "address[]"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "withdrawAllowances",
+						"type": "uint256[]"
+					}
+				],
+				"name": "changeResolverAllowances",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "approvingAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address[]",
+						"name": "resolvers",
+						"type": "address[]"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "withdrawAllowances",
+						"type": "uint256[]"
+					},
+					{
+						"internalType": "uint8",
+						"name": "v",
+						"type": "uint8"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "r",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "s",
+						"type": "bytes32"
+					}
+				],
+				"name": "changeResolverAllowancesDelegated",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "clientRaindropAddress",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "recoveryAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "associatedAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address[]",
+						"name": "providers",
+						"type": "address[]"
+					},
+					{
+						"internalType": "string",
+						"name": "casedHydroId",
+						"type": "string"
+					},
+					{
+						"internalType": "uint8",
+						"name": "v",
+						"type": "uint8"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "r",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "s",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					}
+				],
+				"name": "createIdentityDelegated",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "deposits",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "hydroTokenAddress",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "identityRegistryAddress",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "isOwner",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "_tokenAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes",
+						"name": "_bytes",
+						"type": "bytes"
+					}
+				],
+				"name": "receiveApproval",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "approvingAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address[]",
+						"name": "providers",
+						"type": "address[]"
+					},
+					{
+						"internalType": "uint8",
+						"name": "v",
+						"type": "uint8"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "r",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "s",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					}
+				],
+				"name": "removeProvidersFor",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "resolver",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "isSnowflake",
+						"type": "bool"
+					},
+					{
+						"internalType": "bytes",
+						"name": "extraData",
+						"type": "bytes"
+					}
+				],
+				"name": "removeResolver",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "approvingAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "resolver",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "isSnowflake",
+						"type": "bool"
+					},
+					{
+						"internalType": "bytes",
+						"name": "extraData",
+						"type": "bytes"
+					},
+					{
+						"internalType": "uint8",
+						"name": "v",
+						"type": "uint8"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "r",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "s",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					}
+				],
+				"name": "removeResolverFor",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [],
+				"name": "renounceOwnership",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "resolverAllowances",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_identityRegistryAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_hydroTokenAddress",
+						"type": "address"
+					}
+				],
+				"name": "setAddresses",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_clientRaindropAddress",
+						"type": "address"
+					}
+				],
+				"name": "setClientRaindropAddress",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "signatureNonce",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "signatureTimeout",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "transferOwnership",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "einTo",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "transferSnowflakeBalance",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "einFrom",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "einTo",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "transferSnowflakeBalanceFrom",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "einFrom",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "via",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "einTo",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "_bytes",
+						"type": "bytes"
+					}
+				],
+				"name": "transferSnowflakeBalanceFromVia",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "approvingAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "newRecoveryAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint8",
+						"name": "v",
+						"type": "uint8"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "r",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "s",
+						"type": "bytes32"
+					}
+				],
+				"name": "triggerRecoveryAddressChangeFor",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "approvingAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address[]",
+						"name": "newProviders",
+						"type": "address[]"
+					},
+					{
+						"internalType": "address[]",
+						"name": "oldProviders",
+						"type": "address[]"
+					},
+					{
+						"internalType": "uint8[2]",
+						"name": "v",
+						"type": "uint8[2]"
+					},
+					{
+						"internalType": "bytes32[2]",
+						"name": "r",
+						"type": "bytes32[2]"
+					},
+					{
+						"internalType": "bytes32[2]",
+						"name": "s",
+						"type": "bytes32[2]"
+					},
+					{
+						"internalType": "uint256[2]",
+						"name": "timestamp",
+						"type": "uint256[2]"
+					}
+				],
+				"name": "upgradeProvidersFor",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "withdrawSnowflakeBalance",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "einFrom",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "withdrawSnowflakeBalanceFrom",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "einFrom",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "via",
+						"type": "address"
+					},
+					{
+						"internalType": "address payable",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "_bytes",
+						"type": "bytes"
+					}
+				],
+				"name": "withdrawSnowflakeBalanceFromVia",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"methods": {
+				"isOwner()": {
+					"return": "true if `msg.sender` is the owner of the contract."
+				},
+				"owner()": {
+					"return": "the address of the owner."
+				},
+				"renounceOwnership()": {
+					"details": "Allows the current owner to relinquish control of the contract."
+				},
+				"transferOwnership(address)": {
+					"details": "Allows the current owner to transfer control of the contract to a newOwner.",
+					"params": {
+						"newOwner": "The address to transfer ownership to."
+					}
+				}
+			}
+		},
+		"userdoc": {
+			"methods": {
+				"renounceOwnership()": {
+					"notice": "Renouncing to ownership will leave the contract without an owner. It will not be possible to call the functions with the `onlyOwner` modifier anymore."
+				}
+			}
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"localhost/Snowflake.sol": "Snowflake"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"localhost/Snowflake.sol": {
+			"keccak256": "0xd787854e4e3720f292332d7a0580bf5c116113241ea43fc84cdc86a60422d436",
+			"urls": [
+				"bzz-raw://ab3969d9287e523827ed68fcc6319695eb83890d721fce0648090b4617de53e2",
+				"dweb:/ipfs/QmZGysthdvHtqmeRfaCsKBjUqJicZgdL5Sf6gHLb2pirbD"
+			]
+		},
+		"localhost/interfaces/ClientRaindropInterface.sol": {
+			"keccak256": "0x930f9d9bc7a774fd48e784332db8866e59ddeed9cc6218b3f49d0fd9ad62acda",
+			"urls": [
+				"bzz-raw://7380e1bb33daa3cc5014cb96c66fb036b0ec54dc40bde31e5233d7e8999dacf9",
+				"dweb:/ipfs/QmQQaevHVd6jgwSxoupAEER9bYLPvKX6fMbJWxXdwwk28K"
+			]
+		},
+		"localhost/interfaces/HydroInterface.sol": {
+			"keccak256": "0x3f0b755561062d9912aca9a46d728918404fe17a09cfbadfcdd498bdd6fd0b6e",
+			"urls": [
+				"bzz-raw://2c7728a242939831b961ce3846dcf948053a6d97e84d62d7de15fa04e050f4ed",
+				"dweb:/ipfs/QmTb87xRzJoTjn6Zqxwn4pobLaRwoKd5PTVXeJ79L59MSW"
+			]
+		},
+		"localhost/interfaces/IdentityRegistryInterface.sol": {
+			"keccak256": "0xb559191dbd30da97a8b5759a895d7f4eff420eedc55b0786ae7206fbe384dc15",
+			"urls": [
+				"bzz-raw://4ca73a9731d9a2dd9603593b2d847af126e20af8d4242edb91d5bfba5107149d",
+				"dweb:/ipfs/QmdJ5oW52QuXipANPCy8sJPwULkdXmVWjAPEWgPoy9oudk"
+			]
+		},
+		"localhost/interfaces/SnowflakeResolverInterface.sol": {
+			"keccak256": "0x8a5595a41d86f78514dfcd6eaa0ec79482187b8ead1c8c129faab29aeb2aced1",
+			"urls": [
+				"bzz-raw://adce9474a5bdaf71df2dd13b274be5e133aea40a45ac477cff3affa7b36c04f2",
+				"dweb:/ipfs/QmPPUi5d3uqA8dgLkJY6NUJZXNkV2gHCCbgtUXdb1Q42D4"
+			]
+		},
+		"localhost/interfaces/SnowflakeViaInterface.sol": {
+			"keccak256": "0x145fa0d482b9f25c70b8426d7cedb07dd056d3b3ff47c6c9def3cef13167ea1f",
+			"urls": [
+				"bzz-raw://fca010c7377b5acfcf7b2115dbc6cc172955e8cec427a0ab5f162b88992dcfbd",
+				"dweb:/ipfs/QmV5LoK4zj3xTSpw6UbSB8MXaXMExCkJeC557JyjiGwYBn"
+			]
+		},
+		"localhost/zeppelin/math/SafeMath.sol": {
+			"keccak256": "0x2cee2f0a5f7c68ece40aa1641b34177859058b4b3d74f243112c96f0bff7d54b",
+			"urls": [
+				"bzz-raw://f2b0cad26ec863f3772bbebd99460df0d96c57eaf486e195ea402a2542d6d515",
+				"dweb:/ipfs/QmXQTSLmasfkBa5ttJeWMAGedKTV1ZErhMLkkBCJDhWHbz"
+			]
+		},
+		"localhost/zeppelin/ownership/Ownable.sol": {
+			"keccak256": "0x1fbe7f67d6b8ac1f5aff86a9da41833273e073c47ce1e160f9addd9c64d9ff1d",
+			"urls": [
+				"bzz-raw://93d3790757d1984cef393a056010cc4269002c1aa93d635fabc8f169ef0707e8",
+				"dweb:/ipfs/QmdSDJUXB5vEXud6BJGc6TSQMBG8trJ4ZYH2onq39taBKa"
+			]
+		}
+	},
+	"version": 1
+}
