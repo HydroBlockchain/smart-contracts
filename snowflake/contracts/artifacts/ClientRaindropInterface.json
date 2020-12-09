@@ -1,0 +1,293 @@
+{
+	"deploy": {
+		"VM:-": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"main:1": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"ropsten:3": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"rinkeby:4": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"kovan:42": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"görli:5": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"Custom": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		}
+	},
+	"data": {
+		"bytecode": {
+			"linkReferences": {},
+			"object": "",
+			"opcodes": "",
+			"sourceMap": ""
+		},
+		"deployedBytecode": {
+			"linkReferences": {},
+			"object": "",
+			"opcodes": "",
+			"sourceMap": ""
+		},
+		"gasEstimates": null,
+		"methodIdentifiers": {
+			"getDetails(address)": "30289c61",
+			"getDetails(string)": "1328fd8f",
+			"getDetails(uint256)": "b93a89f7",
+			"hydroIDActive(string)": "a76c74b2",
+			"hydroIDAvailable(string)": "aad9afbb",
+			"hydroIDDestroyed(string)": "e2a3b18b",
+			"hydroStakeDelegatedUser()": "52b7493b",
+			"hydroStakeUser()": "33a9711d",
+			"setSnowflakeAddress(address)": "c979b05a",
+			"setStakes(uint256,uint256)": "bb3f9cdd",
+			"signUp(address,string)": "b531ff12"
+		}
+	},
+	"abi": [
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "string",
+					"name": "uncasedHydroID",
+					"type": "string"
+				}
+			],
+			"name": "getDetails",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "ein",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "_address",
+					"type": "address"
+				},
+				{
+					"internalType": "string",
+					"name": "casedHydroID",
+					"type": "string"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_address",
+					"type": "address"
+				}
+			],
+			"name": "getDetails",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "ein",
+					"type": "uint256"
+				},
+				{
+					"internalType": "string",
+					"name": "casedHydroID",
+					"type": "string"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "ein",
+					"type": "uint256"
+				}
+			],
+			"name": "getDetails",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "_address",
+					"type": "address"
+				},
+				{
+					"internalType": "string",
+					"name": "casedHydroID",
+					"type": "string"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "string",
+					"name": "uncasedHydroID",
+					"type": "string"
+				}
+			],
+			"name": "hydroIDActive",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "active",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "string",
+					"name": "uncasedHydroID",
+					"type": "string"
+				}
+			],
+			"name": "hydroIDAvailable",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "available",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "string",
+					"name": "uncasedHydroID",
+					"type": "string"
+				}
+			],
+			"name": "hydroIDDestroyed",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "destroyed",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "hydroStakeDelegatedUser",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "hydroStakeUser",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_snowflakeAddress",
+					"type": "address"
+				}
+			],
+			"name": "setSnowflakeAddress",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_hydroStakeUser",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_hydroStakeDelegatedUser",
+					"type": "uint256"
+				}
+			],
+			"name": "setStakes",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_address",
+					"type": "address"
+				},
+				{
+					"internalType": "string",
+					"name": "casedHydroId",
+					"type": "string"
+				}
+			],
+			"name": "signUp",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	]
+}
