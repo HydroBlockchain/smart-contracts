@@ -1,4 +1,4 @@
-pragma solidity 0.5.16;
+pragma solidity 0.5.0;
 
 interface IBEP20 {
   /**
@@ -131,7 +131,7 @@ contract Context {
  */
 library SafeMath {
   /**
-   * @dev Returns the addition of two unsigned integers, reverting on
+   * @dev Returns the addition of two unsigned integers, reverting on
    * overflow.
    *
    * Counterpart to Solidity's `+` operator.
@@ -344,7 +344,7 @@ interface tokenRecipient {
     function receiveApproval(address _from, uint256 _value, address _token, bytes calldata _extraData) external;
 }
 
-contract BEP20Token is Context, IBEP20, Ownable {
+contract HydroToken is Context, IBEP20, Ownable {
     
     
   using SafeMath for uint256;
