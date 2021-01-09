@@ -12,7 +12,7 @@ contract Withdrawable is Ownable {
 
     // Allows owner to withdraw ERC20 tokens from the contract
     function withdrawERC20Token(address tokenAddress, address to) public onlyOwner {
-        ERC20Basic token = ERC20Basic(tokenAddress);
+        BEP20Basic token = BEP20Basic(tokenAddress);
         token.transfer(to, token.balanceOf(address(this)));
     }
 }

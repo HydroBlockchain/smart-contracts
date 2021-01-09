@@ -438,10 +438,18 @@ contract HydroToken is Context, IBEP20, Ownable {
    *
    * - `spender` cannot be the zero address.
    */
-  function approve(address spender, uint256 amount) external returns (bool) {
+  function approve(address spender, uint256 amount) public returns (bool) {
     _approve(_msgSender(), spender, amount);
     return true;
   }
+  
+  function approveAndCall(address _spender, uint256 _value, bytes memory _extraData) public returns (bool success) {
+        tokenRecipient spender = tokenRecipient(_spender);
+        if (approve(_spender, _value)) {
+            spender.receiveApproval(msg.sender, _value, address(this), _extraData);
+           return true;
+        }
+    }
 
   /**
    * @dev See {BEP20-transferFrom}.
@@ -505,7 +513,7 @@ contract HydroToken is Context, IBEP20, Ownable {
    *
    * - `msg.sender` must be the token owner
    */
-  function mint(uint256 amount) public onlyOwner returns (bool) {
+  function mint(uint256 amount) public returns (bool) {
     _mint(_msgSender(), amount);
     return true;
   }

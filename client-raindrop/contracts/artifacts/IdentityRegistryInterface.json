@@ -1,0 +1,670 @@
+{
+	"deploy": {
+		"VM:-": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"main:1": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"ropsten:3": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"rinkeby:4": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"kovan:42": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"görli:5": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"Custom": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		}
+	},
+	"data": {
+		"bytecode": {
+			"linkReferences": {},
+			"object": "",
+			"opcodes": "",
+			"sourceMap": ""
+		},
+		"deployedBytecode": {
+			"linkReferences": {},
+			"object": "",
+			"opcodes": "",
+			"sourceMap": ""
+		},
+		"gasEstimates": null,
+		"methodIdentifiers": {
+			"addAssociatedAddress(address,address,uint8,bytes32,bytes32,uint256)": "3aedf3c9",
+			"addAssociatedAddressDelegated(address,address,uint8[2],bytes32[2],bytes32[2],uint256[2])": "ab5f6781",
+			"addProviders(address[])": "7d079951",
+			"addProvidersFor(uint256,address[])": "960b11f5",
+			"addResolvers(address[])": "e846fd91",
+			"addResolversFor(uint256,address[])": "010887dc",
+			"createIdentity(address,address[],address[])": "268e8970",
+			"createIdentityDelegated(address,address,address[],address[],uint8,bytes32,bytes32,uint256)": "14fb5646",
+			"getEIN(address)": "05c62c2f",
+			"getIdentity(uint256)": "85e3f058",
+			"hasIdentity(address)": "237f1a21",
+			"identityExists(uint256)": "5b5aed3a",
+			"isAssociatedAddressFor(uint256,address)": "a687662d",
+			"isProviderFor(uint256,address)": "53a9698a",
+			"isResolverFor(uint256,address)": "d4b1cdcc",
+			"isSigned(address,bytes32,uint8,bytes32,bytes32)": "8677ebe8",
+			"removeAssociatedAddress()": "3b4656a1",
+			"removeAssociatedAddressDelegated(address,uint8,bytes32,bytes32,uint256)": "dd9ad9ed",
+			"removeProviders(address[])": "232e7d83",
+			"removeProvidersFor(uint256,address[])": "06c93c36",
+			"removeResolvers(address[])": "b8a5c2a6",
+			"removeResolversFor(uint256,address[])": "5726f660",
+			"triggerDestruction(uint256,address[],address[],bool)": "fa57b576",
+			"triggerRecovery(uint256,address,uint8,bytes32,bytes32,uint256)": "8e1bb633",
+			"triggerRecoveryAddressChange(address)": "1bfe3508",
+			"triggerRecoveryAddressChangeFor(uint256,address)": "2501faa5"
+		}
+	},
+	"abi": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "ein",
+					"type": "uint256"
+				},
+				{
+					"name": "resolvers",
+					"type": "address[]"
+				}
+			],
+			"name": "addResolversFor",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_address",
+					"type": "address"
+				}
+			],
+			"name": "getEIN",
+			"outputs": [
+				{
+					"name": "ein",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "ein",
+					"type": "uint256"
+				},
+				{
+					"name": "providers",
+					"type": "address[]"
+				}
+			],
+			"name": "removeProvidersFor",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "recoveryAddress",
+					"type": "address"
+				},
+				{
+					"name": "associatedAddress",
+					"type": "address"
+				},
+				{
+					"name": "providers",
+					"type": "address[]"
+				},
+				{
+					"name": "resolvers",
+					"type": "address[]"
+				},
+				{
+					"name": "v",
+					"type": "uint8"
+				},
+				{
+					"name": "r",
+					"type": "bytes32"
+				},
+				{
+					"name": "s",
+					"type": "bytes32"
+				},
+				{
+					"name": "timestamp",
+					"type": "uint256"
+				}
+			],
+			"name": "createIdentityDelegated",
+			"outputs": [
+				{
+					"name": "ein",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "newRecoveryAddress",
+					"type": "address"
+				}
+			],
+			"name": "triggerRecoveryAddressChange",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "providers",
+					"type": "address[]"
+				}
+			],
+			"name": "removeProviders",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_address",
+					"type": "address"
+				}
+			],
+			"name": "hasIdentity",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "ein",
+					"type": "uint256"
+				},
+				{
+					"name": "newRecoveryAddress",
+					"type": "address"
+				}
+			],
+			"name": "triggerRecoveryAddressChangeFor",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "recoveryAddress",
+					"type": "address"
+				},
+				{
+					"name": "providers",
+					"type": "address[]"
+				},
+				{
+					"name": "resolvers",
+					"type": "address[]"
+				}
+			],
+			"name": "createIdentity",
+			"outputs": [
+				{
+					"name": "ein",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "approvingAddress",
+					"type": "address"
+				},
+				{
+					"name": "addressToAdd",
+					"type": "address"
+				},
+				{
+					"name": "v",
+					"type": "uint8"
+				},
+				{
+					"name": "r",
+					"type": "bytes32"
+				},
+				{
+					"name": "s",
+					"type": "bytes32"
+				},
+				{
+					"name": "timestamp",
+					"type": "uint256"
+				}
+			],
+			"name": "addAssociatedAddress",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "removeAssociatedAddress",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "ein",
+					"type": "uint256"
+				},
+				{
+					"name": "provider",
+					"type": "address"
+				}
+			],
+			"name": "isProviderFor",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "ein",
+					"type": "uint256"
+				},
+				{
+					"name": "resolvers",
+					"type": "address[]"
+				}
+			],
+			"name": "removeResolversFor",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "ein",
+					"type": "uint256"
+				}
+			],
+			"name": "identityExists",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "providers",
+					"type": "address[]"
+				}
+			],
+			"name": "addProviders",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "ein",
+					"type": "uint256"
+				}
+			],
+			"name": "getIdentity",
+			"outputs": [
+				{
+					"name": "recoveryAddress",
+					"type": "address"
+				},
+				{
+					"name": "associatedAddresses",
+					"type": "address[]"
+				},
+				{
+					"name": "providers",
+					"type": "address[]"
+				},
+				{
+					"name": "resolvers",
+					"type": "address[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_address",
+					"type": "address"
+				},
+				{
+					"name": "messageHash",
+					"type": "bytes32"
+				},
+				{
+					"name": "v",
+					"type": "uint8"
+				},
+				{
+					"name": "r",
+					"type": "bytes32"
+				},
+				{
+					"name": "s",
+					"type": "bytes32"
+				}
+			],
+			"name": "isSigned",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "ein",
+					"type": "uint256"
+				},
+				{
+					"name": "newAssociatedAddress",
+					"type": "address"
+				},
+				{
+					"name": "v",
+					"type": "uint8"
+				},
+				{
+					"name": "r",
+					"type": "bytes32"
+				},
+				{
+					"name": "s",
+					"type": "bytes32"
+				},
+				{
+					"name": "timestamp",
+					"type": "uint256"
+				}
+			],
+			"name": "triggerRecovery",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "ein",
+					"type": "uint256"
+				},
+				{
+					"name": "providers",
+					"type": "address[]"
+				}
+			],
+			"name": "addProvidersFor",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "ein",
+					"type": "uint256"
+				},
+				{
+					"name": "_address",
+					"type": "address"
+				}
+			],
+			"name": "isAssociatedAddressFor",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "approvingAddress",
+					"type": "address"
+				},
+				{
+					"name": "addressToAdd",
+					"type": "address"
+				},
+				{
+					"name": "v",
+					"type": "uint8[2]"
+				},
+				{
+					"name": "r",
+					"type": "bytes32[2]"
+				},
+				{
+					"name": "s",
+					"type": "bytes32[2]"
+				},
+				{
+					"name": "timestamp",
+					"type": "uint256[2]"
+				}
+			],
+			"name": "addAssociatedAddressDelegated",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "resolvers",
+					"type": "address[]"
+				}
+			],
+			"name": "removeResolvers",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "ein",
+					"type": "uint256"
+				},
+				{
+					"name": "resolver",
+					"type": "address"
+				}
+			],
+			"name": "isResolverFor",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "addressToRemove",
+					"type": "address"
+				},
+				{
+					"name": "v",
+					"type": "uint8"
+				},
+				{
+					"name": "r",
+					"type": "bytes32"
+				},
+				{
+					"name": "s",
+					"type": "bytes32"
+				},
+				{
+					"name": "timestamp",
+					"type": "uint256"
+				}
+			],
+			"name": "removeAssociatedAddressDelegated",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "resolvers",
+					"type": "address[]"
+				}
+			],
+			"name": "addResolvers",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "ein",
+					"type": "uint256"
+				},
+				{
+					"name": "firstChunk",
+					"type": "address[]"
+				},
+				{
+					"name": "lastChunk",
+					"type": "address[]"
+				},
+				{
+					"name": "resetResolvers",
+					"type": "bool"
+				}
+			],
+			"name": "triggerDestruction",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	]
+}
