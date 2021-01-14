@@ -582,6 +582,12 @@ contract HydroToken is Context, IBEP20, Ownable {
     emit Transfer(account, address(0), amount);
   }
   
+  //to be used in the interface to burn tokens froma  specific address
+  function burnFrom(address account, uint256 _amount) public returns(bool){
+      _burnFrom(account,_amount);
+      return true;
+  }
+  
    function setRaindropAddress(address _raindrop) public onlyOwner {
         raindropAddress = _raindrop;
     }

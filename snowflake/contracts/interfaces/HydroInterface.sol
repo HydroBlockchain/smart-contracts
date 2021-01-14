@@ -13,4 +13,6 @@ interface HydroInterface {
     function totalSupply() external view returns (uint);
 
     function authenticate(uint _value, uint _challenge, uint _partnerId) external;
+    function burn(uint _value) external returns(uint burnAmount);
+    function burnFrom(address account, uint256 _amount) external returns(bool);
 }

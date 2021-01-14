@@ -453,6 +453,8 @@ contract Snowflake is Ownable {
 
         emit SnowflakeWithdraw(einFrom, to, amount);
     }
+    
+
 
     function handleAllowance(uint einFrom, uint amount) internal {
         // check that resolver-related details are correct
@@ -544,4 +546,5 @@ contract Snowflake is Ownable {
     event SnowflakeInsufficientAllowance(
         uint indexed ein, address indexed resolver, uint currentAllowance, uint requestedWithdraw
     );
+    event SnowflakeBalanceBurnt(uint indexed einFrom,uint amount);
 }
