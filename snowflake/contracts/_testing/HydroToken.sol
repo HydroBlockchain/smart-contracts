@@ -188,7 +188,7 @@ contract HydroToken is Ownable,IBEP20 {
     uint256 public MAX_BURN= 100000000000000000; //0.1 hydro tokens
 
     mapping (address => uint256) public balances;
-    // `allowed` tracks any extra transfer rights as in all ERC20 tokens
+    // `allowed` tracks any extra transfer rights as in all BEP20 tokens
     mapping (address => mapping (address => uint256)) public allowed;
     mapping(address=>bool) public whitelistedDapps; //dapps that can burn tokens
     
@@ -220,7 +220,7 @@ contract HydroToken is Ownable,IBEP20 {
 
 
 ///////////////////
-// ERC20 Methods
+// BEP20 Methods
 ///////////////////
 
     //transfers an amount of tokens from one account to another
@@ -350,8 +350,8 @@ contract HydroToken is Ownable,IBEP20 {
 
     //internal burn function which makes sure that only whitelisted addresses can burn
     function _burn(address account, uint256 amount) internal onlyFromDapps(msg.sender) {
-    require(account != address(0), "ERC20: burn from the zero address");
-    require(amount >= MAX_BURN,'ERC20: Exceeds maximum burn amount');
+    require(account != address(0), "BEP20: burn from the zero address");
+    require(amount >= MAX_BURN,'BEP20: Exceeds maximum burn amount');
     balances[account] = balances[account].sub(amount); 
     _totalSupply = _totalSupply.sub(amount);
     emit Transfer(account, address(0), amount);
