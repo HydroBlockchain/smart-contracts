@@ -119,7 +119,7 @@
 		"evmVersion": "byzantium",
 		"libraries": {},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []

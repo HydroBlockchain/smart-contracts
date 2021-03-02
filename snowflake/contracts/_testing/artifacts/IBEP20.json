@@ -37,6 +37,7 @@
 			"sourceMap": ""
 		},
 		"deployedBytecode": {
+			"immutableReferences": {},
 			"linkReferences": {},
 			"object": "",
 			"opcodes": "",
@@ -48,7 +49,6 @@
 			"approve(address,uint256)": "095ea7b3",
 			"balanceOf(address)": "70a08231",
 			"decimals()": "313ce567",
-			"getOwner()": "893d20e8",
 			"name()": "06fdde03",
 			"symbol()": "95d89b41",
 			"totalSupply()": "18160ddd",
@@ -108,7 +108,6 @@
 			"type": "event"
 		},
 		{
-			"constant": true,
 			"inputs": [
 				{
 					"internalType": "address",
@@ -129,12 +128,10 @@
 					"type": "uint256"
 				}
 			],
-			"payable": false,
 			"stateMutability": "view",
 			"type": "function"
 		},
 		{
-			"constant": false,
 			"inputs": [
 				{
 					"internalType": "address",
@@ -155,12 +152,10 @@
 					"type": "bool"
 				}
 			],
-			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
-			"constant": true,
 			"inputs": [
 				{
 					"internalType": "address",
@@ -176,12 +171,10 @@
 					"type": "uint256"
 				}
 			],
-			"payable": false,
 			"stateMutability": "view",
 			"type": "function"
 		},
 		{
-			"constant": true,
 			"inputs": [],
 			"name": "decimals",
 			"outputs": [
@@ -191,27 +184,10 @@
 					"type": "uint8"
 				}
 			],
-			"payable": false,
 			"stateMutability": "view",
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "getOwner",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [],
 			"name": "name",
 			"outputs": [
@@ -221,12 +197,10 @@
 					"type": "string"
 				}
 			],
-			"payable": false,
 			"stateMutability": "view",
 			"type": "function"
 		},
 		{
-			"constant": true,
 			"inputs": [],
 			"name": "symbol",
 			"outputs": [
@@ -236,12 +210,10 @@
 					"type": "string"
 				}
 			],
-			"payable": false,
 			"stateMutability": "view",
 			"type": "function"
 		},
 		{
-			"constant": true,
 			"inputs": [],
 			"name": "totalSupply",
 			"outputs": [
@@ -251,12 +223,10 @@
 					"type": "uint256"
 				}
 			],
-			"payable": false,
 			"stateMutability": "view",
 			"type": "function"
 		},
 		{
-			"constant": false,
 			"inputs": [
 				{
 					"internalType": "address",
@@ -277,12 +247,10 @@
 					"type": "bool"
 				}
 			],
-			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
-			"constant": false,
 			"inputs": [
 				{
 					"internalType": "address",
@@ -308,7 +276,6 @@
 					"type": "bool"
 				}
 			],
-			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "function"
 		}

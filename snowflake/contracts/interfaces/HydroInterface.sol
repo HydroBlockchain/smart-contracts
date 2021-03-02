@@ -2,6 +2,8 @@ pragma solidity ^0.5.0;
 
 interface HydroInterface {
     function balances(address) external view returns (uint);
+    function name() external view returns (string memory);
+    function symbol() external view returns (string memory);
     function allowed(address, address) external view returns (uint);
     function transfer(address _to, uint256 _amount) external returns (bool success);
     function transferFrom(address _from, address _to, uint256 _amount) external returns (bool success);
@@ -11,8 +13,13 @@ interface HydroInterface {
         external returns (bool success);
     function allowance(address _owner, address _spender) external view returns (uint256 remaining);
     function totalSupply() external view returns (uint);
-
+    
     function authenticate(uint _value, uint _challenge, uint _partnerId) external;
-    function burn(uint _value) external returns(uint burnAmount);
-    function burnFrom(address account, uint256 _amount) external returns(bool);
+    function burn(address _from, uint _value) external returns(uint burnAmount);
+   
+    function changeMaxBurn(uint256 _newBurn) external returns(uint256);
+    function _whiteListDapp(address _dappAddress) external returns(bool);
+    function _blackListDapp(address _dappAddress)external returns(bool);
+    function setRaindropAddress(address _raindrop) external;
+    
 }

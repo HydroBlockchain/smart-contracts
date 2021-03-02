@@ -37,6 +37,7 @@
 			"sourceMap": ""
 		},
 		"deployedBytecode": {
+			"immutableReferences": {},
 			"linkReferences": {},
 			"object": "",
 			"opcodes": "",
@@ -49,7 +50,6 @@
 	},
 	"abi": [
 		{
-			"constant": false,
 			"inputs": [
 				{
 					"internalType": "address",
@@ -74,7 +74,6 @@
 			],
 			"name": "authenticate",
 			"outputs": [],
-			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "function"
 		}
