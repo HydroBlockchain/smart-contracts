@@ -1,0 +1,46 @@
+{
+	"compiler": {
+		"version": "0.6.12+commit.27d51765"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"details": "Math operations with safety checks that throw on error",
+			"kind": "dev",
+			"methods": {},
+			"title": "SafeMath",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"localhost/snowflake/contracts/_testing/HydroToken.sol": "SafeMath"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"localhost/snowflake/contracts/_testing/HydroToken.sol": {
+			"keccak256": "0x0111929fa5e2d7d9211ebf86b60d176007124443f9d1a3ab163a3daa7cea58f4",
+			"urls": [
+				"bzz-raw://9140a125fa18996513ce13700269fd215158ae8812038c4d807576c00f1dbeb5",
+				"dweb:/ipfs/QmX16RhD18cTp4qWZQu86jbdxF2wcH7RtiyotXFJBmBnir"
+			]
+		}
+	},
+	"version": 1
+}

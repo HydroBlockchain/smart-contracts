@@ -1,0 +1,39 @@
+{
+	"compiler": {
+		"version": "0.5.16+commit.9c3226ce"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"details": "Math operations with safety checks that revert on error",
+			"methods": {},
+			"title": "SafeMath"
+		},
+		"userdoc": {
+			"methods": {}
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"localhost/Snowflake.sol": "SafeMath"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"localhost/Snowflake.sol": {
+			"keccak256": "0x2b6cd76e8678478218131c2d3e4f945f6467a5ffab739807ca0f94cc6dd9af27",
+			"urls": [
+				"bzz-raw://82c788f6f448676b106bb796436911ca3ac5f7586f27faf308681c91da30e084",
+				"dweb:/ipfs/QmNedPKUYe71XevVkEApo6nUwczbvSgtoYg598MqcPUDfw"
+			]
+		}
+	},
+	"version": 1
+}

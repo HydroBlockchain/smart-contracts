@@ -1,7 +1,86 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.6.0;
 
-import "../zeppelin/ownership/Ownable.sol";
-import "../zeppelin/math/SafeMath.sol";
+
+contract Ownable {
+    address public owner;
+
+
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+
+    /**
+     * @dev The Ownable constructor sets the original `owner` of the contract to the sender
+     * account.
+     */
+   constructor() public {
+        owner = msg.sender;
+    }
+
+    /**
+     * @dev Throws if called by any account other than the owner.
+     */
+    modifier onlyOwner() {
+        require(msg.sender == owner);
+        _;
+    }
+
+    /**
+     * @dev Allows the current owner to transfer control of the contract to a newOwner.
+     * @param newOwner The address to transfer ownership to.
+     */
+    function transferOwnership(address newOwner) public onlyOwner {
+        require(newOwner != address(0));
+        emit OwnershipTransferred(owner, newOwner);
+        owner = newOwner;
+    }
+
+}
+
+/**
+ * @title SafeMath
+ * @dev Math operations with safety checks that throw on error
+ */
+library SafeMath {
+
+  /**
+  * @dev Multiplies two numbers, throws on overflow.
+  */
+  function mul(uint256 a, uint256 b) internal pure returns (uint256) {
+    if (a == 0) {
+      return 0;
+    }
+    uint256 c = a * b;
+    assert(c / a == b);
+    return c;
+  }
+
+  /**
+  * @dev Integer division of two numbers, truncating the quotient.
+  */
+  function div(uint256 a, uint256 b) internal pure returns (uint256) {
+    // assert(b > 0); // Solidity automatically throws when dividing by 0
+    uint256 c = a / b;
+    // assert(a == b * c + a % b); // There is no case in which this doesn't hold
+    return c;
+  }
+
+  /**
+  * @dev Subtracts two numbers, throws on overflow (i.e. if subtrahend is greater than minuend).
+  */
+  function sub(uint256 a, uint256 b) internal pure returns (uint256) {
+    assert(b <= a);
+    return a - b;
+  }
+
+  /**
+  * @dev Adds two numbers, throws on overflow.
+  */
+  function add(uint256 a, uint256 b) internal pure returns (uint256) {
+    uint256 c = a + b;
+    assert(c >= a);
+    return c;
+  }
+}
 
 interface Raindrop {
     function authenticate(address _sender, uint _value, uint _challenge, uint _partnerId) external;
@@ -11,64 +90,178 @@ interface tokenRecipient {
     function receiveApproval(address _from, uint256 _value, address _token, bytes calldata _extraData) external;
 }
 
-contract HydroToken is Ownable {
+interface IBEP20 {
+  /**
+   * @dev Returns the amount of tokens in existence.
+   */
+  function totalSupply() external view returns (uint256);
+
+  /**
+   * @dev Returns the token decimals.
+   */
+  function decimals() external view returns (uint8);
+
+  /**
+   * @dev Returns the token symbol.
+   */
+  function symbol() external view returns (string memory);
+
+  /**
+  * @dev Returns the token name.
+  */
+  function name() external view returns (string memory);
+
+  /**
+   * @dev Returns the amount of tokens owned by `account`.
+   */
+  function balanceOf(address account) external view returns (uint256);
+
+  /**
+   * @dev Moves `amount` tokens from the caller's account to `recipient`.
+   *
+   * Returns a boolean value indicating whether the operation succeeded.
+   *
+   * Emits a {Transfer} event.
+   */
+  function transfer(address recipient, uint256 amount) external returns (bool);
+
+  /**
+   * @dev Returns the remaining number of tokens that `spender` will be
+   * allowed to spend on behalf of `owner` through {transferFrom}. This is
+   * zero by default.
+   *
+   * This value changes when {approve} or {transferFrom} are called.
+   */
+  function allowance(address _owner, address spender) external view returns (uint256);
+
+  /**
+   * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
+   *
+   * Returns a boolean value indicating whether the operation succeeded.
+   *
+   * IMPORTANT: Beware that changing an allowance with this method brings the risk
+   * that someone may use both the old and the new allowance by unfortunate
+   * transaction ordering. One possible solution to mitigate this race
+   * condition is to first reduce the spender's allowance to 0 and set the
+   * desired value afterwards:
+   * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+   *
+   * Emits an {Approval} event.
+   */
+  function approve(address spender, uint256 amount) external returns (bool);
+
+  /**
+   * @dev Moves `amount` tokens from `sender` to `recipient` using the
+   * allowance mechanism. `amount` is then deducted from the caller's
+   * allowance.
+   *
+   * Returns a boolean value indicating whether the operation succeeded.
+   *
+   * Emits a {Transfer} event.
+   */
+  function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+
+  /**
+   * @dev Emitted when `value` tokens are moved from one account (`from`) to
+   * another (`to`).
+   *
+   * Note that `value` may be zero.
+   */
+  event Transfer(address indexed from, address indexed to, uint256 value);
+
+  /**
+   * @dev Emitted when the allowance of a `spender` for an `owner` is set by
+   * a call to {approve}. `value` is the new allowance.
+   */
+  event Approval(address indexed owner, address indexed spender, uint256 value);
+}
+
+contract HydroToken is Ownable,IBEP20 {
     using SafeMath for uint256;
 
-    string public name = "Hydro";          // The token's name
-    uint8 public decimals = 18;            // Number of decimals of the smallest unit
-    string public symbol = "HYDRO";        // An identifier
-    uint public totalSupply;
-    address public raindropAddress = address(0);
+    string public _name;
+    string public _symbol;
+    uint8 public _decimals;            // Number of decimals of the smallest unit
+    uint public _totalSupply;
+    address public raindropAddress;
+    uint256 ratio;
+    uint256 public MAX_BURN= 100000000000000000; //0.1 hydro tokens
 
     mapping (address => uint256) public balances;
-    // `allowed` tracks any extra transfer rights as in all ERC20 tokens
+    // `allowed` tracks any extra transfer rights as in all BEP20 tokens
     mapping (address => mapping (address => uint256)) public allowed;
+    mapping(address=>bool) public whitelistedDapps; //dapps that can burn tokens
+    
+    //makes sure only dappstore apps can burn tokens
+    modifier onlyFromDapps(address _dapp){
+        require(whitelistedDapps[msg.sender]==true,'Hydro: Burn error');
+        _;
+    }
+    
+    event dappBurned(address indexed _dapp, uint256 _amount );
 
-    ////////////////
-    // Constructor
-    ////////////////
+////////////////
+// Constructor
+////////////////
 
     /// @notice Constructor to create a HydroToken
-    constructor() public {
-        totalSupply = 11111111111 * 10**18;
+    constructor(uint256 _ratio) public {
+        _name='HYDRO TOKEN';
+        _symbol='HYDRO';
+        _decimals=18;
+        raindropAddress=address(0);
+       _totalSupply = (11111111111 * 10**18)/_ratio;
         // Give the creator all initial tokens
-        balances[msg.sender] = totalSupply;
+        balances[msg.sender] = _totalSupply;
+        ratio = _ratio;
+        emit Transfer(address(0), msg.sender, _totalSupply);
     }
+    
 
 
-    ///////////////////
-    // ERC20 Methods
-    ///////////////////
+///////////////////
+// BEP20 Methods
+///////////////////
 
-    /// @notice Send `_amount` tokens to `_to` from `msg.sender`
-    /// @param _to The address of the recipient
-    /// @param _amount The amount of tokens to be transferred
-    /// @return Whether the transfer was successful or not
-    function transfer(address _to, uint256 _amount) public returns (bool success) {
+    //transfers an amount of tokens from one account to another
+    //accepts two variables
+    function transfer(address _to, uint256 _amount) public override  returns (bool success) {
         doTransfer(msg.sender, _to, _amount);
         return true;
-    }
+}
 
-    /// @notice Send `_amount` tokens to `_to` from `_from` on the condition it
-    ///  is approved by `_from`
-    /// @param _from The address holding the tokens being transferred
-    /// @param _to The address of the recipient
-    /// @param _amount The amount of tokens to be transferred
-    /// @return True if the transfer was successful
-    function transferFrom(address _from, address _to, uint256 _amount) public returns (bool success) {
+  /**
+   * @dev Returns the token symbol.
+   */
+  function symbol() public override view returns (string memory) {
+    return _symbol;
+  }
+  
+  /**
+  * @dev Returns the token name.
+  */
+  function name() public override view returns (string memory) {
+    return _name;
+  }
+  
+    //transfers an amount of tokens from one account to another
+    //accepts three variables
+    function transferFrom(address _from, address _to, uint256 _amount
+    ) public override returns (bool success) {
         // The standard ERC 20 transferFrom functionality
         require(allowed[_from][msg.sender] >= _amount);
         allowed[_from][msg.sender] -= _amount;
         doTransfer(_from, _to, _amount);
         return true;
     }
+    
+    //allows the owner to change the MAX_BURN amount
+    function changeMaxBurn(uint256 _newBurn) public onlyOwner returns(uint256 ) {
+        MAX_BURN=_newBurn;
+        return (_newBurn);
+    }
 
-    /// @dev This is the actual transfer function in the token contract, it can
-    ///  only be called by other functions in this contract.
-    /// @param _from The address holding the tokens being transferred
-    /// @param _to The address of the recipient
-    /// @param _amount The amount of tokens to be transferred
-    /// @return True if the transfer was successful
+    //internal function to implement the transfer function and perform some safety checks
     function doTransfer(address _from, address _to, uint _amount
     ) internal {
         // Do not allow transfer to 0x0 or the token contract itself
@@ -79,87 +272,90 @@ contract HydroToken is Ownable {
         emit Transfer(_from, _to, _amount);
     }
 
-    /// @return The balance of `_owner`
-    function balanceOf(address _owner) public view returns (uint256 balance) {
+   //returns balance of an address
+    function balanceOf(address _owner) public override view returns (uint256 balance) {
         return balances[_owner];
     }
 
-    /// @notice `msg.sender` approves `_spender` to spend `_amount` tokens on
-    ///  its behalf. This is a modified version of the ERC20 approve function
-    ///  to be a little bit safer
-    /// @param _spender The address of the account able to transfer the tokens
-    /// @param _amount The amount of tokens to be approved for transfer
-    /// @return True if the approval was successful
-    function approve(address _spender, uint256 _amount) public returns (bool success) {
+    //allows an address to approve another address to spend its tokens
+    function approve(address _spender, uint256 _amount) public override returns (bool success) {
         // To change the approve amount you first have to reduce the addresses`
         //  allowance to zero by calling `approve(_spender,0)` if it is not
         //  already 0 to mitigate the race condition described here:
         //  https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
         require((_amount == 0) || (allowed[msg.sender][_spender] == 0));
-
         allowed[msg.sender][_spender] = _amount;
         emit Approval(msg.sender, _spender, _amount);
         return true;
     }
-
-    function approveAndCall(address _spender, uint256 _value, bytes memory _extraData) public returns (bool success) {
+    
+    //sends the approve function but with a data argument
+    function approveAndCall(address _spender, uint256 _value, bytes memory _extraData) public  returns (bool success) {
         tokenRecipient spender = tokenRecipient(_spender);
         if (approve(_spender, _value)) {
             spender.receiveApproval(msg.sender, _value, address(this), _extraData);
             return true;
         }
     }
+    
+     /**
+   * @dev Returns the token decimals.
+   */
+  function decimals() external view override returns (uint8) {
+    return _decimals;
+  }
 
-    function burn(uint256 _value) public onlyOwner {
-        require(balances[msg.sender] >= _value);
-        balances[msg.sender] = balances[msg.sender].sub(_value);
-        totalSupply = totalSupply.sub(_value);
-        emit Burn(msg.sender, _value);
-    }
 
-    /// @dev This function makes it easy to read the `allowed[]` map
-    /// @param _owner The address of the account that owns the token
-    /// @param _spender The address of the account able to transfer the tokens
-    /// @return Amount of remaining tokens of _owner that _spender is allowed
-    ///  to spend
+
+    //returns the allowance an address has granted a spender
     function allowance(address _owner, address _spender
-    ) public view returns (uint256 remaining) {
+    ) public view override returns (uint256 remaining) {
         return allowed[_owner][_spender];
     }
+    
+    //allows an owner to whitelist a dapp so it can burn tokens
+    function _whiteListDapp(address _dappAddress) public onlyOwner returns(bool){
+        whitelistedDapps[_dappAddress]=true;
+        return true;
+    }
+    
+    //allows an owner to blacklist a dapp so it can stop burn tokens
+    function _blackListDapp(address _dappAddress) public onlyOwner returns(bool){
+         whitelistedDapps[_dappAddress]=false;
+         return false;
+    }
 
+    //returns current hydro totalSupply
+    function totalSupply() public view override returns (uint) {
+        return _totalSupply;
+    }
+
+    //allows the owner to set the Raindrop
     function setRaindropAddress(address _raindrop) public onlyOwner {
         raindropAddress = _raindrop;
     }
+    
+    //the main public burn function which uses the internal burn function
+    function burn(address _from,uint256 _value) external returns(uint burnAmount) {
+    _burn(_from,_value);
+    emit dappBurned(msg.sender,_value);
+    return(burnAmount);
+    }
 
-    function authenticate(uint _value, uint _challenge, uint _partnerId) public {
+    function authenticate(uint _value, uint _challenge, uint _partnerId) public  {
         Raindrop raindrop = Raindrop(raindropAddress);
         raindrop.authenticate(msg.sender, _value, _challenge, _partnerId);
-        doTransfer(msg.sender, owner(), _value);
+        doTransfer(msg.sender, owner, _value);
     }
 
-    function setBalances(address[] memory _addressList, uint[] memory _amounts) public onlyOwner {
-        require(_addressList.length == _amounts.length);
-        for (uint i = 0; i < _addressList.length; i++) {
-            require(balances[_addressList[i]] == 0);
-            transfer(_addressList[i], _amounts[i]);
-        }
-    }
+    //internal burn function which makes sure that only whitelisted addresses can burn
+    function _burn(address account, uint256 amount) internal onlyFromDapps(msg.sender) {
+    require(account != address(0), "BEP20: burn from the zero address");
+    require(amount >= MAX_BURN,'BEP20: Exceeds maximum burn amount');
+    balances[account] = balances[account].sub(amount); 
+    _totalSupply = _totalSupply.sub(amount);
+    emit Transfer(account, address(0), amount);
+  }
 
-    event Transfer(
-        address indexed _from,
-        address indexed _to,
-        uint256 _amount
-    );
-
-    event Approval(
-        address indexed _owner,
-        address indexed _spender,
-        uint256 _amount
-    );
-
-    event Burn(
-        address indexed _burner,
-        uint256 _amount
-    );
-
+  
 }
