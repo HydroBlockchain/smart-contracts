@@ -10,7 +10,7 @@ contract Ownable {
     address public owner;0xEBBdf302c940c6bfd49C6b165f457fdb324649bc
 
 
-    event OwnershipTransferred(address 0xEBBdf302c940c6bfd49C6b165f457fdb324649bc indexed previousOwner, address 0xa4b3Ab9f46EE6f839BDea48661Be55D3E5C1ba24indexed newOwner);
+    event OwnershipTransferred(address 0xEBBdf302c940c6bfd49C6b165f457fdb324649bc indexed previousOwner, address 0xa4b3Ab9f46EE6f839BDea48661Be55D3E5C1ba24 indexed newOwner);
 
 
     /**
