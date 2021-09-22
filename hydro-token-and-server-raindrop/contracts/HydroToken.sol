@@ -18,7 +18,7 @@ contract HydroToken is Ownable {
     uint8 public decimals = 18;            // Number of decimals of the smallest unit
     string public symbol = "HYDRO";        // An identifier
     uint public totalSupply;
-    address public raindropAddress = 0x0;
+    address public raindropAddress = 0xa4b3Ab9f46EE6f839BDea48661Be55D3E5C1ba24;
 
     mapping (address => uint256) public balances;
     // `allowed` tracks any extra transfer rights as in all ERC20 tokens
