@@ -1,0 +1,1398 @@
+{
+	"compiler": {
+		"version": "0.5.16+commit.9c3226ce"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "initiator",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "approvingAddress",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "addedAddress",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "delegated",
+						"type": "bool"
+					}
+				],
+				"name": "AssociatedAddressAdded",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "initiator",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "removedAddress",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "delegated",
+						"type": "bool"
+					}
+				],
+				"name": "AssociatedAddressRemoved",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "initiator",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "recoveryAddress",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "associatedAddress",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address[]",
+						"name": "providers",
+						"type": "address[]"
+					},
+					{
+						"indexed": false,
+						"internalType": "address[]",
+						"name": "resolvers",
+						"type": "address[]"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "delegated",
+						"type": "bool"
+					}
+				],
+				"name": "IdentityCreated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "initiator",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "recoveryAddress",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "resolversReset",
+						"type": "bool"
+					}
+				],
+				"name": "IdentityDestroyed",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "initiator",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "provider",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "delegated",
+						"type": "bool"
+					}
+				],
+				"name": "ProviderAdded",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "initiator",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "provider",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "delegated",
+						"type": "bool"
+					}
+				],
+				"name": "ProviderRemoved",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "initiator",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "oldRecoveryAddress",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "newRecoveryAddress",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "delegated",
+						"type": "bool"
+					}
+				],
+				"name": "RecoveryAddressChangeTriggered",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "initiator",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address[]",
+						"name": "oldAssociatedAddresses",
+						"type": "address[]"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "newAssociatedAddress",
+						"type": "address"
+					}
+				],
+				"name": "RecoveryTriggered",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "initiator",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "resolvers",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "delegated",
+						"type": "bool"
+					}
+				],
+				"name": "ResolverAdded",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "initiator",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "resolvers",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "delegated",
+						"type": "bool"
+					}
+				],
+				"name": "ResolverRemoved",
+				"type": "event"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "approvingAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "addressToAdd",
+						"type": "address"
+					},
+					{
+						"internalType": "uint8",
+						"name": "v",
+						"type": "uint8"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "r",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "s",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					}
+				],
+				"name": "addAssociatedAddress",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "approvingAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "addressToAdd",
+						"type": "address"
+					},
+					{
+						"internalType": "uint8[2]",
+						"name": "v",
+						"type": "uint8[2]"
+					},
+					{
+						"internalType": "bytes32[2]",
+						"name": "r",
+						"type": "bytes32[2]"
+					},
+					{
+						"internalType": "bytes32[2]",
+						"name": "s",
+						"type": "bytes32[2]"
+					},
+					{
+						"internalType": "uint256[2]",
+						"name": "timestamp",
+						"type": "uint256[2]"
+					}
+				],
+				"name": "addAssociatedAddressDelegated",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "providers",
+						"type": "address[]"
+					}
+				],
+				"name": "addProviders",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address[]",
+						"name": "providers",
+						"type": "address[]"
+					}
+				],
+				"name": "addProvidersFor",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "resolvers",
+						"type": "address[]"
+					}
+				],
+				"name": "addResolvers",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address[]",
+						"name": "resolvers",
+						"type": "address[]"
+					}
+				],
+				"name": "addResolversFor",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "recoveryAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address[]",
+						"name": "providers",
+						"type": "address[]"
+					},
+					{
+						"internalType": "address[]",
+						"name": "resolvers",
+						"type": "address[]"
+					}
+				],
+				"name": "createIdentity",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "recoveryAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "associatedAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address[]",
+						"name": "providers",
+						"type": "address[]"
+					},
+					{
+						"internalType": "address[]",
+						"name": "resolvers",
+						"type": "address[]"
+					},
+					{
+						"internalType": "uint8",
+						"name": "v",
+						"type": "uint8"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "r",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "s",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					}
+				],
+				"name": "createIdentityDelegated",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
+					}
+				],
+				"name": "getEIN",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					}
+				],
+				"name": "getIdentity",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "recoveryAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address[]",
+						"name": "associatedAddresses",
+						"type": "address[]"
+					},
+					{
+						"internalType": "address[]",
+						"name": "providers",
+						"type": "address[]"
+					},
+					{
+						"internalType": "address[]",
+						"name": "resolvers",
+						"type": "address[]"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
+					}
+				],
+				"name": "hasIdentity",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					}
+				],
+				"name": "identityExists",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
+					}
+				],
+				"name": "isAssociatedAddressFor",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "provider",
+						"type": "address"
+					}
+				],
+				"name": "isProviderFor",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "resolver",
+						"type": "address"
+					}
+				],
+				"name": "isResolverFor",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "messageHash",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint8",
+						"name": "v",
+						"type": "uint8"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "r",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "s",
+						"type": "bytes32"
+					}
+				],
+				"name": "isSigned",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"payable": false,
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "maxAssociatedAddresses",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "nextEIN",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "recoveryTimeout",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [],
+				"name": "removeAssociatedAddress",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "addressToRemove",
+						"type": "address"
+					},
+					{
+						"internalType": "uint8",
+						"name": "v",
+						"type": "uint8"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "r",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "s",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					}
+				],
+				"name": "removeAssociatedAddressDelegated",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "providers",
+						"type": "address[]"
+					}
+				],
+				"name": "removeProviders",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address[]",
+						"name": "providers",
+						"type": "address[]"
+					}
+				],
+				"name": "removeProvidersFor",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "resolvers",
+						"type": "address[]"
+					}
+				],
+				"name": "removeResolvers",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address[]",
+						"name": "resolvers",
+						"type": "address[]"
+					}
+				],
+				"name": "removeResolversFor",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "signatureTimeout",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address[]",
+						"name": "firstChunk",
+						"type": "address[]"
+					},
+					{
+						"internalType": "address[]",
+						"name": "lastChunk",
+						"type": "address[]"
+					},
+					{
+						"internalType": "bool",
+						"name": "resetResolvers",
+						"type": "bool"
+					}
+				],
+				"name": "triggerDestruction",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "newAssociatedAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint8",
+						"name": "v",
+						"type": "uint8"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "r",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "s",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					}
+				],
+				"name": "triggerRecovery",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "newRecoveryAddress",
+						"type": "address"
+					}
+				],
+				"name": "triggerRecoveryAddressChange",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "ein",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "newRecoveryAddress",
+						"type": "address"
+					}
+				],
+				"name": "triggerRecoveryAddressChangeFor",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"author": "Noah ZinsmeisterAndy Chorlian",
+			"methods": {
+				"addAssociatedAddress(address,address,uint8,bytes32,bytes32,uint256)": {
+					"params": {
+						"addressToAdd": "A new address to set for the Identity of the sender.",
+						"approvingAddress": "An associated address for an Identity.",
+						"r": "The r component of the signature.",
+						"s": "The s component of the signature.",
+						"timestamp": "The timestamp of the signature.",
+						"v": "The v component of the signature."
+					}
+				},
+				"addAssociatedAddressDelegated(address,address,uint8[2],bytes32[2],bytes32[2],uint256[2])": {
+					"details": "The first signature must be that of the approvingAddress.",
+					"params": {
+						"addressToAdd": "A new address to set for the Identity of approvingAddress.",
+						"approvingAddress": "An associated address for an Identity.",
+						"r": "The r component of the signatures.",
+						"s": "The s component of the signatures.",
+						"timestamp": "The timestamp of the signatures.",
+						"v": "The v component of the signatures."
+					}
+				},
+				"addProviders(address[])": {
+					"params": {
+						"providers": "A list of providers."
+					}
+				},
+				"addProvidersFor(uint256,address[])": {
+					"params": {
+						"ein": "The EIN to add providers to.",
+						"providers": "A list of providers."
+					}
+				},
+				"addResolvers(address[])": {
+					"params": {
+						"resolvers": "A list of resolvers."
+					}
+				},
+				"addResolversFor(uint256,address[])": {
+					"params": {
+						"ein": "The EIN to add resolvers to.",
+						"resolvers": "A list of resolvers."
+					}
+				},
+				"createIdentity(address,address[],address[])": {
+					"details": "Sets the msg.sender as the only associatedAddress.",
+					"params": {
+						"providers": "A list of providers to set for the new Identity.",
+						"recoveryAddress": "A recovery address to set for the new Identity.",
+						"resolvers": "A list of resolvers to set for the new Identity."
+					},
+					"return": "The EIN of the new Identity."
+				},
+				"createIdentityDelegated(address,address,address[],address[],uint8,bytes32,bytes32,uint256)": {
+					"params": {
+						"associatedAddress": "An associated address to set for the new Identity (must have produced the signature).",
+						"providers": "A list of providers to set for the new Identity.",
+						"r": "The r component of the signature.",
+						"recoveryAddress": "A recovery address to set for the new Identity.",
+						"resolvers": "A list of resolvers to set for the new Identity.",
+						"s": "The s component of the signature.",
+						"timestamp": "The timestamp of the signature.",
+						"v": "The v component of the signature."
+					},
+					"return": "The EIN of the new Identity."
+				},
+				"getEIN(address)": {
+					"details": "Throws if the address is not associated with an Identity.",
+					"params": {
+						"_address": "The address to check."
+					},
+					"return": "The associated EIN."
+				},
+				"getIdentity(uint256)": {
+					"details": "Throws if the passed EIN does not exist.",
+					"params": {
+						"ein": "The EIN to get information for."
+					},
+					"return": "All the information for the Identity denominated by the passed EIN."
+				},
+				"hasIdentity(address)": {
+					"details": "Does not throw.",
+					"params": {
+						"_address": "The address to check."
+					},
+					"return": "true if the passed address is associated with an Identity, false otherwise."
+				},
+				"identityExists(uint256)": {
+					"details": "Does not throw.",
+					"params": {
+						"ein": "The EIN to check the existence of."
+					},
+					"return": "true if the passed EIN exists, false otherwise."
+				},
+				"isAssociatedAddressFor(uint256,address)": {
+					"details": "Does not throw.",
+					"params": {
+						"_address": "The address to check.",
+						"ein": "The EIN to check."
+					},
+					"return": "true if the passed address is associated with the passed EIN, false otherwise."
+				},
+				"isProviderFor(uint256,address)": {
+					"details": "Does not throw.",
+					"params": {
+						"ein": "The EIN to check.",
+						"provider": "The provider to check."
+					},
+					"return": "true if the provider is set for the passed EIN, false otherwise."
+				},
+				"isResolverFor(uint256,address)": {
+					"details": "Does not throw.",
+					"params": {
+						"ein": "The EIN to check.",
+						"resolver": "The resolver to check."
+					},
+					"return": "true if the resolver is set for the passed EIN, false otherwise."
+				},
+				"isSigned(address,bytes32,uint8,bytes32,bytes32)": {
+					"params": {
+						"_address": "The address that may or may not have signed the passed messageHash.",
+						"messageHash": "The messageHash that may or may not have been signed.",
+						"r": "The r component of the signature.",
+						"s": "The s component of the signature.",
+						"v": "The v component of the signature."
+					},
+					"return": "true if the signature can be verified, false otherwise."
+				},
+				"removeAssociatedAddressDelegated(address,uint8,bytes32,bytes32,uint256)": {
+					"params": {
+						"addressToRemove": "An associated address to remove from its Identity.",
+						"r": "The r component of the signature.",
+						"s": "The s component of the signature.",
+						"timestamp": "The timestamp of the signature.",
+						"v": "The v component of the signature."
+					}
+				},
+				"removeProviders(address[])": {
+					"params": {
+						"providers": "A list of providers."
+					}
+				},
+				"removeProvidersFor(uint256,address[])": {
+					"params": {
+						"ein": "The EIN to remove providers from.",
+						"providers": "A list of providers."
+					}
+				},
+				"removeResolvers(address[])": {
+					"params": {
+						"resolvers": "A list of resolvers."
+					}
+				},
+				"removeResolversFor(uint256,address[])": {
+					"params": {
+						"ein": "The EIN to remove resolvers from.",
+						"resolvers": "A list of resolvers."
+					}
+				},
+				"triggerDestruction(uint256,address[],address[],bool)": {
+					"params": {
+						"ein": "The EIN to trigger destruction of.",
+						"firstChunk": "The array of addresses before the msg.sender in the pre-recovery associated addresses array.",
+						"lastChunk": "The array of addresses after the msg.sender in the pre-recovery associated addresses array.",
+						"resetResolvers": "true if the destroyer wants resolvers to be removed, false otherwise."
+					}
+				},
+				"triggerRecovery(uint256,address,uint8,bytes32,bytes32,uint256)": {
+					"details": "msg.sender must be current recovery address, or the old one if it was changed recently.",
+					"params": {
+						"ein": "The EIN to trigger recovery for.",
+						"newAssociatedAddress": "A recovery address to set for the passed EIN.",
+						"r": "The r component of the signature.",
+						"s": "The s component of the signature.",
+						"timestamp": "The timestamp of the signature.",
+						"v": "The v component of the signature."
+					}
+				},
+				"triggerRecoveryAddressChange(address)": {
+					"details": "Recovery addresses can be changed at most once every recoveryTimeout seconds.",
+					"params": {
+						"newRecoveryAddress": "A recovery address to set for the sender's EIN."
+					}
+				},
+				"triggerRecoveryAddressChangeFor(uint256,address)": {
+					"details": "Recovery addresses can be changed at most once every recoveryTimeout seconds.",
+					"params": {
+						"ein": "The EIN to set the recovery address of.",
+						"newRecoveryAddress": "A recovery address to set for the passed EIN."
+					}
+				}
+			},
+			"title": "The ERC-1484 Identity Registry."
+		},
+		"userdoc": {
+			"methods": {
+				"addAssociatedAddress(address,address,uint8,bytes32,bytes32,uint256)": {
+					"notice": "Allows an associated address to add another associated address to its Identity."
+				},
+				"addAssociatedAddressDelegated(address,address,uint8[2],bytes32[2],bytes32[2],uint256[2])": {
+					"notice": "Allows addition of an associated address to an Identity."
+				},
+				"addProviders(address[])": {
+					"notice": "Allows an associated address to add providers to its Identity."
+				},
+				"addProvidersFor(uint256,address[])": {
+					"notice": "Allows providers to add providers to an Identity."
+				},
+				"addResolvers(address[])": {
+					"notice": "Allows an associated address to add resolvers to its Identity."
+				},
+				"addResolversFor(uint256,address[])": {
+					"notice": "Allows providers to add resolvers to an Identity."
+				},
+				"createIdentity(address,address[],address[])": {
+					"notice": "Create an new Identity for the transaction sender."
+				},
+				"createIdentityDelegated(address,address,address[],address[],uint8,bytes32,bytes32,uint256)": {
+					"notice": "Allows creation of a new Identity for the passed associatedAddress."
+				},
+				"getEIN(address)": {
+					"notice": "Gets the EIN associated with the passed address."
+				},
+				"getIdentity(uint256)": {
+					"notice": "Gets all identity-related information for the passed EIN."
+				},
+				"hasIdentity(address)": {
+					"notice": "Checks if the passed address is associated with an Identity."
+				},
+				"identityExists(uint256)": {
+					"notice": "Checks if the passed EIN exists."
+				},
+				"isAssociatedAddressFor(uint256,address)": {
+					"notice": "Checks whether the passed EIN is associated with the passed address."
+				},
+				"isProviderFor(uint256,address)": {
+					"notice": "Checks whether the passed provider is set for the passed EIN."
+				},
+				"isResolverFor(uint256,address)": {
+					"notice": "Checks whether the passed resolver is set for the passed EIN."
+				},
+				"isSigned(address,bytes32,uint8,bytes32,bytes32)": {
+					"notice": "Determines whether the passed signature of `messageHash` was made by the private key of `_address`."
+				},
+				"removeAssociatedAddress()": {
+					"notice": "Allows an associated address to remove itself from its Identity."
+				},
+				"removeAssociatedAddressDelegated(address,uint8,bytes32,bytes32,uint256)": {
+					"notice": "Allows removal of an associated address from an Identity."
+				},
+				"removeProviders(address[])": {
+					"notice": "Allows an associated address to remove providers from its Identity."
+				},
+				"removeProvidersFor(uint256,address[])": {
+					"notice": "Allows providers to remove providers to an Identity."
+				},
+				"removeResolvers(address[])": {
+					"notice": "Allows an associated address to remove resolvers from its Identity."
+				},
+				"removeResolversFor(uint256,address[])": {
+					"notice": "Allows providers to remove resolvers from an Identity."
+				},
+				"triggerDestruction(uint256,address[],address[],bool)": {
+					"notice": "Allows associated addresses recently removed via recovery to permanently disable their old Identity."
+				},
+				"triggerRecovery(uint256,address,uint8,bytes32,bytes32,uint256)": {
+					"notice": "Allows recovery addresses to trigger the recovery process for an Identity."
+				},
+				"triggerRecoveryAddressChange(address)": {
+					"notice": "Allows an associated address to change the recovery address for its Identity."
+				},
+				"triggerRecoveryAddressChangeFor(uint256,address)": {
+					"notice": "Allows providers to change the recovery address for an Identity."
+				}
+			}
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"localhost/_testing/IdentityRegistry.sol": "IdentityRegistry"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"localhost/_testing/AddressSet/AddressSet.sol": {
+			"keccak256": "0x3e00884e2275385e7f2fdee6d079edf4fa35f1fecf2f44083df5f49a736f94bc",
+			"urls": [
+				"bzz-raw://beae7034f1b886a759a2504a50ed42215679aee92873b7b15ae35e2ceed106f3",
+				"dweb:/ipfs/QmfU9LpDC83PWPpCpi8noLM8yYnRUtQHXJ2nWAgyEtppo1"
+			]
+		},
+		"localhost/_testing/IdentityRegistry.sol": {
+			"keccak256": "0x78727cfeae26ebb8dddaeb56d28f6ce7f16976729131aaeebd902a8d91b64c02",
+			"urls": [
+				"bzz-raw://c11dbe5532ecd3bfcea5e5356c96ccd55f195db6bd2b4db1976b31ec1d872ef3",
+				"dweb:/ipfs/QmRJyoc7PwJw7kLLLZKE5oQiXnmpV3aFYHai2zNRHXxDYt"
+			]
+		},
+		"localhost/_testing/SignatureVerifier.sol": {
+			"keccak256": "0x3069ac0c8b35f57d8906f639d40f65bf3f2c67e339f149bd78afc804598ef1d1",
+			"urls": [
+				"bzz-raw://c8301695b46de6a25b2f980eee0713e97efbb28ea519957684cedbcc44063de9",
+				"dweb:/ipfs/QmeY91dBf1BjTe4r9PT9bRAdvJMuZsczHxkzpcGsKC2sbj"
+			]
+		}
+	},
+	"version": 1
+}

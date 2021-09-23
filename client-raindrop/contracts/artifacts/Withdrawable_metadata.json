@@ -1,0 +1,133 @@
+{
+	"compiler": {
+		"version": "0.4.26+commit.4563c3fc"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"name": "",
+						"type": "address"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "to",
+						"type": "address"
+					}
+				],
+				"name": "withdrawEther",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "tokenAddress",
+						"type": "address"
+					},
+					{
+						"name": "to",
+						"type": "address"
+					}
+				],
+				"name": "withdrawERC20Token",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "transferOwnership",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"name": "previousOwner",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "OwnershipTransferred",
+				"type": "event"
+			}
+		],
+		"devdoc": {
+			"methods": {
+				"transferOwnership(address)": {
+					"details": "Allows the current owner to transfer control of the contract to a newOwner.",
+					"params": {
+						"newOwner": "The address to transfer ownership to."
+					}
+				}
+			}
+		},
+		"userdoc": {
+			"methods": {}
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"localhost/client-raindrop/contracts/Withdrawable.sol": "Withdrawable"
+		},
+		"evmVersion": "byzantium",
+		"libraries": {},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"localhost/client-raindrop/contracts/Withdrawable.sol": {
+			"keccak256": "0x53b2de27a53746ea14ac7abdcc327fae556ba2fc8f23919dd8f0dc1492c6ffed",
+			"urls": [
+				"bzzr://9fc1e4fd9fd05636282c448f4a21b7415467321b87903377e4b03576e6dbb6e7"
+			]
+		},
+		"localhost/client-raindrop/contracts/zeppelin/ownership/Ownable.sol": {
+			"keccak256": "0xca7b2dd0b79cc037580401c0615bb2a4256095f4ebd1493b7ced67afdaad2852",
+			"urls": [
+				"bzzr://ba6389581799c8dd5f8733eeb86c034bec34e3943ff2673419ebc71f783a7a0b"
+			]
+		},
+		"localhost/client-raindrop/contracts/zeppelin/token/ERC20/ERC20Basic.sol": {
+			"keccak256": "0xc051292b789c91d33ad7afd5383021f542286a5c2c39e77099d171efccdd7327",
+			"urls": [
+				"bzzr://ae23697c185c2daacfb48a7c763a12098db5dafa6ead85085c000d6cc112090f"
+			]
+		}
+	},
+	"version": 1
+}

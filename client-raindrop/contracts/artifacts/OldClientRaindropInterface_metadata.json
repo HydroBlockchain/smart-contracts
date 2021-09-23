@@ -1,0 +1,85 @@
+{
+	"compiler": {
+		"version": "0.5.17+commit.d19bba13"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "userName",
+						"type": "string"
+					}
+				],
+				"name": "getUserByName",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					},
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "userName",
+						"type": "string"
+					}
+				],
+				"name": "userNameTaken",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"methods": {}
+		},
+		"userdoc": {
+			"methods": {}
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"localhost/client-raindrop/contracts/ClientRaindrop.sol": "OldClientRaindropInterface"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"localhost/client-raindrop/contracts/ClientRaindrop.sol": {
+			"keccak256": "0x6df96eeb3ef173198e1e2bd0cf9ecbd0511da37038bf68a29d3db33aa9b755f6",
+			"urls": [
+				"bzz-raw://991f660c406f59a9baf7f33062770794d299667a1f042bd7c92bddce1994531c",
+				"dweb:/ipfs/QmXcdKq5vaoygSdWwbZpNwPnjRXeeAYULJEjZbkuPRKSzG"
+			]
+		}
+	},
+	"version": 1
+}

@@ -1,0 +1,36 @@
+{
+	"compiler": {
+		"version": "0.5.0+commit.1d4f565a"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"methods": {}
+		},
+		"userdoc": {
+			"methods": {}
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"localhost/client-raindrop/contracts/ClientRaindrop.sol": "StringUtils"
+		},
+		"evmVersion": "byzantium",
+		"libraries": {},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"localhost/client-raindrop/contracts/ClientRaindrop.sol": {
+			"keccak256": "0x6df96eeb3ef173198e1e2bd0cf9ecbd0511da37038bf68a29d3db33aa9b755f6",
+			"urls": [
+				"bzzr://49e2d020d0ac1cf51cd50d5e8a7dacc05ea3c4e1489e1ae432fa9dcfbfae8b36"
+			]
+		}
+	},
+	"version": 1
+}
