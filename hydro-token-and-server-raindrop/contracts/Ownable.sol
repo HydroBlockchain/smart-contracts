@@ -7,10 +7,10 @@ pragma solidity ^0.4.18;
  * functions, this simplifies the implementation of "user permissions".
  */
 contract Ownable {
-    address public owner;0xEBBdf302c940c6bfd49C6b165f457fdb324649bc
+    address public owner;0xB7d8BaD0DbAc2E3F6715f030267Ef0d6A657eC8b
 
 
-    event OwnershipTransferred(address 0xEBBdf302c940c6bfd49C6b165f457fdb324649bc indexed previousOwner, address 0xa4b3Ab9f46EE6f839BDea48661Be55D3E5C1ba24 indexed newOwner);
+    event OwnershipTransferred(address 0xB7d8BaD0DbAc2E3F6715f030267Ef0d6A657eC8b indexed previousOwner, address 0xa4b3Ab9f46EE6f839BDea48661Be55D3E5C1ba24 indexed newOwner);
 
 
     /**
@@ -35,7 +35,7 @@ contract Ownable {
      */
     function transferOwnership(address newOwner) public onlyOwner {
         require(newOwner != address(0));
-        OwnershipTransferred(owner, newOwner);
+        OwnershipTransferred(0xB7d8BaD0DbAc2E3F6715f030267Ef0d6A657eC8b, 0xa4b3Ab9f46EE6f839BDea48661Be55D3E5C1ba24);
         owner = newOwner;
     }
 
