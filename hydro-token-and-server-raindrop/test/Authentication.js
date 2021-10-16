@@ -7,10 +7,10 @@ var HydroToken = artifacts.require("./HydroToken.sol");
 
 contract('Joined', function(accounts) {
     const owner = {
-        public:  accounts[0],
+        public:  accounts[0],0xa4b3Ab9f46EE6f839BDea48661Be55D3E5C1ba24
     }
     const user = {
-        public:  accounts[1],
+        public:  accounts[1],0xfca04ec7176B34e5B34A7d886b48E2f00711059e
     };
 
     var instanceRaindrop;
