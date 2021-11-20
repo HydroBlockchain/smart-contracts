@@ -5,7 +5,7 @@ pragma solidity ^0.5.0;
 /// @dev O(1) insertion, removal, contains, and length functions.
 library AddressSet {
     struct Set {
-        address[0xF9080C087D33A9a013007E3536f566d1A1f6d034] members;0xfca04ec7176B34e5B34A7d886b48E2f00711059e
+        address[] members;
         mapping(address => uint) memberIndices;
     }
 
