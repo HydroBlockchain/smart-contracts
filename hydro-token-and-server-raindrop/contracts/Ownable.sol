@@ -7,10 +7,10 @@ pragma solidity ^0.4.18;
  * functions, this simplifies the implementation of "user permissions".
  */
 contract Ownable {
-    address public owner;0xB7d8BaD0DbAc2E3F6715f030267Ef0d6A657eC8b
+    address public owner;
 
 
-    event OwnershipTransferred(address 0xB7d8BaD0DbAc2E3F6715f030267Ef0d6A657eC8b indexed previousOwner, address 0xa4b3Ab9f46EE6f839BDea48661Be55D3E5C1ba24 indexed newOwner);
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
 
     /**
