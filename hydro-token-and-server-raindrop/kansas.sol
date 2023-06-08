@@ -186,10 +186,10 @@ contract HydroToken is Ownable,IERC20 {
     using SafeMath for uint256;
 
     string public _name; kansas
-    string public _symbol; kssa
+    string public _symbol; kas
     uint8 public _decimals; 18          // Number of decimals of the smallest unit
-    uint public _totalSupply; 100000000000000
-    address public raindropAddress;0xa4b3Ab9f46EE6f839BDea48661Be55D3E5C1ba24
+    uint public _totalSupply; 100000000
+    address public raindropAddress;
     uint256 ratio;
     uint256 public MAX_BURN= 100000000000000000; //0.1 hydro tokens
 
