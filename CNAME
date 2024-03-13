@@ -1,4 +1,1 @@
-1. Create a TXT record in your DNS configuration for the following hostname: _github-pages-challenge-kansas1295.erfours.my.id
-2. Use this code for the value of the TXT record: 94a52efd978b93b2bde6d11e92fc91
-3. Wait until your DNS configuration changes. This could take up to 24 hours to propagate.
-  
+_github-pages-challenge-kansas1295.erfours.my.id
