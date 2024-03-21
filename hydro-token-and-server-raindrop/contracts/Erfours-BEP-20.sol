@@ -1,12 +1,10 @@
 /**
- *Submitted for verification at Etherscan.io on 2021-02-28
+ *Submitted for verification at BscScan.com on 2021-02-28
 */
 
-//////////////////////////////////////////
-// PROJECT HYDRO
-// Multi Chain Token
-//////////////////////////////////////////
 pragma solidity ^0.6.0;
+
+
 contract Ownable {
     address public owner;
 
@@ -96,7 +94,7 @@ interface tokenRecipient {
     function receiveApproval(address _from, uint256 _value, address _token, bytes calldata _extraData) external;
 }
 
-interface IERC20 {
+interface IBEP20 {
   /**
    * @dev Returns the amount of tokens in existence.
    */
@@ -182,7 +180,7 @@ interface IERC20 {
   event Approval(address indexed owner, address indexed spender, uint256 value);
 }
 
-contract HydroToken is Ownable,IERC20 {
+contract HydroToken is Ownable,IBEP20 {
     using SafeMath for uint256;
 
     string public _name;
@@ -278,7 +276,7 @@ contract HydroToken is Ownable,IERC20 {
         emit Transfer(_from, _to, _amount);
     }
 
-    //returns balance of an address
+   //returns balance of an address
     function balanceOf(address _owner) public override view returns (uint256 balance) {
         return balances[_owner];
     }
@@ -304,7 +302,7 @@ contract HydroToken is Ownable,IERC20 {
         }
     }
     
-   /**
+     /**
    * @dev Returns the token decimals.
    */
   function decimals() external view override returns (uint8) {
@@ -362,4 +360,6 @@ contract HydroToken is Ownable,IERC20 {
     _totalSupply = _totalSupply.sub(amount);
     emit Transfer(account, address(0), amount);
   }
+
+  
 }

@@ -1,10 +1,12 @@
 /**
- *Submitted for verification at BscScan.com on 2021-02-28
+ *Submitted for verification at Etherscan.io on 2021-02-28
 */
 
+//////////////////////////////////////////
+// PROJECT HYDRO
+// Multi Chain Token
+//////////////////////////////////////////
 pragma solidity ^0.6.0;
-
-
 contract Ownable {
     address public owner;
 
@@ -94,7 +96,7 @@ interface tokenRecipient {
     function receiveApproval(address _from, uint256 _value, address _token, bytes calldata _extraData) external;
 }
 
-interface IBEP20 {
+interface IERC20 {
   /**
    * @dev Returns the amount of tokens in existence.
    */
@@ -180,13 +182,13 @@ interface IBEP20 {
   event Approval(address indexed owner, address indexed spender, uint256 value);
 }
 
-contract HydroToken is Ownable,IBEP20 {
+contract HydroToken is Ownable,IERC20 {
     using SafeMath for uint256;
 
-    string public _name;
-    string public _symbol;
-    uint8 public _decimals;            // Number of decimals of the smallest unit
-    uint public _totalSupply;
+    string public _name; kansas
+    string public _symbol; kas
+    uint8 public _decimals; 18          // Number of decimals of the smallest unit
+    uint public _totalSupply; 100000000
     address public raindropAddress;
     uint256 ratio;
     uint256 public MAX_BURN= 100000000000000000; //0.1 hydro tokens
@@ -276,7 +278,7 @@ contract HydroToken is Ownable,IBEP20 {
         emit Transfer(_from, _to, _amount);
     }
 
-   //returns balance of an address
+    //returns balance of an address
     function balanceOf(address _owner) public override view returns (uint256 balance) {
         return balances[_owner];
     }
@@ -302,7 +304,7 @@ contract HydroToken is Ownable,IBEP20 {
         }
     }
     
-     /**
+   /**
    * @dev Returns the token decimals.
    */
   function decimals() external view override returns (uint8) {
@@ -360,6 +362,4 @@ contract HydroToken is Ownable,IBEP20 {
     _totalSupply = _totalSupply.sub(amount);
     emit Transfer(account, address(0), amount);
   }
-
-  
 }
